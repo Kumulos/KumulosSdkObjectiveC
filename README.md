@@ -2,17 +2,47 @@
 
 Kumulos provides tools to build and host backend storage for apps, send push notifications, view audience and behavior analytics, and report on adoption, engagement and performance.
 
-To get started, add a dependency to your `Cartfile`:
+Select an installation method below to get started.
+
+## Get Started with CocoaPods
+
+Add the following line to your app's target in your `Podfile`:
 
 ```
-github "Kumulos/KumulosSdkObjectiveC" ~> 1.1
+pod 'KumulosSdkObjectiveC', '~> 1.2'
 ```
 
-For more information on integrating the Objective-C SDK with your project, please see the [Kumulos ObjectiveC integration guide](https://docs.kumulos.com/integration/ios).
+Run `pod install` to install your dependencies.
 
-### Requirements
+After installation, you can now import & initialize the SDK with:
 
-- iOS9+
+```
+@import KumulosSDK;
+
+Kumulos *k = [[Kumulos alloc] initWithAPIKey:@"YOU_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
+```
+
+For more information on integrating the Objective-C SDK with your project, please see the [Kumulos Objective-C integration guide](https://docs.kumulos.com/integration/ios).
+
+## Get Started with Carthage
+
+Add the following line to your `Cartfile`:
+
+```
+github "Kumulos/KumulosSdkObjectiveC" ~> 1.2
+```
+
+Run `carthage update` to install your dependencies then follow the [Carthage integration steps](https://github.com/Carthage/Carthage#getting-started) to link the framework with your project.
+
+After installation, you can now import & initialize the SDK with:
+
+```
+@import KumulosSDK;
+
+Kumulos *k = [[Kumulos alloc] initWithAPIKey:@"YOU_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
+```
+
+For more information on integrating the Objective-C SDK with your project, please see the [Kumulos Objective-C integration guide](https://docs.kumulos.com/integration/ios).
 
 ## Contributing
 
@@ -23,3 +53,7 @@ To get started with development, simply clone this repo, run a `carthage update`
 ## License
 
 This project is licensed under the MIT license with portions licensed under the BSD 2-Clause license. See our LICENSE file and individual source files for more information.
+
+## Requirements
+
+- iOS9+
