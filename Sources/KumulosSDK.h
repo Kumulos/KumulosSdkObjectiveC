@@ -4,7 +4,9 @@
 //
 //
 
+#if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
+#endif
 
 //! Project version number for KumulosSDK.
 FOUNDATION_EXPORT double KumulosSDKVersionNumber;
@@ -16,7 +18,7 @@ FOUNDATION_EXPORT const unsigned char KumulosSDKVersionString[];
 
 #import "Kumulos.h"
 
-#ifdef TARGET_OS_IOS
+#if TARGET_OS_IOS
 #import "Kumulos+Push.h"
 #import "KumulosPushSubscriptionManager.h"
 #endif
