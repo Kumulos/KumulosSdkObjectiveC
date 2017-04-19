@@ -16,7 +16,7 @@ Run `pod install` to install your dependencies.
 
 After installation, you can now import & initialize the SDK with:
 
-```
+```objective-c
 @import KumulosSDK;
 
 Kumulos *k = [[Kumulos alloc] initWithAPIKey:@"YOU_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
@@ -36,7 +36,7 @@ Run `carthage update` to install your dependencies then follow the [Carthage int
 
 After installation, you can now import & initialize the SDK with:
 
-```
+```objective-c
 @import KumulosSDK;
 
 Kumulos *k = [[Kumulos alloc] initWithAPIKey:@"YOU_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
