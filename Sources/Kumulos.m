@@ -9,8 +9,11 @@
 #import "KSAPIOperation.h"
 #import "Kumulos+Protected.h"
 #import "Kumulos+Stats.h"
-#import "Kumulos+Push.h"
 #import "KSessionTokenManager.h"
+
+#if TARGET_OS_IOS
+#import "Kumulos+Push.h"
+#endif
 
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
