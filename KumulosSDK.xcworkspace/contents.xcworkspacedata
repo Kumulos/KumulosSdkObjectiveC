@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:Carthage/Checkouts/AFNetworking/AFNetworking.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "container:KumulosSDK.xcodeproj">
    </FileRef>
 </Workspace>
