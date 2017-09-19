@@ -28,8 +28,11 @@
     target = TargetTypeDebug;
 #endif
 
-    NSDictionary *app = @{@"version" : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
-                          @"target"  : @(target)};
+    NSDictionary *app = @{
+                          @"bundle" : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"],
+                          @"version" : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
+                          @"target"  : @(target)
+                          };
     
     NSBundle* frameworkBundle = [NSBundle bundleForClass:[self class]];
     NSString* frameworkVersion = [[frameworkBundle infoDictionary] objectForKey:@"CFBundleShortVersionString"];
