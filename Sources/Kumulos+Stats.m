@@ -16,6 +16,20 @@
 
 @implementation Kumulos (Stats)
 
+- (void) sendLocationUpdate:(CLLocation*) location {
+    NSDictionary *jsonDict = @{@"lat" : @(location.coordinate.latitude),
+                               @"lng" : @(location.coordinate.longitude)
+                               };
+    
+    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/location", [Kumulos installId]];
+
+    [self.statsHttpClient PUT:path parameters:jsonDict success:^(NSURLSessionDataTask* task, id response) {
+        // Noop
+    } failure:^(NSURLSessionDataTask* task, NSError* error) {
+        // Noop
+    }];
+}
+
 - (void) statsSendInstallInfo {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^() {
         [self bundleAndSendInfo];
@@ -42,7 +56,7 @@
     
     NSDictionary *runtime;
     NSDictionary *os;
-    NSDictionary *device;
+    NSMutableDictionary *device;
     
     NSTimeZone *timeZone = [NSTimeZone localTimeZone];
     NSString *tzName = [timeZone name];
@@ -61,9 +75,10 @@
     
     NSString* modelStr = [NSString stringWithUTF8String:model];
     
-    device = @{@"name" : modelStr,
-               @"tz"   : tzName,
-               @"isSimulator" : @(NO)};
+    [device setValuesForKeysWithDictionary:@{@"name" : modelStr,
+                                            @"tz"   : tzName,
+                                            @"isSimulator" : @(NO)}];
+    
     
 #else
     runtime = @{@"id" : @(RuntimeTypeNative),
@@ -82,11 +97,15 @@
     isSimulator = YES;
 #endif
     
-    device = @{@"name" : deviceName,
-               @"tz"   : tzName,
-               @"isSimulator":  @(isSimulator)};
+    [device setValuesForKeysWithDictionary:@{@"name" : deviceName,
+                                             @"tz"   : tzName,
+                                             @"isSimulator":  @(isSimulator)}];
     
 #endif
+    
+    if (NSLocale.preferredLanguages.count >= 1) {
+        device[@"locale"] = NSLocale.preferredLanguages[0];
+    }
     
     //final
     NSDictionary *jsonDict = @{@"app" : app,

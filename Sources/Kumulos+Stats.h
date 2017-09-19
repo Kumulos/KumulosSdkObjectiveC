@@ -6,10 +6,12 @@
 //
 
 #import "Kumulos.h"
+@import CoreLocation;
 
 @interface Kumulos (Stats)
 
 - (void) statsSendInstallInfo;
+- (void) sendLocationUpdate:(CLLocation*) location;
 
 @end
 
