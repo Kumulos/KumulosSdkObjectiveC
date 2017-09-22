@@ -56,7 +56,7 @@
     
     NSDictionary *runtime;
     NSDictionary *os;
-    NSMutableDictionary *device;
+    NSMutableDictionary *device = [[NSMutableDictionary alloc] initWithCapacity:4];
     
     NSTimeZone *timeZone = [NSTimeZone localTimeZone];
     NSString *tzName = [timeZone name];
