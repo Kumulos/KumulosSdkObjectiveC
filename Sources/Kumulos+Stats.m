@@ -16,20 +16,6 @@
 
 @implementation Kumulos (Stats)
 
-- (void) sendLocationUpdate:(CLLocation*) location {
-    NSDictionary *jsonDict = @{@"lat" : @(location.coordinate.latitude),
-                               @"lng" : @(location.coordinate.longitude)
-                               };
-    
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/location", [Kumulos installId]];
-
-    [self.statsHttpClient PUT:path parameters:jsonDict success:^(NSURLSessionDataTask* task, id response) {
-        // Noop
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        // Noop
-    }];
-}
-
 - (void) statsSendInstallInfo {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^() {
         [self bundleAndSendInfo];
