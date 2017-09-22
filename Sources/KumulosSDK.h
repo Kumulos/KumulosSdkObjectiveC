@@ -4,6 +4,8 @@
 //
 //
 
+#import <Foundation/Foundation.h>
+
 #if TARGET_OS_IOS
 #import <UIKit/UIKit.h>
 #endif
@@ -21,6 +23,7 @@ FOUNDATION_EXPORT const unsigned char KumulosSDKVersionString[];
 #if TARGET_OS_IOS
 #import "Kumulos+Push.h"
 #import "KumulosPushSubscriptionManager.h"
+#import "Kumulos+Location.h"
 #endif
 
 #import "KSAPIOperation.h"
