@@ -15,36 +15,34 @@
 #import "Kumulos+Push.h"
 #endif
 
-@import KSCrash;
-
-//#import <KSCrash/KSCrash.h>
-//#import <KSCrash/KSCrashInstallationStandard.h>
+#import <KSCrash/KSCrash.h>
+#import <KSCrash/KSCrashInstallationStandard.h>
 
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
 
-//@implementation KSConfig
-//
-//+ (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
-//    KSConfig* config = [[KSConfig alloc] initWithAPIKey:APIKey andSecretKey:secretKey];
-//    return config;
-//}
-//
-//- (instancetype _Nonnull) enableCrashReporting {
-//    return self;
-//}
-//
-//- (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
-//    if (self = [super init]) {
-//        self->_apiKey = APIKey;
-//        self->_secretKey = secretKey;
-//        self->_crashReportingEnabled = NO;
-//    }
-//    return self;
-//}
-//
-//@end
+@implementation KSConfig
+
++ (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+    KSConfig* config = [[KSConfig alloc] initWithAPIKey:APIKey andSecretKey:secretKey];
+    return config;
+}
+
+- (instancetype _Nonnull) enableCrashReporting {
+    return self;
+}
+
+- (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+    if (self = [super init]) {
+        self->_apiKey = APIKey;
+        self->_secretKey = secretKey;
+        self->_crashReportingEnabled = NO;
+    }
+    return self;
+}
+
+@end
 
 @implementation Kumulos
 
@@ -62,20 +60,27 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     }
 }
 
-- (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+- (instancetype _Nullable) initWithConfig:(KSConfig *)config {
     if (self = [super init]) {
-        self.apiKey = APIKey;
-        self.secretKey = secretKey;
+        self.apiKey = config.apiKey;
+        self.secretKey = config.secretKey;
         
-        self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:APIKey];
+        self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
         
         [self initNetworkingHelpers];
         
         [self statsSendInstallInfo];
         
-        [self initCrashReporting];
+        if (config.crashReportingEnabled) {
+            [self initCrashReporting];
+        }
     }
     return self;
+}
+
+- (instancetype _Nullable) initWithAPIKey:(NSString *)APIKey andSecretKey:(NSString *)secretKey {
+    KSConfig* config = [KSConfig configWithAPIKey:APIKey andSecretKey:secretKey];
+    return [self initWithConfig:config];
 }
 
 - (void) initNetworkingHelpers {

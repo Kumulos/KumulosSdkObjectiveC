@@ -22,19 +22,19 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
 /**
  * Config options for initializing a Kumulos instance
  */
-//@interface KSConfig : NSObject
-//
-//@property (nonatomic,readonly) NSString* _Nonnull apiKey;
-//@property (nonatomic,readonly) NSString* _Nonnull secretKey;
-//@property (nonatomic,readonly) BOOL crashReportingEnabled;
-//
-//+ (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
-//
-//- (instancetype _Nullable) init NS_UNAVAILABLE;
-//
-//- (instancetype _Nonnull) enableCrashReporting;
-//
-//@end
+@interface KSConfig : NSObject
+
+@property (nonatomic,readonly) NSString* _Nonnull apiKey;
+@property (nonatomic,readonly) NSString* _Nonnull secretKey;
+@property (nonatomic,readonly) BOOL crashReportingEnabled;
+
++ (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
+
+- (instancetype _Nullable) init NS_UNAVAILABLE;
+
+- (instancetype _Nonnull) enableCrashReporting;
+
+@end
 
 /**
  * The main Kumulos SDK class allows interaction API methods
@@ -45,11 +45,21 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
 /// The Kumulos RPC API session token
 @property (nonnull) NSString* sessionToken;
 
+/// The Kumulos instance configuration
+@property (nonnull) KSConfig* config;
+
 /**
  * Gets the unique Kumulos installation ID
  * @returns NSString
  */
 + (NSString* _Nonnull) installId;
+
+/**
+ * Initializes Kumulos with the given config
+ * @param config The Kumulos client configuration
+ * @returns Kumulos
+ */
+- (instancetype _Nullable) initWithConfig:(KSConfig* _Nonnull)config;
 
 /**
  * Initializes Kumulos with the given API key & secret
