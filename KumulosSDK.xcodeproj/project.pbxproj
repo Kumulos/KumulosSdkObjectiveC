@@ -11,8 +11,8 @@
 		125321C11F750E28007077AC /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125321C01F750E28007077AC /* AFNetworking.framework */; };
 		125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		125321C61F7511F0007077AC /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
-		125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; };
-		125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; };
+		125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
 		125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
 		125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA7771F8BD7CA0008CAA4 /* libz.tbd */; };
