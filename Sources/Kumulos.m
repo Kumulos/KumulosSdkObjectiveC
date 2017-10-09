@@ -29,16 +29,16 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     return config;
 }
 
-- (instancetype _Nonnull) enableCrashReporting {
-    return self;
-}
-
 - (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
     if (self = [super init]) {
         self->_apiKey = APIKey;
         self->_secretKey = secretKey;
         self->_crashReportingEnabled = NO;
     }
+    return self;
+}
+
+- (instancetype _Nonnull) enableCrashReporting {
     return self;
 }
 
