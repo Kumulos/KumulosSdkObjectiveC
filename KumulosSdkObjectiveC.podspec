@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "1.3.2"
+  s.version = "1.4.0"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
@@ -23,17 +23,21 @@ Pod::Spec.new do |s|
       'Sources/KSAPIOperation.h',
       'Sources/KSAPIResponse.h',
       'Sources/Kumulos+Push.h',
-      'Sources/KumulosPushSubscriptionManager.h'
+      'Sources/KumulosPushSubscriptionManager.h',
+      'Sources/Kumulos+Crash.h'
   ]
 
   s.osx.public_header_files = [
       'Sources/KumulosSDK.h',
       'Sources/Kumulos.h',
       'Sources/KSAPIOperation.h',
-      'Sources/KSAPIResponse.h'
+      'Sources/KSAPIResponse.h',
+      'Sources/Kumulos+Crash.h'
   ]
 
   s.framework = "AFNetworking"
+  s.framework = "KSCrash"
 
   s.dependency "AFNetworking", "~> 3.1.0"
+  s.dependency "KSCrash", "~> 1.15"
 end

@@ -9,7 +9,7 @@ Select an installation method below to get started.
 Add the following line to your app's target in your `Podfile`:
 
 ```
-pod 'KumulosSdkObjectiveC', '~> 1.3'
+pod 'KumulosSdkObjectiveC', '~> 1.4'
 ```
 
 Run `pod install` to install your dependencies.
@@ -19,7 +19,8 @@ After installation, you can now import & initialize the SDK with:
 ```objective-c
 @import KumulosSDK;
 
-Kumulos *k = [[Kumulos alloc] initWithAPIKey:@"YOU_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
+KSConfig *config = [KSConfig configWithAPIKey:@"YOUR_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
+Kumulos *k = [[Kumulos alloc] initWithConfig:config];
 ```
 
 For more information on integrating the Objective-C SDK with your project, please see the [Kumulos Objective-C integration guide](https://docs.kumulos.com/integration/ios).
@@ -29,17 +30,25 @@ For more information on integrating the Objective-C SDK with your project, pleas
 Add the following line to your `Cartfile`:
 
 ```
-github "Kumulos/KumulosSdkObjectiveC" ~> 1.3
+github "Kumulos/KumulosSdkObjectiveC" ~> 1.4
 ```
 
 Run `carthage update` to install your dependencies then follow the [Carthage integration steps](https://github.com/Carthage/Carthage#getting-started) to link the framework with your project.
+
+Please also ensure you link your project against:
+
+- SystemConfiguration.framework
+- MessageUI.framework (for iOS projects)
+- libc++
+- libz
 
 After installation, you can now import & initialize the SDK with:
 
 ```objective-c
 @import KumulosSDK;
 
-Kumulos *k = [[Kumulos alloc] initWithAPIKey:@"YOU_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
+KSConfig *config = [KSConfig configWithAPIKey:@"YOUR_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
+Kumulos *k = [[Kumulos alloc] initWithConfig:config];
 ```
 
 For more information on integrating the Objective-C SDK with your project, please see the [Kumulos Objective-C integration guide](https://docs.kumulos.com/integration/ios).
