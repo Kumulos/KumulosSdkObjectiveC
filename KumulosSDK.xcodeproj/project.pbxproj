@@ -51,6 +51,11 @@
 		12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */; };
 		12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
 		12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
+		12AA0B521F8BB4C00063288E /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B511F8BB4C00063288E /* KSCrash.framework */; };
+		12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B531F8BB4FF0063288E /* libz.tbd */; };
+		12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B551F8BB5080063288E /* libc++.tbd */; };
+		12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */; };
+		12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B591F8BB5200063288E /* MessageUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +89,11 @@
 		12735BA91E4CE35900ED4488 /* MobileProvision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileProvision.m; sourceTree = "<group>"; };
 		12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RpcHttpClient.h; sourceTree = "<group>"; };
 		12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RpcHttpClient.m; sourceTree = "<group>"; };
+		12AA0B511F8BB4C00063288E /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/KSCrash.framework"; sourceTree = "<group>"; };
+		12AA0B531F8BB4FF0063288E /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
+		12AA0B551F8BB5080063288E /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		12AA0B591F8BB5200063288E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +101,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */,
+				12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */,
+				12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */,
+				12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */,
+				12AA0B521F8BB4C00063288E /* KSCrash.framework in Frameworks */,
 				125321BF1F750E1D007077AC /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -160,6 +175,11 @@
 		12735BC11E4CE4E800ED4488 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				12AA0B591F8BB5200063288E /* MessageUI.framework */,
+				12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */,
+				12AA0B551F8BB5080063288E /* libc++.tbd */,
+				12AA0B531F8BB4FF0063288E /* libz.tbd */,
+				12AA0B511F8BB4C00063288E /* KSCrash.framework */,
 				125321C01F750E28007077AC /* AFNetworking.framework */,
 				125321BE1F750E1D007077AC /* AFNetworking.framework */,
 			);
@@ -358,6 +378,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 			};
 			name = Debug;
 		};
@@ -382,6 +403,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				OTHER_LDFLAGS = "-ObjC";
 			};
 			name = Release;
 		};

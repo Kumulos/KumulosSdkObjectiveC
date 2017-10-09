@@ -15,6 +15,9 @@
 #import "Kumulos+Push.h"
 #endif
 
+#import <KSCrash/KSCrash.h>
+#import <KSCrash/KSCrashInstallationStandard.h>
+
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 
@@ -44,6 +47,8 @@ static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
         [self initNetworkingHelpers];
         
         [self statsSendInstallInfo];
+        
+        [self initCrashReporting];
     }
     return self;
 }
@@ -53,6 +58,17 @@ static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
     self.rpcHttpClient = [[RpcHttpClient alloc] initWithApiKey:self.apiKey andSecretKey:self.secretKey];
     self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
     self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+}
+
+- (void) initCrashReporting {
+    KSCrashInstallationStandard* installation = [KSCrashInstallationStandard sharedInstance];
+    installation.url = [NSURL URLWithString:@"http://put.your.url.here"];
+    
+    [installation install];
+    
+    [installation sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+        // noop
+    }];
 }
 
 - (KSAPIOperation*) callMethod:(NSString*)method withSuccess:(KSAPIOperationSuccessBlock)success andFailure:(KSAPIOperationFailureBlock)failure {
