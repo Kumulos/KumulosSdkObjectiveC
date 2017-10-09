@@ -15,11 +15,36 @@
 #import "Kumulos+Push.h"
 #endif
 
-#import <KSCrash/KSCrash.h>
-#import <KSCrash/KSCrashInstallationStandard.h>
+@import KSCrash;
+
+//#import <KSCrash/KSCrash.h>
+//#import <KSCrash/KSCrashInstallationStandard.h>
 
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
+static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
+
+//@implementation KSConfig
+//
+//+ (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+//    KSConfig* config = [[KSConfig alloc] initWithAPIKey:APIKey andSecretKey:secretKey];
+//    return config;
+//}
+//
+//- (instancetype _Nonnull) enableCrashReporting {
+//    return self;
+//}
+//
+//- (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+//    if (self = [super init]) {
+//        self->_apiKey = APIKey;
+//        self->_secretKey = secretKey;
+//        self->_crashReportingEnabled = NO;
+//    }
+//    return self;
+//}
+//
+//@end
 
 @implementation Kumulos
 
@@ -61,8 +86,9 @@ static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 }
 
 - (void) initCrashReporting {
+    NSString* url = [NSString stringWithFormat:@"%@/v1/track/%@/kscrash/%@", KSCrashBaseUrl, self.apiKey, Kumulos.installId];
     KSCrashInstallationStandard* installation = [KSCrashInstallationStandard sharedInstance];
-    installation.url = [NSURL URLWithString:@"http://put.your.url.here"];
+    installation.url = [NSURL URLWithString:url];
     
     [installation install];
     
