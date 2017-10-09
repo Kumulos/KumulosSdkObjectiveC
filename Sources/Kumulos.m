@@ -64,6 +64,7 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     if (self = [super init]) {
         self.apiKey = config.apiKey;
         self.secretKey = config.secretKey;
+        self.config = config;
         
         self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
         
