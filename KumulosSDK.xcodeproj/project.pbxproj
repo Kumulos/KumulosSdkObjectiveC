@@ -11,6 +11,14 @@
 		125321C11F750E28007077AC /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125321C01F750E28007077AC /* AFNetworking.framework */; };
 		125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		125321C61F7511F0007077AC /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
+		125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
+		125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
+		125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA7771F8BD7CA0008CAA4 /* libz.tbd */; };
+		125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA7791F8BD7D00008CAA4 /* libc++.tbd */; };
+		125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */; };
+		125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77D1F8BD8640008CAA4 /* KSCrash.framework */; };
 		12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735BAC1E4CE35900ED4488 /* AuthedJsonHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B971E4CE35900ED4488 /* AuthedJsonHttpClient.h */; };
@@ -51,6 +59,11 @@
 		12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */; };
 		12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
 		12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
+		12AA0B521F8BB4C00063288E /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B511F8BB4C00063288E /* KSCrash.framework */; };
+		12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B531F8BB4FF0063288E /* libz.tbd */; };
+		12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B551F8BB5080063288E /* libc++.tbd */; };
+		12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */; };
+		12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B591F8BB5200063288E /* MessageUI.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +71,12 @@
 		125321C01F750E28007077AC /* AFNetworking.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AFNetworking.framework; path = Carthage/Checkouts/AFNetworking/build/Debug/AFNetworking.framework; sourceTree = "<group>"; };
 		125321C21F7511F0007077AC /* Kumulos+Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Location.h"; sourceTree = "<group>"; };
 		125321C31F7511F0007077AC /* Kumulos+Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Location.m"; sourceTree = "<group>"; };
+		125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Crash.h"; sourceTree = "<group>"; };
+		125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Crash.m"; sourceTree = "<group>"; };
+		125CA7771F8BD7CA0008CAA4 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
+		125CA7791F8BD7D00008CAA4 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		125CA77D1F8BD8640008CAA4 /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "../../Library/Developer/Xcode/DerivedData/KumulosSDK-brqrezsayxilfmgstvywbeekkicf/Build/Products/Debug/KSCrash.framework"; sourceTree = "<group>"; };
 		12735B4A1E4CDD3100ED4488 /* KumulosSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumulosSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12735B811E4CDDB500ED4488 /* KumulosSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumulosSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12735B8E1E4CDEAF00ED4488 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
@@ -84,6 +103,11 @@
 		12735BA91E4CE35900ED4488 /* MobileProvision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileProvision.m; sourceTree = "<group>"; };
 		12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RpcHttpClient.h; sourceTree = "<group>"; };
 		12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RpcHttpClient.m; sourceTree = "<group>"; };
+		12AA0B511F8BB4C00063288E /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/KSCrash.framework"; sourceTree = "<group>"; };
+		12AA0B531F8BB4FF0063288E /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
+		12AA0B551F8BB5080063288E /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
+		12AA0B591F8BB5200063288E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,6 +115,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */,
+				12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */,
+				12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */,
+				12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */,
+				12AA0B521F8BB4C00063288E /* KSCrash.framework in Frameworks */,
 				125321BF1F750E1D007077AC /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,6 +128,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */,
+				125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */,
+				125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */,
+				125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */,
 				125321C11F750E28007077AC /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -153,6 +186,8 @@
 				12735B8F1E4CDEAF00ED4488 /* Info-macOS.plist */,
 				125321C21F7511F0007077AC /* Kumulos+Location.h */,
 				125321C31F7511F0007077AC /* Kumulos+Location.m */,
+				125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */,
+				125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -160,6 +195,15 @@
 		12735BC11E4CE4E800ED4488 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				125CA77D1F8BD8640008CAA4 /* KSCrash.framework */,
+				125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */,
+				125CA7791F8BD7D00008CAA4 /* libc++.tbd */,
+				125CA7771F8BD7CA0008CAA4 /* libz.tbd */,
+				12AA0B591F8BB5200063288E /* MessageUI.framework */,
+				12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */,
+				12AA0B551F8BB5080063288E /* libc++.tbd */,
+				12AA0B531F8BB4FF0063288E /* libz.tbd */,
+				12AA0B511F8BB4C00063288E /* KSCrash.framework */,
 				125321C01F750E28007077AC /* AFNetworking.framework */,
 				125321BE1F750E1D007077AC /* AFNetworking.framework */,
 			);
@@ -180,6 +224,7 @@
 				125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */,
 				12735BB41E4CE35900ED4488 /* Kumulos.h in Headers */,
 				12735BAE1E4CE35900ED4488 /* KSAPIOperation.h in Headers */,
+				125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12735BB61E4CE35900ED4488 /* Kumulos+Protected.h in Headers */,
 				12735BB21E4CE35900ED4488 /* KSessionTokenManager.h in Headers */,
 				12735BAC1E4CE35900ED4488 /* AuthedJsonHttpClient.h in Headers */,
@@ -202,6 +247,7 @@
 				12735BDC1E4CE5A200ED4488 /* KSessionTokenManager.h in Headers */,
 				12735BCC1E4CE58400ED4488 /* AuthedJsonHttpClient.h in Headers */,
 				12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */,
+				125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -251,7 +297,7 @@
 		12735B3F1E4CDCA700ED4488 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0830;
+				LastUpgradeCheck = 0900;
 				TargetAttributes = {
 					12735B491E4CDD3100ED4488 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -305,6 +351,7 @@
 			files = (
 				12735BFD1E4CE5CF00ED4488 /* KumulosPushSubscriptionManager.m in Sources */,
 				12735BB51E4CE35900ED4488 /* Kumulos.m in Sources */,
+				125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
 				12735BB31E4CE35900ED4488 /* KSessionTokenManager.m in Sources */,
 				12735BAF1E4CE35900ED4488 /* KSAPIOperation.m in Sources */,
 				12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */,
@@ -323,6 +370,7 @@
 			files = (
 				12735BE51E4CE5AF00ED4488 /* Kumulos.m in Sources */,
 				12735BDF1E4CE5A700ED4488 /* KSessionTokenManager.m in Sources */,
+				125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
 				12735BD41E4CE59300ED4488 /* KSAPIOperation.m in Sources */,
 				12735C011E4CE5D700ED4488 /* MobileProvision.m in Sources */,
 				12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */,
@@ -338,12 +386,18 @@
 		12735B431E4CDCA700ED4488 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -358,18 +412,25 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 			};
 			name = Debug;
 		};
 		12735B441E4CDCA700ED4488 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -382,6 +443,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				OTHER_LDFLAGS = "-ObjC";
 			};
 			name = Release;
 		};

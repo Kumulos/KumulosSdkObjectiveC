@@ -15,8 +15,35 @@
 #import "Kumulos+Push.h"
 #endif
 
+#import <KSCrash/KSCrash.h>
+#import <KSCrash/KSCrashInstallationStandard.h>
+
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
+static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
+
+@implementation KSConfig
+
++ (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+    KSConfig* config = [[KSConfig alloc] initWithAPIKey:APIKey andSecretKey:secretKey];
+    return config;
+}
+
+- (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+    if (self = [super init]) {
+        self->_apiKey = APIKey;
+        self->_secretKey = secretKey;
+        self->_crashReportingEnabled = NO;
+    }
+    return self;
+}
+
+- (instancetype _Nonnull) enableCrashReporting {
+    self->_crashReportingEnabled = YES;
+    return self;
+}
+
+@end
 
 @implementation Kumulos
 
@@ -34,18 +61,28 @@ static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
     }
 }
 
-- (instancetype _Nullable) initWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey {
+- (instancetype _Nullable) initWithConfig:(KSConfig *)config {
     if (self = [super init]) {
-        self.apiKey = APIKey;
-        self.secretKey = secretKey;
+        self.apiKey = config.apiKey;
+        self.secretKey = config.secretKey;
+        self.config = config;
         
-        self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:APIKey];
+        self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
         
         [self initNetworkingHelpers];
         
         [self statsSendInstallInfo];
+        
+        if (config.crashReportingEnabled) {
+            [self initCrashReporting];
+        }
     }
     return self;
+}
+
+- (instancetype _Nullable) initWithAPIKey:(NSString *)APIKey andSecretKey:(NSString *)secretKey {
+    KSConfig* config = [KSConfig configWithAPIKey:APIKey andSecretKey:secretKey];
+    return [self initWithConfig:config];
 }
 
 - (void) initNetworkingHelpers {
@@ -53,6 +90,18 @@ static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
     self.rpcHttpClient = [[RpcHttpClient alloc] initWithApiKey:self.apiKey andSecretKey:self.secretKey];
     self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
     self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+}
+
+- (void) initCrashReporting {
+    NSString* url = [NSString stringWithFormat:@"%@/v1/track/%@/kscrash/%@", KSCrashBaseUrl, self.apiKey, Kumulos.installId];
+    KSCrashInstallationStandard* installation = [KSCrashInstallationStandard sharedInstance];
+    installation.url = [NSURL URLWithString:url];
+    
+    [installation install];
+    
+    [installation sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
+        // noop
+    }];
 }
 
 - (KSAPIOperation*) callMethod:(NSString*)method withSuccess:(KSAPIOperationSuccessBlock)success andFailure:(KSAPIOperationFailureBlock)failure {
