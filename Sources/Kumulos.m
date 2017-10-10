@@ -39,6 +39,7 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
 }
 
 - (instancetype _Nonnull) enableCrashReporting {
+    self->_crashReportingEnabled = YES;
     return self;
 }
 
