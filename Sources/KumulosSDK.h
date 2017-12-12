@@ -24,6 +24,7 @@ FOUNDATION_EXPORT const unsigned char KumulosSDKVersionString[];
 #import "Kumulos+Push.h"
 #import "KumulosPushSubscriptionManager.h"
 #import "Kumulos+Location.h"
+#import "Kumulos+Analytics.h"
 #endif
 
 #import "KSAPIOperation.h"

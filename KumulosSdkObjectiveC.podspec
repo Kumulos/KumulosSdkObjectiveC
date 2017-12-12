@@ -25,7 +25,8 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Push.h',
       'Sources/KumulosPushSubscriptionManager.h',
       'Sources/Kumulos+Location.h',
-      'Sources/Kumulos+Crash.h'
+      'Sources/Kumulos+Crash.h',
+      'Sources/Kumulos+Analytics.h'
   ]
 
   s.osx.public_header_files = [
