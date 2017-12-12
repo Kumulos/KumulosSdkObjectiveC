@@ -9,7 +9,7 @@
 @implementation Kumulos (Analytics)
 
 - (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties {
-    if ([eventType isEqualToString:@""] || ![NSJSONSerialization isValidJSONObject:properties]) {
+    if ([eventType isEqualToString:@""] || (properties && ![NSJSONSerialization isValidJSONObject:properties])) {
         NSLog(@"Ignoring invalid event with empty type or non-serializable properties");
     }
     
@@ -32,12 +32,16 @@
         
         NSNumber* happenedAt = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
         NSString* uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
-        NSData* propsJson = [NSJSONSerialization dataWithJSONObject:properties options:0 error:&err];
-        
-        if (err) {
-            NSLog(@"Failed to encode properties, properties will be nil");
-            propsJson = nil;
-            err = nil;
+        NSData* propsJson = nil;
+
+        if (properties) {
+            propsJson = [NSJSONSerialization dataWithJSONObject:properties options:0 error:&err];
+
+            if (err) {
+                NSLog(@"Failed to encode properties, properties will be nil");
+                propsJson = nil;
+                err = nil;
+            }
         }
         
         [event setValue:uuid forKey:@"uuid"];

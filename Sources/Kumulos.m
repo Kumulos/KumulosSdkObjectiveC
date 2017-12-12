@@ -47,6 +47,8 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
 
 @implementation Kumulos
 
+static Kumulos* _shared;
+
 + (NSString*) installId {
     @synchronized (self) {
         NSString* installId = [[NSUserDefaults standardUserDefaults] objectForKey:KUMULOS_INSTALL_ID_KEY];
@@ -59,6 +61,15 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
         
         return installId;
     }
+}
+
++ (instancetype _Nullable) initializeWithConfig:(KSConfig *)config {
+    _shared = [[Kumulos alloc] initWithConfig:config];
+    return _shared;
+}
+
++ (instancetype _Nullable) shared {
+    return _shared;
 }
 
 - (instancetype _Nullable) initWithConfig:(KSConfig *)config {

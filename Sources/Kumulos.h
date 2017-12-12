@@ -42,6 +42,9 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
  */
 @interface Kumulos : NSObject
 
+/// Shared Kumulos instance when using the singleton style initializer
+@property (class,nonatomic,nullable,readonly) Kumulos* shared;
+
 /// The Kumulos RPC API session token
 @property (nonnull) NSString* sessionToken;
 
@@ -53,6 +56,13 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
  * @returns NSString
  */
 + (NSString* _Nonnull) installId;
+
+/**
+ * Initializes the shared Kumulos instance with the given config
+ * @param config The Kumulos client configuration
+ * @returns Kumulos
+ */
++ (instancetype _Nullable) initializeWithConfig:(KSConfig* _Nonnull)config;
 
 /**
  * Initializes Kumulos with the given config
