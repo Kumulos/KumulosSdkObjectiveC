@@ -5,6 +5,7 @@
 //  Copyright © 2016 kumulos. All rights reserved.
 //
 
+@import CoreData;
 @import AFNetworking;
 #import "Kumulos.h"
 #import "RpcHttpClient.h"
@@ -23,5 +24,6 @@
 @property (nonatomic) AuthedJsonHttpClient* statsHttpClient;
 @property (nonatomic) AuthedJsonHttpClient* pushHttpClient;
 
+@property NSManagedObjectContext* analyticsContext;
 
 @end

@@ -71,6 +71,8 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
         
         [self initNetworkingHelpers];
         
+        [self initAnalytics];
+        
         [self statsSendInstallInfo];
         
         if (config.crashReportingEnabled) {
@@ -90,6 +92,41 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     self.rpcHttpClient = [[RpcHttpClient alloc] initWithApiKey:self.apiKey andSecretKey:self.secretKey];
     self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
     self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+}
+
+- (void) initAnalytics {
+    NSURL* url = [[NSBundle bundleForClass:[self class]] URLForResource:@"KAnalyticsModel" withExtension:@"momd"];
+    
+    if (!url) {
+        NSLog(@"Failed to find analytics models");
+        return;
+    }
+    
+    NSManagedObjectModel* objectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
+    
+    if (!objectModel) {
+        NSLog(@"Failed to create object model");
+        return;
+    }
+    
+    NSPersistentStoreCoordinator* storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:objectModel];
+    
+    NSURL* docsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL* storeUrl = [NSURL URLWithString:@"KAnalyticsDb.sqlite" relativeToURL:docsUrl];
+    
+    NSError* err = nil;
+    [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&err];
+    
+    if (err) {
+        NSLog(@"Failed to set up persistent store: %@", err);
+        return;
+    }
+    
+    self.analyticsContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+
+    self.analyticsContext.persistentStoreCoordinator = storeCoordinator;
+    
+    // TODO event listeners
 }
 
 - (void) initCrashReporting {
