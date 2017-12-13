@@ -82,7 +82,9 @@ static Kumulos* _shared;
         
         [self initNetworkingHelpers];
         
+#if TARGET_OS_IOS
         [self initAnalytics];
+#endif
         
         [self statsSendInstallInfo];
         
@@ -105,40 +107,11 @@ static Kumulos* _shared;
     self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
 }
 
+#if TARGET_OS_IOS
 - (void) initAnalytics {
-    NSURL* url = [[NSBundle bundleForClass:[self class]] URLForResource:@"KAnalyticsModel" withExtension:@"momd"];
-    
-    if (!url) {
-        NSLog(@"Failed to find analytics models");
-        return;
-    }
-    
-    NSManagedObjectModel* objectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
-    
-    if (!objectModel) {
-        NSLog(@"Failed to create object model");
-        return;
-    }
-    
-    NSPersistentStoreCoordinator* storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:objectModel];
-    
-    NSURL* docsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL* storeUrl = [NSURL URLWithString:@"KAnalyticsDb.sqlite" relativeToURL:docsUrl];
-    
-    NSError* err = nil;
-    [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&err];
-    
-    if (err) {
-        NSLog(@"Failed to set up persistent store: %@", err);
-        return;
-    }
-    
-    self.analyticsContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-
-    self.analyticsContext.persistentStoreCoordinator = storeCoordinator;
-    
-    // TODO event listeners
+    self.analyticsHelper = [[AnalyticsHelper alloc] initWithKumulos:self];
 }
+#endif
 
 - (void) initCrashReporting {
     NSString* url = [NSString stringWithFormat:@"%@/v1/track/%@/kscrash/%@", KSCrashBaseUrl, self.apiKey, Kumulos.installId];
