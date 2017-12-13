@@ -11,6 +11,10 @@
 
 @property (nonatomic) Kumulos* _Nonnull kumulos;
 @property NSManagedObjectContext* analyticsContext;
+@property (atomic) BOOL startNewSession;
+@property (atomic) NSTimer* sessionIdleTimer;
+@property (atomic) NSDate* becameInactiveAt;
+@property (atomic) UIBackgroundTaskIdentifier bgTask;
 
 @end
 
@@ -21,6 +25,10 @@
 - (instancetype _Nullable) initWithKumulos:(Kumulos *)kumulos {
     if (self = [super init]) {
         self.kumulos = kumulos;
+        self.startNewSession = YES;
+        self.sessionIdleTimer = nil;
+        self.bgTask = UIBackgroundTaskInvalid;
+        
         [self initContext];
         [self registerListeners];
         [self syncEvents];
@@ -75,6 +83,10 @@
 # pragma mark - Event tracking
 
 - (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties {
+    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties];
+}
+
+- (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties {
     if ([eventType isEqualToString:@""] || (properties && ![NSJSONSerialization isValidJSONObject:properties])) {
         NSLog(@"Ignoring invalid event with empty type or non-serializable properties");
     }
@@ -96,7 +108,7 @@
         
         NSError* err = nil;
         
-        NSNumber* happenedAt = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970] * 1000];
+        NSNumber* happenedAtMillis = [NSNumber numberWithDouble:[happenedAt timeIntervalSince1970] * 1000];
         NSString* uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
         NSData* propsJson = nil;
         
@@ -111,7 +123,7 @@
         }
         
         [event setValue:uuid forKey:@"uuid"];
-        [event setValue:happenedAt forKey:@"happenedAt"];
+        [event setValue:happenedAtMillis forKey:@"happenedAt"];
         [event setValue:eventType forKey:@"eventType"];
         [event setValue:propsJson forKey:@"properties"];
         
@@ -134,34 +146,74 @@
 - (void) appBecameActive {
     NSLog(@"APP DID BECOME ACTIVE");
     // Cancel session idle timer, record fg event if not already latched
+    
+    if (self.startNewSession) {
+        NSLog(@"WRITING FG EVENT");
+        [self trackEvent:@"k.fg" withProperties:nil];
+        self.startNewSession = NO;
+        return;
+    }
+    
+    if (self.sessionIdleTimer) {
+        [self.sessionIdleTimer invalidate];
+        self.sessionIdleTimer = nil;
+    }
+    
+    if (self.bgTask != UIBackgroundTaskInvalid) {
+        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+        self.bgTask = UIBackgroundTaskInvalid;
+    }
 }
 
 - (void) appBecameInactive {
     NSLog(@"APP DID BECOME INACTIVE");
     // TODO start session idle timer, record current timestamp for bg event
+    self.becameInactiveAt = [NSDate date];
+    
+    self.sessionIdleTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(sessionDidEnd) userInfo:nil repeats:NO];
 }
 
 - (void) appBecameBackground {
     NSLog(@"APP DID BECOME BACKGROUND");
     // Start sync timer for session idle timeout + 5s ?
     
-    UIBackgroundTaskIdentifier __block bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"sync" expirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-        bgTask = UIBackgroundTaskInvalid;
+    self.bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"sync" expirationHandler:^{
+        NSLog(@"BG TASK EXPIRED");
+        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+        self.bgTask = UIBackgroundTaskInvalid;
     }];
     
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"DOING THE BG TASK SHIZZLE");
-        NSLog(@"TIME REMAINING: %f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
-        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
-        bgTask = UIBackgroundTaskInvalid;
-    });
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        NSLog(@"DOING THE BG TASK SHIZZLE");
+//        NSLog(@"TIME REMAINING: %f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
+//        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+//        self.bgTask = UIBackgroundTaskInvalid;
+//    });
 }
 
 - (void) appWillTerminate {
     NSLog(@"APP WILL TERMINATE");
     // Invalidate sync timer
     // TODO write bg event and invalidate idle timeout if not elapsed, try to sync?
+    if (self.sessionIdleTimer) {
+        [self.sessionIdleTimer invalidate];
+        [self sessionDidEnd];
+    }
+}
+
+- (void) sessionDidEnd {
+    self.startNewSession = YES;
+    self.sessionIdleTimer = nil;
+    
+    NSLog(@"WRITING BG EVENT");
+    [self trackEvent:@"k.bg" atTime:self.becameInactiveAt withProperties:nil];
+    self.becameInactiveAt = nil;
+    
+    if (self.bgTask != UIBackgroundTaskInvalid) {
+        NSLog(@"BG TASK END");
+        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+        self.bgTask = UIBackgroundTaskInvalid;
+    }
 }
 
 @end
