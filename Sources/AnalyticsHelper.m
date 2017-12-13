@@ -31,7 +31,10 @@
         
         [self initContext];
         [self registerListeners];
-        [self syncEvents];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self syncEvents];
+        });
     }
     
     return self;
@@ -136,9 +139,85 @@
 }
 
 - (void) syncEvents {
+    NSLog(@"DOING THE BG TASK SHIZZLE");
+    NSLog(@"TIME REMAINING: %f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
     
-    // TODO
+    NSArray* results = [self fetchEventsBatch];
+    
+    if (results.count) {
+        [self syncEventsBatch:results];
+        results = [self fetchEventsBatch];
+    }
+    else if (self.bgTask != UIBackgroundTaskInvalid) {
+        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+        self.bgTask = UIBackgroundTaskInvalid;
+    }
+}
 
+- (void) syncEventsBatch:(NSArray<NSManagedObject*>*) events {
+    NSMutableArray* data = [[NSMutableArray alloc] initWithCapacity:events.count];
+    
+    for (NSManagedObject* event in events) {
+        NSData* props = [event valueForKey:@"properties"];
+        
+        [data addObject:@{
+                          @"type": [event valueForKey:@"eventType"],
+                          @"uuid": [event valueForKey:@"uuid"],
+                          @"timestamp": [event valueForKey:@"happenedAt"],
+                          @"data": (props) ? props : [NSNull null]
+                          }];
+    }
+    
+    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
+    [self.kumulos.statsHttpClient POST:path parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSError* err = [self pruneEventsBatch:events];
+        
+        if (err) {
+            NSLog(@"Failed to prune events: %@", err);
+            return;
+        }
+        
+        [self syncEvents];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        // Failed so assume will be retried some other time
+        if (self.bgTask != UIBackgroundTaskInvalid) {
+            [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+            self.bgTask = UIBackgroundTaskInvalid;
+        }
+    }];
+}
+
+- (NSError*) pruneEventsBatch:(NSArray<NSManagedObject*>*) events {
+    NSMutableArray<NSManagedObjectID*>* ids = [[NSMutableArray alloc] initWithCapacity:events.count];
+    
+    for (NSManagedObject* event in events) {
+        [ids addObject:[event objectID]];
+    }
+    
+    NSBatchDeleteRequest* request = [[NSBatchDeleteRequest alloc] initWithObjectIDs:ids];
+    NSError* err = nil;
+    
+    [self.analyticsContext executeRequest:request error:&err];
+    
+    return err;
+}
+
+- (NSArray<NSManagedObject*>* _Nonnull) fetchEventsBatch {
+    NSFetchRequest* request = [NSFetchRequest fetchRequestWithEntityName:@"Event"];
+    request.returnsObjectsAsFaults = NO;
+    request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"happenedAt" ascending:YES] ];
+    request.fetchLimit = 100;
+    
+    NSError* err = nil;
+    
+    NSArray<NSManagedObject*>* results = [self.analyticsContext executeFetchRequest:request error:&err];
+    
+    if (err) {
+        NSLog(@"Failed to fetch events batch: %@", err);
+        results = @[];
+    }
+    
+    return results;
 }
 
 #pragma mark - App lifecycle delegates
@@ -182,13 +261,6 @@
         [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
         self.bgTask = UIBackgroundTaskInvalid;
     }];
-    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        NSLog(@"DOING THE BG TASK SHIZZLE");
-//        NSLog(@"TIME REMAINING: %f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
-//        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-//        self.bgTask = UIBackgroundTaskInvalid;
-//    });
 }
 
 - (void) appWillTerminate {
@@ -209,11 +281,9 @@
     [self trackEvent:@"k.bg" atTime:self.becameInactiveAt withProperties:nil];
     self.becameInactiveAt = nil;
     
-    if (self.bgTask != UIBackgroundTaskInvalid) {
-        NSLog(@"BG TASK END");
-        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-        self.bgTask = UIBackgroundTaskInvalid;
-    }
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self syncEvents];
+    });
 }
 
 @end
