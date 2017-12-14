@@ -158,13 +158,21 @@
     NSMutableArray* data = [[NSMutableArray alloc] initWithCapacity:events.count];
     
     for (NSManagedObject* event in events) {
+        NSError* err = nil;
         NSData* props = [event valueForKey:@"properties"];
+        id propsObject = nil;
+        if (props) {
+            propsObject = [NSJSONSerialization JSONObjectWithData:props options:0 error:&err];
+            if (err) {
+                NSLog(@"Failed to decode event properties: %@", err);
+            }
+        }
         
         [data addObject:@{
                           @"type": [event valueForKey:@"eventType"],
                           @"uuid": [event valueForKey:@"uuid"],
                           @"timestamp": [event valueForKey:@"happenedAt"],
-                          @"data": (props) ? props : [NSNull null]
+                          @"data": (propsObject) ? propsObject : [NSNull null]
                           }];
     }
     
