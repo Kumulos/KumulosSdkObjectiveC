@@ -139,9 +139,6 @@
 }
 
 - (void) syncEvents {
-    NSLog(@"DOING THE BG TASK SHIZZLE");
-    NSLog(@"TIME REMAINING: %f", [[UIApplication sharedApplication] backgroundTimeRemaining]);
-    
     NSArray* results = [self fetchEventsBatch];
     
     if (results.count) {
@@ -231,11 +228,7 @@
 #pragma mark - App lifecycle delegates
 
 - (void) appBecameActive {
-    NSLog(@"APP DID BECOME ACTIVE");
-    // Cancel session idle timer, record fg event if not already latched
-    
     if (self.startNewSession) {
-        NSLog(@"WRITING FG EVENT");
         [self trackEvent:@"k.fg" withProperties:nil];
         self.startNewSession = NO;
         return;
@@ -253,28 +246,19 @@
 }
 
 - (void) appBecameInactive {
-    NSLog(@"APP DID BECOME INACTIVE");
-    // TODO start session idle timer, record current timestamp for bg event
     self.becameInactiveAt = [NSDate date];
     
     self.sessionIdleTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(sessionDidEnd) userInfo:nil repeats:NO];
 }
 
 - (void) appBecameBackground {
-    NSLog(@"APP DID BECOME BACKGROUND");
-    // Start sync timer for session idle timeout + 5s ?
-    
     self.bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"sync" expirationHandler:^{
-        NSLog(@"BG TASK EXPIRED");
         [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
         self.bgTask = UIBackgroundTaskInvalid;
     }];
 }
 
 - (void) appWillTerminate {
-    NSLog(@"APP WILL TERMINATE");
-    // Invalidate sync timer
-    // TODO write bg event and invalidate idle timeout if not elapsed, try to sync?
     if (self.sessionIdleTimer) {
         [self.sessionIdleTimer invalidate];
         [self sessionDidEnd];
@@ -284,8 +268,7 @@
 - (void) sessionDidEnd {
     self.startNewSession = YES;
     self.sessionIdleTimer = nil;
-    
-    NSLog(@"WRITING BG EVENT");
+
     [self trackEvent:@"k.bg" atTime:self.becameInactiveAt withProperties:nil];
     self.becameInactiveAt = nil;
     
