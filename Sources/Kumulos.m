@@ -34,12 +34,18 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
         self->_apiKey = APIKey;
         self->_secretKey = secretKey;
         self->_crashReportingEnabled = NO;
+        self->_sessionIdleTimeoutSeconds = 40;
     }
     return self;
 }
 
 - (instancetype _Nonnull) enableCrashReporting {
     self->_crashReportingEnabled = YES;
+    return self;
+}
+
+- (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds {
+    self->_sessionIdleTimeoutSeconds = timeoutSeconds;
     return self;
 }
 

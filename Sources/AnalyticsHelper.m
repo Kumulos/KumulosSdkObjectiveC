@@ -248,7 +248,8 @@
 - (void) appBecameInactive {
     self.becameInactiveAt = [NSDate date];
     
-    self.sessionIdleTimer = [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(sessionDidEnd) userInfo:nil repeats:NO];
+    NSUInteger timeout = self.kumulos.config.sessionIdleTimeoutSeconds;
+    self.sessionIdleTimer = [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(sessionDidEnd) userInfo:nil repeats:NO];
 }
 
 - (void) appBecameBackground {
