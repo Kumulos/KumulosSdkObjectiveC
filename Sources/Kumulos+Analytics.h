@@ -15,4 +15,10 @@
  */
 - (void) trackEvent:(NSString* _Nonnull) eventType withProperties:(NSDictionary* _Nullable) properties;
 
+/**
+ * Associates a user identifier with the current Kumulos installation record.
+ * @param userIdentifier Unique identifier for the current user
+ */
+- (void) associateUserWithInstall:(NSString* _Nonnull) userIdentifier;
+
 @end
