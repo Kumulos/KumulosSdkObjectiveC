@@ -27,12 +27,15 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
 @property (nonatomic,readonly) NSString* _Nonnull apiKey;
 @property (nonatomic,readonly) NSString* _Nonnull secretKey;
 @property (nonatomic,readonly) BOOL crashReportingEnabled;
+@property (nonatomic,readonly) NSUInteger sessionIdleTimeoutSeconds;
 
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
 - (instancetype _Nullable) init NS_UNAVAILABLE;
 
 - (instancetype _Nonnull) enableCrashReporting;
+
+- (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;
 
 @end
 
@@ -41,6 +44,9 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
  * and the push notification service.
  */
 @interface Kumulos : NSObject
+
+/// Shared Kumulos instance when using the singleton style initializer
+@property (class,nonatomic,nullable,readonly) Kumulos* shared;
 
 /// The Kumulos RPC API session token
 @property (nonnull) NSString* sessionToken;
@@ -53,6 +59,13 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
  * @returns NSString
  */
 + (NSString* _Nonnull) installId;
+
+/**
+ * Initializes the shared Kumulos instance with the given config
+ * @param config The Kumulos client configuration
+ * @returns Kumulos
+ */
++ (instancetype _Nullable) initializeWithConfig:(KSConfig* _Nonnull)config;
 
 /**
  * Initializes Kumulos with the given config

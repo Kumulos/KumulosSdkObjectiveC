@@ -34,6 +34,7 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
         self->_apiKey = APIKey;
         self->_secretKey = secretKey;
         self->_crashReportingEnabled = NO;
+        self->_sessionIdleTimeoutSeconds = 40;
     }
     return self;
 }
@@ -43,9 +44,16 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     return self;
 }
 
+- (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds {
+    self->_sessionIdleTimeoutSeconds = timeoutSeconds;
+    return self;
+}
+
 @end
 
 @implementation Kumulos
+
+static Kumulos* _shared;
 
 + (NSString*) installId {
     @synchronized (self) {
@@ -61,6 +69,15 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     }
 }
 
++ (instancetype _Nullable) initializeWithConfig:(KSConfig *)config {
+    _shared = [[Kumulos alloc] initWithConfig:config];
+    return _shared;
+}
+
++ (instancetype _Nullable) shared {
+    return _shared;
+}
+
 - (instancetype _Nullable) initWithConfig:(KSConfig *)config {
     if (self = [super init]) {
         self.apiKey = config.apiKey;
@@ -70,6 +87,10 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
         self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
         
         [self initNetworkingHelpers];
+        
+#if TARGET_OS_IOS
+        [self initAnalytics];
+#endif
         
         [self statsSendInstallInfo];
         
@@ -91,6 +112,12 @@ static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
     self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
     self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
 }
+
+#if TARGET_OS_IOS
+- (void) initAnalytics {
+    self.analyticsHelper = [[AnalyticsHelper alloc] initWithKumulos:self];
+}
+#endif
 
 - (void) initCrashReporting {
     NSString* url = [NSString stringWithFormat:@"%@/v1/track/%@/kscrash/%@", KSCrashBaseUrl, self.apiKey, Kumulos.installId];

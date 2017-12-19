@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "1.4.1"
+  s.version = "1.5.0"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
@@ -25,7 +25,8 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Push.h',
       'Sources/KumulosPushSubscriptionManager.h',
       'Sources/Kumulos+Location.h',
-      'Sources/Kumulos+Crash.h'
+      'Sources/Kumulos+Crash.h',
+      'Sources/Kumulos+Analytics.h'
   ]
 
   s.osx.public_header_files = [
