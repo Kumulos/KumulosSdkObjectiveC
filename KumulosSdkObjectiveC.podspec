@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.exclude_files = "Carthage"
   s.module_name = "KumulosSDK"
 
-  s.osx.exclude_files = 'Sources/*Push*'
+  s.osx.exclude_files = ['Sources/*Push*', 'Sources/*Analytics*']
 
   s.ios.public_header_files = [
       'Sources/KumulosSDK.h',
