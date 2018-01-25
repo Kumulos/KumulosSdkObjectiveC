@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "1.5.0"
+  s.version = "1.5.1"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
@@ -40,6 +40,6 @@ Pod::Spec.new do |s|
   s.framework = "AFNetworking"
   s.framework = "KSCrash"
 
-  s.dependency "AFNetworking", "~> 3.1.0"
+  s.dependency "AFNetworking", "~> 3.2.0"
   s.dependency "KSCrash", "~> 1.15"
 end
