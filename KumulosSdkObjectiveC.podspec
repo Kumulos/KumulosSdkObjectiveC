@@ -40,6 +40,6 @@ Pod::Spec.new do |s|
   s.framework = "AFNetworking"
   s.framework = "KSCrash"
 
-  s.dependency "AFNetworking", "~> 3.2.0"
+  s.dependency "AFNetworking", "~> 3.1.0"
   s.dependency "KSCrash", "~> 1.15"
 end
