@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		125321BF1F750E1D007077AC /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125321BE1F750E1D007077AC /* AFNetworking.framework */; };
-		125321C11F750E28007077AC /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125321C01F750E28007077AC /* AFNetworking.framework */; };
 		125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		125321C61F7511F0007077AC /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
 		12577D781FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 12577D761FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld */; };
@@ -65,11 +63,13 @@
 		12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */; };
 		12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
 		12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
-		12AA0B521F8BB4C00063288E /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B511F8BB4C00063288E /* KSCrash.framework */; };
 		12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B531F8BB4FF0063288E /* libz.tbd */; };
 		12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B551F8BB5080063288E /* libc++.tbd */; };
 		12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */; };
 		12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B591F8BB5200063288E /* MessageUI.framework */; };
+		12D7C6822019DBEC00A390CD /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6832019DBEC00A390CD /* AFNetworking.framework */; };
+		12D7C6842019DC4700A390CD /* AFNetworking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6852019DC4700A390CD /* AFNetworking.framework */; };
+		12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6872019DC5700A390CD /* KSCrash.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -120,6 +120,9 @@
 		12AA0B551F8BB5080063288E /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		12AA0B591F8BB5200063288E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
+		12D7C6832019DBEC00A390CD /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		12D7C6852019DC4700A390CD /* AFNetworking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = AFNetworking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		12D7C6872019DC5700A390CD /* KSCrash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KSCrash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -127,13 +130,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */,
+				12D7C6842019DC4700A390CD /* AFNetworking.framework in Frameworks */,
 				12577DB21FE018FD00218A06 /* CoreData.framework in Frameworks */,
 				12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */,
 				12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */,
 				12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */,
 				12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */,
-				12AA0B521F8BB4C00063288E /* KSCrash.framework in Frameworks */,
-				125321BF1F750E1D007077AC /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -141,11 +144,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12D7C6822019DBEC00A390CD /* AFNetworking.framework in Frameworks */,
 				125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */,
 				125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */,
 				125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */,
 				125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */,
-				125321C11F750E28007077AC /* AFNetworking.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +216,9 @@
 		12735BC11E4CE4E800ED4488 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				12D7C6872019DC5700A390CD /* KSCrash.framework */,
+				12D7C6852019DC4700A390CD /* AFNetworking.framework */,
+				12D7C6832019DBEC00A390CD /* AFNetworking.framework */,
 				12577DB11FE018FD00218A06 /* CoreData.framework */,
 				125CA77D1F8BD8640008CAA4 /* KSCrash.framework */,
 				125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */,
