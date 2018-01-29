@@ -90,11 +90,15 @@
 }
 
 - (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties {
+    [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES];
+}
+
+- (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties asynchronously:(BOOL)asynchronously {
     if ([eventType isEqualToString:@""] || (properties && ![NSJSONSerialization isValidJSONObject:properties])) {
         NSLog(@"Ignoring invalid event with empty type or non-serializable properties");
     }
     
-    [self.analyticsContext performBlock:^{
+    void (^workItem)(void) = ^{
         NSManagedObjectContext* context = self.analyticsContext;
         
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:context];
@@ -135,7 +139,14 @@
         if (err) {
             NSLog(@"Failed to record event: %@", err);
         }
-    }];
+    };
+    
+    if (asynchronously) {
+        [self.analyticsContext performBlock:workItem];
+    }
+    else {
+        [self.analyticsContext performBlockAndWait:workItem];
+    }
 }
 
 - (void) syncEvents {
@@ -270,7 +281,7 @@
     self.startNewSession = YES;
     self.sessionIdleTimer = nil;
 
-    [self trackEvent:@"k.bg" atTime:self.becameInactiveAt withProperties:nil];
+    [self trackEvent:@"k.bg" atTime:self.becameInactiveAt withProperties:nil asynchronously:NO];
     self.becameInactiveAt = nil;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
