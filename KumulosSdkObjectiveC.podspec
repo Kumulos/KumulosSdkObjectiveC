@@ -14,9 +14,9 @@ Pod::Spec.new do |s|
   s.source_files = "Sources"
   s.exclude_files = "Carthage"
   s.module_name = "KumulosSDK"
-  s.preserve_path = 'kumulos_upload_dsyms.sh'
+  s.preserve_path = 'upload_dsyms.sh'
 
-  s.prepare_command = 'chmod +x kumulos_upload_dsyms.sh'
+  s.prepare_command = 'chmod +x upload_dsyms.sh'
 
   s.osx.exclude_files = ['Sources/*Push*', 'Sources/*Analytics*']
 
