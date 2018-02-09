@@ -16,6 +16,8 @@ Pod::Spec.new do |s|
   s.module_name = "KumulosSDK"
   s.preserve_path = 'kumulos_upload_dsyms.sh'
 
+  s.prepare_command = 'chmod +x kumulos_upload_dsyms.sh'
+
   s.osx.exclude_files = ['Sources/*Push*', 'Sources/*Analytics*']
 
   s.ios.public_header_files = [
