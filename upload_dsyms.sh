@@ -33,7 +33,7 @@ if [ "$1" != "upload" ]; then
     echo "[KUM] Starting dSYM processing in the background..."
     CMD="$DIR/$SCRIPT upload $API_KEY $SERVER_KEY"
 
-    eval $CMD > /dev/null 2>&1 &
+    eval "$CMD" > /dev/null 2>&1 &
     exit 0
 fi
 
@@ -54,7 +54,7 @@ mkdir "$ZIPDIR"
 
 if [ $? -ne 0 ]; then
     echo "Failed to create temp working directory"
-    rm -rf $WORKDIR
+    rm -rf "$WORKDIR"
     exit 1
 fi
 
@@ -70,23 +70,23 @@ while read -r DSYM; do
 
     if [ $? -ne 0 ]; then
         echo "Failed to copy $DSYM for processing"
-        rm -rf $WORKDIR
+        rm -rf "$WORKDIR"
         exit 1
     fi
 done <<< "$DSYMS"
 
 OLD_PWD="$PWD"
 
-cd $ZIPDIR && zip -r $ZIPFILE .
+cd "$ZIPDIR" && zip -r "$ZIPFILE" .
 
 if [ $? -ne 0 ]; then
     echo "Failed to create zip archive for upload"
-    rm -rf $WORKDIR
-    cd $OLD_PWD
+    rm -rf "$WORKDIR"
+    cd "$OLD_PWD"
     exit 1
 fi
 
-cd $OLD_PWD
+cd "$OLD_PWD"
 
 CURL_MAJOR=$(curl --version | head -n 1 | cut -f 2 -d " " | cut -f 1 -d ".")
 CURL_MINOR=$(curl --version | head -n 1 | cut -f 2 -d " " | cut -f 2 -d ".")
@@ -99,8 +99,8 @@ fi
 
 if [ $? -ne 0 ]; then
     echo "Failed upload"
-    rm -rf $WORKDIR
+    rm -rf "$WORKDIR"
     exit 1
 fi
 
-rm -rf $WORKDIR
+rm -rf "$WORKDIR"
