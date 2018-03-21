@@ -5,4 +5,7 @@
 //  Created by cgwyllie on 21/03/2018.
 //
 
-#import <Foundation/Foundation.h>
+#import "KumulosEvents.h"
+
+NSString* const KumulosEventForeground = @"k.fg";
+NSString* const KumulosEventBackground = @"k.bg";
