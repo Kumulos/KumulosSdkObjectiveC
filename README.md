@@ -1,4 +1,6 @@
-# Kumulos Objective-C SDK [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
+# Kumulos Objective-C SDK
+
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
 [![CocoaPods](https://img.shields.io/cocoapods/v/KumulosSdkObjectiveC.svg)](https://cocoapods.org/pods/KumulosSdkObjectiveC)
 
 
