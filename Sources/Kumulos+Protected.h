@@ -24,11 +24,13 @@
 @property (nonatomic) NSOperationQueue* operationQueue;
 
 @property (nonatomic) RpcHttpClient* rpcHttpClient;
-@property (nonatomic) AuthedJsonHttpClient* statsHttpClient;
 @property (nonatomic) AuthedJsonHttpClient* pushHttpClient;
 
 #if TARGET_OS_IOS
 @property (nonatomic) AnalyticsHelper* analyticsHelper;
+@property (nonatomic) AuthedJsonHttpClient* eventsHttpClient;
+#else
+@property (nonatomic) AuthedJsonHttpClient* statsHttpClient;
 #endif
 
 @end

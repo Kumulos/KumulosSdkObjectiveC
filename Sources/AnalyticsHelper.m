@@ -201,7 +201,7 @@
     }
     
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
-    [self.kumulos.statsHttpClient POST:path parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self.kumulos.eventsHttpClient POST:path parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSError* err = [self pruneEventsBatch:events];
         
         if (err) {
