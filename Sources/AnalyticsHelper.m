@@ -90,6 +90,10 @@
     [self trackEvent:eventType atTime:[NSDate date] withProperties:properties];
 }
 
+- (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties flushingImmediately:(BOOL)flushImmediately {
+    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties asynchronously:YES flushingImmediately:flushImmediately];
+}
+
 - (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties {
     [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES];
 }
