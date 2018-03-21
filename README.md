@@ -24,7 +24,7 @@ After installation, you can now import & initialize the SDK with:
 @import KumulosSDK;
 
 KSConfig *config = [KSConfig configWithAPIKey:@"YOUR_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
-Kumulos *k = [[Kumulos alloc] initWithConfig:config];
+[Kumulos initializeWithConfig:config];
 ```
 
 For more information on integrating the Objective-C SDK with your project, please see the [Kumulos Objective-C integration guide](https://docs.kumulos.com/integration/ios).
@@ -52,7 +52,7 @@ After installation, you can now import & initialize the SDK with:
 @import KumulosSDK;
 
 KSConfig *config = [KSConfig configWithAPIKey:@"YOUR_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
-Kumulos *k = [[Kumulos alloc] initWithConfig:config];
+[Kumulos initializeWithConfig:config];
 ```
 
 For more information on integrating the Objective-C SDK with your project, please see the [Kumulos Objective-C integration guide](https://docs.kumulos.com/integration/ios).
