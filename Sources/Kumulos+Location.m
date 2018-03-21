@@ -22,4 +22,20 @@
     [self.analyticsHelper trackEvent:KumulosEventLocationUpdated withProperties:jsonDict flushingImmediately:YES];
 }
 
+- (void) sendiBeaconProximity:(CLBeacon *)beacon {
+    if (nil == beacon) {
+        return;
+    }
+
+    NSDictionary *props = @{
+                            @"type": @1,
+                            @"uuid": [beacon.proximityUUID UUIDString],
+                            @"major": beacon.major,
+                            @"minor": beacon.minor,
+                            @"proximity": @(beacon.proximity)
+                            };
+    
+    [self.analyticsHelper trackEvent:KumulosEventBeaconEnteredProximity withProperties:props flushingImmediately:YES];
+}
+
 @end
