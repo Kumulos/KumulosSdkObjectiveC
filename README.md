@@ -1,4 +1,6 @@
-# Kumulos Objective-C SDK [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+# Kumulos Objective-C SDK [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage) 
+[![CocoaPods](https://img.shields.io/cocoapods/v/KumulosSdkObjectiveC.svg)](https://cocoapods.org/pods/KumulosSdkObjectiveC)
+
 
 Kumulos provides tools to build and host backend storage for apps, send push notifications, view audience and behavior analytics, and report on adoption, engagement and performance.
 
