@@ -9,6 +9,7 @@
 #import "Kumulos+Push.h"
 #import "Kumulos+Protected.h"
 #import "MobileProvision.h"
+#import "KumulosEvents.h"
 
 static NSInteger const KSPushTokenTypeProduction = 1;
 static NSInteger const KSPushDeviceType = 1;
@@ -53,17 +54,7 @@ static NSInteger const KSPushDeviceType = 1;
                            @"type": @(KSPushDeviceType),
                            @"iosTokenType": [self pushGetTokenType]};
     
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/push-token", [Kumulos installId]];
-    
-    [self.pushHttpClient PUT:path parameters:info success:^(NSURLSessionDataTask* task, id response) {
-#ifdef DEBUG
-        NSLog(@"Kumulos: Registed for push notifications");
-#endif
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-#ifdef DEBUG
-        NSLog(@"Kumulos: Failed to register for push notifications");
-#endif
-    }];
+    [self.analyticsHelper trackEvent:KumulosEventPushRegistered withProperties:info flushingImmediately:YES];
 }
 
 - (void) pushTrackOpenFromNotification:(NSDictionary* _Nullable)userInfo {
@@ -79,13 +70,8 @@ static NSInteger const KSPushDeviceType = 1;
     }
     
     NSDictionary* params = @{@"id": custom[@"i"]};
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/opens", [Kumulos installId]];
     
-    [self.pushHttpClient POST:path parameters:params progress:nil success:^(NSURLSessionDataTask* task, id response) {
-        // Noop
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        // Noop
-    }];
+    [self.analyticsHelper trackEvent:KumulosEventPushOpened withProperties:params];
 }
 
 - (NSNumber*) pushGetTokenType {
