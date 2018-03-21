@@ -10,5 +10,6 @@
 
 - (instancetype _Nullable) initWithKumulos:(Kumulos* _Nonnull) kumulos;
 - (void) trackEvent:(NSString* _Nonnull) eventType withProperties:(NSDictionary* _Nullable) properties;
+- (void) trackEvent:(NSString* _Nonnull) eventType withProperties:(NSDictionary* _Nullable) properties flushingImmediately:(BOOL)flushImmediately;
 
 @end

@@ -12,6 +12,7 @@
 #import <sys/sysctl.h>
 #else
 #import <sys/utsname.h>
+#import "KumulosEvents.h"
 #endif
 
 @implementation Kumulos (Stats)
@@ -100,7 +101,7 @@
                                @"os" : os,
                                @"device" : device};
     
-    
+#if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR && !TARGET_OS_IOS
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@", [Kumulos installId]];
     
     [self.statsHttpClient PUT:path parameters:jsonDict success:^(NSURLSessionDataTask* task, id response) {
@@ -108,6 +109,9 @@
     } failure:^(NSURLSessionDataTask* task, NSError* error) {
         // Noop
     }];
+#else
+    [self.analyticsHelper trackEvent:KumulosEventCallHome withProperties:jsonDict];
+#endif
     
 }
 

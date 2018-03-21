@@ -4,6 +4,7 @@
 //
 //
 
+#import "KumulosEvents.h"
 #import "Kumulos+Location.h"
 #import "Kumulos+Protected.h"
 
@@ -17,14 +18,24 @@
     NSDictionary *jsonDict = @{@"lat" : @(location.coordinate.latitude),
                                @"lng" : @(location.coordinate.longitude)
                                };
+    
+    [self.analyticsHelper trackEvent:KumulosEventLocationUpdated withProperties:jsonDict flushingImmediately:YES];
+}
 
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/location", [Kumulos installId]];
+- (void) sendiBeaconProximity:(CLBeacon *)beacon {
+    if (nil == beacon) {
+        return;
+    }
 
-    [self.statsHttpClient PUT:path parameters:jsonDict success:^(NSURLSessionDataTask* task, id response) {
-        // Noop
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
-        // Noop
-    }];
+    NSDictionary *props = @{
+                            @"type": @1,
+                            @"uuid": [beacon.proximityUUID UUIDString],
+                            @"major": beacon.major,
+                            @"minor": beacon.minor,
+                            @"proximity": @(beacon.proximity)
+                            };
+    
+    [self.analyticsHelper trackEvent:KumulosEventBeaconEnteredProximity withProperties:props flushingImmediately:YES];
 }
 
 @end

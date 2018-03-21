@@ -63,6 +63,8 @@
 		12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */; };
 		12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
 		12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
+		129BC4E32062AD3E005AE632 /* KumulosEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 129BC4E22062AD3E005AE632 /* KumulosEvents.h */; };
+		129BC4E62062AE61005AE632 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
 		12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B531F8BB4FF0063288E /* libz.tbd */; };
 		12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B551F8BB5080063288E /* libc++.tbd */; };
 		12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */; };
@@ -115,6 +117,8 @@
 		12735BA91E4CE35900ED4488 /* MobileProvision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileProvision.m; sourceTree = "<group>"; };
 		12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RpcHttpClient.h; sourceTree = "<group>"; };
 		12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RpcHttpClient.m; sourceTree = "<group>"; };
+		129BC4E22062AD3E005AE632 /* KumulosEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosEvents.h; sourceTree = "<group>"; };
+		129BC4E52062AE61005AE632 /* KumulosEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KumulosEvents.m; sourceTree = "<group>"; };
 		12AA0B511F8BB4C00063288E /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/KSCrash.framework"; sourceTree = "<group>"; };
 		12AA0B531F8BB4FF0063288E /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
 		12AA0B551F8BB5080063288E /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
@@ -209,6 +213,8 @@
 				12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */,
 				12659F691FE13C3E003C31BF /* AnalyticsHelper.h */,
 				12659F671FE13C29003C31BF /* AnalyticsHelper.m */,
+				129BC4E22062AD3E005AE632 /* KumulosEvents.h */,
+				129BC4E52062AE61005AE632 /* KumulosEvents.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -242,6 +248,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				129BC4E32062AD3E005AE632 /* KumulosEvents.h in Headers */,
 				12735BBB1E4CE35900ED4488 /* KumulosPushSubscriptionManager.h in Headers */,
 				12735BBD1E4CE35900ED4488 /* MobileProvision.h in Headers */,
 				12577D7B1FDFF51C00218A06 /* Kumulos+Analytics.h in Headers */,
@@ -391,6 +398,7 @@
 				12735BBA1E4CE35900ED4488 /* Kumulos+Stats.m in Sources */,
 				12735BAD1E4CE35900ED4488 /* AuthedJsonHttpClient.m in Sources */,
 				12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */,
+				129BC4E62062AE61005AE632 /* KumulosEvents.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

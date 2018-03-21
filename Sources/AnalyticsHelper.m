@@ -6,6 +6,7 @@
 @import CoreData;
 #import "AnalyticsHelper.h"
 #import "Kumulos+Protected.h"
+#import "KumulosEvents.h"
 
 @interface AnalyticsHelper ()
 
@@ -89,11 +90,19 @@
     [self trackEvent:eventType atTime:[NSDate date] withProperties:properties];
 }
 
+- (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties flushingImmediately:(BOOL)flushImmediately {
+    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties asynchronously:YES flushingImmediately:flushImmediately];
+}
+
 - (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties {
     [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES];
 }
 
 - (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties asynchronously:(BOOL)asynchronously {
+    [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES flushingImmediately:NO];
+}
+
+- (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties asynchronously:(BOOL)asynchronously flushingImmediately:(BOOL)flushImmediately {
     if ([eventType isEqualToString:@""] || (properties && ![NSJSONSerialization isValidJSONObject:properties])) {
         NSLog(@"Ignoring invalid event with empty type or non-serializable properties");
     }
@@ -138,6 +147,13 @@
         
         if (err) {
             NSLog(@"Failed to record event: %@", err);
+            return;
+        }
+        
+        if (flushImmediately) {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                [self syncEvents];
+            });
         }
     };
     
@@ -185,7 +201,7 @@
     }
     
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
-    [self.kumulos.statsHttpClient POST:path parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self.kumulos.eventsHttpClient POST:path parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSError* err = [self pruneEventsBatch:events];
         
         if (err) {
@@ -240,7 +256,7 @@
 
 - (void) appBecameActive {
     if (self.startNewSession) {
-        [self trackEvent:@"k.fg" withProperties:nil];
+        [self trackEvent:KumulosEventForeground withProperties:nil];
         self.startNewSession = NO;
         return;
     }
@@ -281,7 +297,7 @@
     self.startNewSession = YES;
     self.sessionIdleTimer = nil;
 
-    [self trackEvent:@"k.bg" atTime:self.becameInactiveAt withProperties:nil asynchronously:NO];
+    [self trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil asynchronously:NO];
     self.becameInactiveAt = nil;
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

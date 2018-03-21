@@ -21,6 +21,7 @@
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
+static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 @implementation KSConfig
 
@@ -109,8 +110,13 @@ static Kumulos* _shared;
 - (void) initNetworkingHelpers {
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.rpcHttpClient = [[RpcHttpClient alloc] initWithApiKey:self.apiKey andSecretKey:self.secretKey];
-    self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
     self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+    
+#if TARGET_OS_IOS
+    self.eventsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+#else
+    self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+#endif
 }
 
 #if TARGET_OS_IOS
@@ -162,8 +168,13 @@ static Kumulos* _shared;
     [self.rpcHttpClient invalidateSessionCancelingTasks:YES];
     self.rpcHttpClient = nil;
     
-    [self.statsHttpClient invalidateSessionCancelingTasks:YES];
+#if TARGET_OS_IOS
+    [self.eventsHttpClient invalidateSessionCancelingTasks:NO];
+    self.eventsHttpClient = nil;
+#else
+    [self.statsHttpClient invalidateSessionCancelingTasks:NO];
     self.statsHttpClient = nil;
+#endif
     
     [self.pushHttpClient invalidateSessionCancelingTasks:YES];
     self.pushHttpClient = nil;
