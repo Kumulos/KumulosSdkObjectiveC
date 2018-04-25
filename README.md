@@ -16,6 +16,8 @@ Add the following line to your app's target in your `Podfile`:
 pod 'KumulosSdkObjectiveC', '~> 1.6'
 ```
 
+> Please ensure you have enabled the `use_frameworks!` option in your `Podfile`
+
 Run `pod install` to install your dependencies.
 
 After installation, you can now import & initialize the SDK with:
