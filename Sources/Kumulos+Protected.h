@@ -5,7 +5,7 @@
 //  Copyright © 2016 kumulos. All rights reserved.
 //
 
-@import AFNetworking;
+#import <AFNetworking/AFNetworking.h>
 #import "Kumulos.h"
 #import "RpcHttpClient.h"
 #import "AuthedJsonHttpClient.h"

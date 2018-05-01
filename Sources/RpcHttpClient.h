@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-@import AFNetworking;
+#import <AFNetworking/AFNetworking.h>
 
 @interface RpcHttpClient : AFHTTPSessionManager
 
