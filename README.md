@@ -16,14 +16,12 @@ Add the following line to your app's target in your `Podfile`:
 pod 'KumulosSdkObjectiveC', '~> 1.6'
 ```
 
-> Please ensure you have enabled the `use_frameworks!` option in your `Podfile`
-
 Run `pod install` to install your dependencies.
 
 After installation, you can now import & initialize the SDK with:
 
 ```objective-c
-@import KumulosSDK;
+#import <KumulosSDK/KumulosSDK.h>
 
 KSConfig *config = [KSConfig configWithAPIKey:@"YOUR_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
 [Kumulos initializeWithConfig:config];
@@ -51,7 +49,7 @@ Please also ensure you link your project against:
 After installation, you can now import & initialize the SDK with:
 
 ```objective-c
-@import KumulosSDK;
+#import <KumulosSDK/KumulosSDK.h>
 
 KSConfig *config = [KSConfig configWithAPIKey:@"YOUR_API_KEY" andSecretKey:@"YOUR_SECRET_KEY"];
 [Kumulos initializeWithConfig:config];
