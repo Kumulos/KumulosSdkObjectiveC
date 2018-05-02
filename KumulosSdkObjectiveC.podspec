@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "1.6.0"
+  s.version = "1.6.1"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
@@ -14,6 +14,7 @@ Pod::Spec.new do |s|
   s.source_files = "Sources"
   s.exclude_files = "Carthage"
   s.module_name = "KumulosSDK"
+  s.header_dir = "KumulosSDK"
   s.preserve_path = 'upload_dsyms.sh'
 
   s.prepare_command = 'chmod +x upload_dsyms.sh'
@@ -41,9 +42,6 @@ Pod::Spec.new do |s|
       'Sources/KSAPIResponse.h',
       'Sources/Kumulos+Crash.h'
   ]
-
-  s.framework = "AFNetworking"
-  s.framework = "KSCrash"
 
   s.dependency "AFNetworking", "~> 3.1.0"
   s.dependency "KSCrash", "~> 1.15"
