@@ -219,16 +219,13 @@
 }
 
 - (NSError*) pruneEventsBatch:(NSArray<NSManagedObject*>*) events {
-    NSMutableArray<NSManagedObjectID*>* ids = [[NSMutableArray alloc] initWithCapacity:events.count];
-    
+    NSError* err = nil;
+
     for (NSManagedObject* event in events) {
-        [ids addObject:[event objectID]];
+        [self.analyticsContext deleteObject:event];
     }
     
-    NSBatchDeleteRequest* request = [[NSBatchDeleteRequest alloc] initWithObjectIDs:ids];
-    NSError* err = nil;
-    
-    [self.analyticsContext executeRequest:request error:&err];
+    [self.analyticsContext save:&err];
     
     return err;
 }
