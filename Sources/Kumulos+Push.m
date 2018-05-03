@@ -17,22 +17,19 @@ static NSInteger const KSPushDeviceType = 1;
 @implementation Kumulos (Push)
 
 - (void) pushRequestDeviceToken {
-    NSOperatingSystemVersion v10 = (NSOperatingSystemVersion){10,0,0};
-    
-    if (![[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:v10]) {
+    if (@available(iOS 10.0, *)) {
+        UNUserNotificationCenter* notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
+        UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
+        [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* error) {
+            if (!granted || error != nil) {
+                return;
+            }
+            
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+        }];
+    } else {
         [self legacyRegisterForToken];
-        return;
     }
-    
-    UNUserNotificationCenter* notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
-    UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
-    [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* error) {
-        if (!granted || error != nil) {
-            return;
-        }
-        
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }];
 }
 
 - (void) legacyRegisterForToken {
