@@ -170,7 +170,6 @@
     
     if (results.count) {
         [self syncEventsBatch:results];
-        results = [self fetchEventsBatch];
     }
     else if (self.bgTask != UIBackgroundTaskInvalid) {
         [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
