@@ -13,6 +13,10 @@
     [self.analyticsHelper trackEvent:eventType withProperties:properties];
 }
 
+- (void) trackEventImmediately:(NSString *)eventType withProperties:(NSDictionary *)properties {
+    [self.analyticsHelper trackEvent:eventType withProperties:properties flushingImmediately:YES];
+}
+
 - (void) associateUserWithInstall:(NSString *)userIdentifier {
     if (!userIdentifier || [userIdentifier isEqualToString:@""]) {
         NSLog(@"User identifier cannot be empty, aborting!");

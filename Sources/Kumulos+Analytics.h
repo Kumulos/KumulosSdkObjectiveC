@@ -16,6 +16,13 @@
 - (void) trackEvent:(NSString* _Nonnull) eventType withProperties:(NSDictionary* _Nullable) properties;
 
 /**
+ * Logs an analytics event to the local database then flushes all locally stored events to the server
+ * @param eventType Unique identifier for the type of event
+ * @param properties Optional meta-data about the event
+ */
+- (void) trackEventImmediately:(NSString* _Nonnull) eventType withProperties:(NSDictionary* _Nullable) properties;
+
+/**
  * Associates a user identifier with the current Kumulos installation record.
  * @param userIdentifier Unique identifier for the current user
  */
