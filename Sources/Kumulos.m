@@ -36,6 +36,8 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_secretKey = secretKey;
         self->_crashReportingEnabled = NO;
         self->_sessionIdleTimeoutSeconds = 40;
+        self->_runtimeInfo = nil;
+        self->_sdkInfo = nil;
     }
     return self;
 }
@@ -47,6 +49,16 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds {
     self->_sessionIdleTimeoutSeconds = timeoutSeconds;
+    return self;
+}
+
+- (instancetype _Nonnull) setRuntimeInfo:(NSDictionary *)info {
+    self->_runtimeInfo = info;
+    return self;
+}
+
+- (instancetype _Nonnull) setSdkInfo:(NSDictionary *)info {
+    self->_sdkInfo = info;
     return self;
 }
 

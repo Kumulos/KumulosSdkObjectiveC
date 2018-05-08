@@ -35,13 +35,17 @@
                           @"target"  : @(target)
                           };
     
-    NSBundle* frameworkBundle = [NSBundle bundleForClass:[self class]];
-    NSString* frameworkVersion = [[frameworkBundle infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    NSDictionary *sdk = self.config.sdkInfo;
     
-    NSDictionary *sdk = @{@"id" : @(SDKTypeObjC),
-                          @"version" : frameworkVersion};
+    if (nil == sdk) {
+        NSBundle* frameworkBundle = [NSBundle bundleForClass:[self class]];
+        NSString* frameworkVersion = [[frameworkBundle infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+        
+        sdk = @{@"id" : @(SDKTypeObjC),
+                @"version" : frameworkVersion};
+    }
     
-    NSDictionary *runtime;
+    NSDictionary *runtime = self.config.runtimeInfo;
     NSDictionary *os;
     NSMutableDictionary *device = [[NSMutableDictionary alloc] initWithCapacity:4];
     
@@ -68,8 +72,10 @@
     
     
 #else
-    runtime = @{@"id" : @(RuntimeTypeNative),
-                @"version" : [[UIDevice currentDevice] systemVersion]};
+    if (nil == runtime) {
+        runtime = @{@"id" : @(RuntimeTypeNative),
+                    @"version" : [[UIDevice currentDevice] systemVersion]};
+    }
     
     os = @{@"id" : @(OSTypeIDiOS),
            @"version" : [[UIDevice currentDevice] systemVersion]};

@@ -29,6 +29,9 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
 @property (nonatomic,readonly) BOOL crashReportingEnabled;
 @property (nonatomic,readonly) NSUInteger sessionIdleTimeoutSeconds;
 
+@property (nonatomic,readonly) NSDictionary* _Nullable runtimeInfo;
+@property (nonatomic,readonly) NSDictionary* _Nullable sdkInfo;
+
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
 - (instancetype _Nullable) init NS_UNAVAILABLE;
@@ -36,6 +39,9 @@ typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOp
 - (instancetype _Nonnull) enableCrashReporting;
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;
+
+- (instancetype _Nonnull) setRuntimeInfo:(NSDictionary* _Nonnull)info;
+- (instancetype _Nonnull) setSdkInfo:(NSDictionary* _Nonnull)info;
 
 @end
 
