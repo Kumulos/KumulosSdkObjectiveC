@@ -7,7 +7,12 @@
 //
 
 #import "Kumulos+Crash.h"
+
+#ifdef COCOAPODS
+#import "KSCrash.h"
+#else
 #import <KSCrash/KSCrash.h>
+#endif
 
 @implementation Kumulos (Crash)
 

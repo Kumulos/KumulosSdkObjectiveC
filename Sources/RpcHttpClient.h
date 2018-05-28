@@ -6,7 +6,12 @@
 //
 
 #import <Foundation/Foundation.h>
+
+#ifdef COCOAPODS
+#import "AFNetworking.h"
+#else
 #import <AFNetworking/AFNetworking.h>
+#endif
 
 @interface RpcHttpClient : AFHTTPSessionManager
 

@@ -15,8 +15,13 @@
 #import "Kumulos+Push.h"
 #endif
 
+#ifdef COCOAPODS
+#import "KSCrash.h"
+#import "KSCrashInstallationStandard.h"
+#else
 #import <KSCrash/KSCrash.h>
 #import <KSCrash/KSCrashInstallationStandard.h>
+#endif
 
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
