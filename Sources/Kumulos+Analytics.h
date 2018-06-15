@@ -28,4 +28,11 @@
  */
 - (void) associateUserWithInstall:(NSString* _Nonnull) userIdentifier;
 
+/**
+ * Associates a user identifier with the current Kumulos installation record, additionally setting the attributes for the user
+  * @param userIdentifier Unique identifier for the current user
+  * @param attributes JSON encodable dictionary of attributes to store for the user
+ */
+- (void) associateUserWithInstall:(NSString* _Nonnull) userIdentifier attributes:(NSDictionary* _Nonnull) attributes;
+
 @end
