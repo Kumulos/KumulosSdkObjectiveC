@@ -37,7 +37,4 @@
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
 }
 
-
-
-
 @end
