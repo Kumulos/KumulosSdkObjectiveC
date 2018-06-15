@@ -27,4 +27,17 @@
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
 }
 
+- (void) associateUserWithInstall:(NSString *)userIdentifier attributes:(NSDictionary * _Nonnull)attributes {
+    if (!userIdentifier || [userIdentifier isEqualToString:@""]) {
+        NSLog(@"User identifier cannot be empty, aborting!");
+        return;
+    }
+    
+    NSDictionary* params = @{ @"id": userIdentifier, @"attributes": attributes };
+    [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
+}
+
+
+
+
 @end
