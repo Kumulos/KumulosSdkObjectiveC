@@ -236,6 +236,7 @@
     request.returnsObjectsAsFaults = NO;
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"happenedAt" ascending:YES] ];
     request.fetchLimit = 100;
+    request.includesPendingChanges = NO;
     
     NSError* err = nil;
     
