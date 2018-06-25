@@ -134,5 +134,6 @@ typedef NS_ENUM(NSInteger, KSErrorCode) {
     KSErrorCodeNetworkError,
     KSErrorCodeRpcError,
     KSErrorCodeUnknownError,
-    KSErrorCodeValidationError
+    KSErrorCodeValidationError,
+    KSErrorCodeHttpBadStatus
 };

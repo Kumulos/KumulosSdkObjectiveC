@@ -7,13 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef COCOAPODS
-#import "AFNetworking.h"
-#else
-#import <AFNetworking/AFNetworking.h>
-#endif
-
-@interface AuthedJsonHttpClient : AFHTTPSessionManager
+@interface AuthedJsonHttpClient : NSObject
 
 -  (instancetype) initWithBaseUrl:(NSString*) baseUrl apiKey:(NSString*) apiKey andSecretKey:(NSString*) secretKey;
 

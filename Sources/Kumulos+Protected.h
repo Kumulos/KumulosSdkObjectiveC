@@ -5,12 +5,6 @@
 //  Copyright © 2016 kumulos. All rights reserved.
 //
 
-#ifdef COCOAPODS
-#import "AFNetworking.h"
-#else
-#import <AFNetworking/AFNetworking.h>
-#endif
-
 #import "Kumulos.h"
 #import "RpcHttpClient.h"
 #import "AuthedJsonHttpClient.h"

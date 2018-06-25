@@ -7,13 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef COCOAPODS
-#import "AFNetworking.h"
-#else
-#import <AFNetworking/AFNetworking.h>
-#endif
-
-@interface RpcHttpClient : AFHTTPSessionManager
+@interface RpcHttpClient : NSObject
 
 -  (instancetype) initWithApiKey:(NSString*) apiKey andSecretKey:(NSString*) secretKey;
 
