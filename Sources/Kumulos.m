@@ -127,10 +127,10 @@ static Kumulos* _shared;
 - (void) initNetworkingHelpers {
     self.operationQueue = [[NSOperationQueue alloc] init];
     self.rpcHttpClient = [[RpcHttpClient alloc] initWithApiKey:self.apiKey andSecretKey:self.secretKey];
-    self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+    self.pushHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSPushBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
     
 #if TARGET_OS_IOS
-    self.eventsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+    self.eventsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
 #else
     self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
 #endif

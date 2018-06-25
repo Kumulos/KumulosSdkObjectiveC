@@ -7,7 +7,7 @@
 
 #import "Kumulos.h"
 #import "RpcHttpClient.h"
-#import "AuthedJsonHttpClient.h"
+#import "KSHttpClient.h"
 
 #if TARGET_OS_IOS
 #import "AnalyticsHelper.h"
@@ -23,13 +23,13 @@
 @property (nonatomic) NSOperationQueue* operationQueue;
 
 @property (nonatomic) RpcHttpClient* rpcHttpClient;
-@property (nonatomic) AuthedJsonHttpClient* pushHttpClient;
+@property (nonatomic) KSHttpClient* pushHttpClient;
 
 #if TARGET_OS_IOS
 @property (nonatomic) AnalyticsHelper* analyticsHelper;
-@property (nonatomic) AuthedJsonHttpClient* eventsHttpClient;
+@property (nonatomic) KSHttpClient* eventsHttpClient;
 #else
-@property (nonatomic) AuthedJsonHttpClient* statsHttpClient;
+@property (nonatomic) KSHttpClient* statsHttpClient;
 #endif
 
 @end

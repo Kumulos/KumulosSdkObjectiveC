@@ -11,6 +11,11 @@ typedef NS_ENUM(NSInteger, KSHttpDataFormat) {
     KSHttpDataFormatWwwUrlEncoded
 };
 
+extern NSString* const KSHttpMethodGet;
+extern NSString* const KSHttpMethodPost;
+extern NSString* const KSHttpMethodPut;
+extern NSString* const KSHttpMethodDelete;
+
 typedef void (^ _Nullable KSHttpSuccessBlock)(NSHTTPURLResponse* _Nullable response, id _Nullable decodedBody);
 typedef void (^ _Nullable KSHttpFailureBlock)(NSHTTPURLResponse* _Nullable response, NSError* _Nullable error);
 
@@ -29,9 +34,10 @@ typedef void (^ _Nullable KSHttpFailureBlock)(NSHTTPURLResponse* _Nullable respo
 
 - (void) setBasicAuthWithUser:(NSString* _Nonnull) user andPassword:(NSString*) password;
 
-- (NSURLSessionTask*) get:(NSString* _Nonnull) path onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
-- (NSURLSessionTask*) post:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
-- (NSURLSessionTask*) put:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
-- (NSURLSessionTask*) delete:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
+- (NSURLSessionDataTask*) sendRequest:(NSString* _Nonnull) method toPath:(NSString*) path withData:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
+- (NSURLSessionDataTask*) get:(NSString* _Nonnull) path onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
+- (NSURLSessionDataTask*) post:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
+- (NSURLSessionDataTask*) put:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
+- (NSURLSessionDataTask*) delete:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
 
 @end

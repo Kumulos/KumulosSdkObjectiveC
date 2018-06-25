@@ -54,28 +54,26 @@ NSString* const KSHttpMethodDelete = @"DELETE";
 
 #pragma mark - HTTP methods
 
-- (NSURLSessionTask *)get:(NSString *)path onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
-    NSURLRequest* request = [self newRequestToPath:path withMethod:KSHttpMethodGet body:nil];
+- (NSURLSessionDataTask *) sendRequest:(NSString *)method toPath:(NSString *)path withData:(id) data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
+    NSURLRequest* request = [self newRequestToPath:path withMethod:method body:data];
     
     return [self sendRequest:request onSuccess:success onFailure:failure];
 }
 
-- (NSURLSessionTask *)post:(NSString *)path data:(id)data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
-    NSURLRequest* request = [self newRequestToPath:path withMethod:KSHttpMethodPost body:data];
-    
-    return [self sendRequest:request onSuccess:success onFailure:failure];
+- (NSURLSessionDataTask *)get:(NSString *)path onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
+    return [self sendRequest:KSHttpMethodGet toPath:path withData:nil onSuccess:success onFailure:failure];
 }
 
-- (NSURLSessionTask *)put:(NSString *)path data:(id)data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
-    NSURLRequest* request = [self newRequestToPath:path withMethod:KSHttpMethodPut body:data];
-    
-    return [self sendRequest:request onSuccess:success onFailure:failure];
+- (NSURLSessionDataTask *)post:(NSString *)path data:(id)data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
+    return [self sendRequest:KSHttpMethodPost toPath:path withData:data onSuccess:success onFailure:failure];
 }
 
-- (NSURLSessionTask *)delete:(NSString *)path data:(id)data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
-    NSURLRequest* request = [self newRequestToPath:path withMethod:KSHttpMethodDelete body:data];
-    
-    return [self sendRequest:request onSuccess:success onFailure:failure];
+- (NSURLSessionDataTask *)put:(NSString *)path data:(id)data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
+    return [self sendRequest:KSHttpMethodPut toPath:path withData:data onSuccess:success onFailure:failure];
+}
+
+- (NSURLSessionDataTask *)delete:(NSString *)path data:(id)data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {
+    return [self sendRequest:KSHttpMethodDelete toPath:path withData:data onSuccess:success onFailure:failure];
 }
 
 #pragma mark - Helpers
@@ -169,8 +167,8 @@ NSString* const KSHttpMethodDelete = @"DELETE";
     return decodedBody;
 }
 
-- (NSURLSessionTask*) sendRequest:(NSURLRequest*) request onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure {
-    NSURLSessionTask* task = [self.urlSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
+- (NSURLSessionDataTask*) sendRequest:(NSURLRequest*) request onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure {
+    NSURLSessionDataTask* task = [self.urlSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSHTTPURLResponse* httpResponse = nil;
         
         if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
