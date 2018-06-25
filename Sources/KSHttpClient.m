@@ -52,6 +52,15 @@ NSString* const KSHttpMethodDelete = @"DELETE";
     self.authHeader = [NSString stringWithFormat:@"Basic %@", base64Creds];
 }
 
+- (void)invalidateSessionCancelingTasks:(BOOL)cancelTasks {
+    if (cancelTasks) {
+        [self.urlSession invalidateAndCancel];
+    }
+    else {
+        [self.urlSession finishTasksAndInvalidate];
+    }
+}
+
 #pragma mark - HTTP methods
 
 - (NSURLSessionDataTask *) sendRequest:(NSString *)method toPath:(NSString *)path withData:(id) data onSuccess:(KSHttpSuccessBlock)success onFailure:(KSHttpFailureBlock)failure {

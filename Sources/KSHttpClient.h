@@ -40,4 +40,6 @@ typedef void (^ _Nullable KSHttpFailureBlock)(NSHTTPURLResponse* _Nullable respo
 - (NSURLSessionDataTask*) put:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
 - (NSURLSessionDataTask*) delete:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
 
+- (void) invalidateSessionCancelingTasks:(BOOL)cancelTasks;
+
 @end
