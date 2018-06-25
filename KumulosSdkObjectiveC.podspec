@@ -43,6 +43,5 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Crash.h'
   ]
 
-  s.dependency "AFNetworking", "~> 3.1.0"
   s.dependency "KSCrash", "~> 1.15"
 end

@@ -14,20 +14,6 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "299522761BBF136400859F49"
-               BuildableName = "AFNetworking.framework"
-               BlueprintName = "AFNetworking macOS"
-               ReferencedContainer = "container:Carthage/Checkouts/AFNetworking/AFNetworking.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "CB8E55E617EB99E3000C56D3"
                BuildableName = "KSCrash.framework"
                BlueprintName = "KSCrash"
