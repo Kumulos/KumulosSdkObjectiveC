@@ -9,23 +9,16 @@
 
 @implementation NSString (URLEncoding)
 
-- (nullable NSString *)stringByAddingPercentEncodingForFormData:(BOOL)plusForSpace {
-    NSString *unreserved = @"*-._";
+- (nullable NSString *) urlEncodedString {
+    NSString *unreserved = @"*-._ ";
     NSMutableCharacterSet *allowed = [NSMutableCharacterSet
                                       alphanumericCharacterSet];
     [allowed addCharactersInString:unreserved];
     
-    if (plusForSpace) {
-        [allowed addCharactersInString:@" "];
-    }
-    
     NSString *encoded = [self stringByAddingPercentEncodingWithAllowedCharacters:allowed];
-    
-    if (plusForSpace) {
-        encoded = [encoded stringByReplacingOccurrencesOfString:@" "
-                                                     withString:@"+"];
-    }
-    
+    encoded = [encoded stringByReplacingOccurrencesOfString:@" "
+                                                 withString:@"+"];
+
     return encoded;
 }
 

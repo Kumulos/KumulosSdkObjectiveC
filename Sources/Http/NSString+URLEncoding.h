@@ -9,6 +9,6 @@
 
 @interface NSString (URLEncoding)
 
-- (nullable NSString *)stringByAddingPercentEncodingForFormData:(BOOL)plusForSpace;
+- (nullable NSString *) urlEncodedString;
 
 @end

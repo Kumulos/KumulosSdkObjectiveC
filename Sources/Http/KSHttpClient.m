@@ -8,7 +8,7 @@
 
 #import "Kumulos.h"
 #import "KSHttpClient.h"
-#import "NSDictionary+URLEncoding.h"
+#import "KSUrlEncoding.h"
 
 NSString* const KSHttpMethodGet = @"GET";
 NSString* const KSHttpMethodPost = @"POST";
@@ -130,6 +130,7 @@ NSString* const KSHttpMethodDelete = @"DELETE";
     switch (self.requestBodyFormat) {
         case KSHttpDataFormatJson:
             if (![NSJSONSerialization isValidJSONObject:body]) {
+                NSLog(@"Cannot serialize body to JSON");
                 return nil;
             }
             
@@ -137,9 +138,12 @@ NSString* const KSHttpMethodDelete = @"DELETE";
             break;
         
         case KSHttpDataFormatWwwUrlEncoded:
-            if ([body respondsToSelector:@selector(stringFromEntriesWithUrlFormDataEncoding)]) {
-                encodedData = [[body stringFromEntriesWithUrlFormDataEncoding] dataUsingEncoding:NSUTF8StringEncoding];
+            if (![body isKindOfClass:NSDictionary.class]) {
+                NSLog(@"Not encoding non-dictionary body");
+                return nil;
             }
+            
+            encodedData = [KSUrlEncodedStringFromDictionary(body) dataUsingEncoding:NSUTF8StringEncoding];
             break;
             
         default:
