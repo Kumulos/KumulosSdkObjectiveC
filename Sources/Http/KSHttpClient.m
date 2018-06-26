@@ -155,6 +155,10 @@ NSString* const KSHttpMethodDelete = @"DELETE";
 }
 
 - (id _Nullable) decodeBody:(NSData*) data {
+    if (0 == data.length) {
+        return nil;
+    }
+
     id decodedBody = nil;
     NSError* err = nil;
     
@@ -183,9 +187,17 @@ NSString* const KSHttpMethodDelete = @"DELETE";
     NSURLSessionDataTask* task = [self.urlSession dataTaskWithRequest:request completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
         NSHTTPURLResponse* httpResponse = nil;
         
-        if ([response isKindOfClass:[NSHTTPURLResponse class]]) {
-            httpResponse = (NSHTTPURLResponse*) response;
+        if (![response isKindOfClass:[NSHTTPURLResponse class]]) {
+            NSError* castError = [NSError
+                                  errorWithDomain:KSErrorDomain
+                                  code:KSErrorCodeUnknownError
+                                  userInfo:@{NSLocalizedDescriptionKey: @"Unable to case HTTP response from NSURLResponse"}];
+
+            failure(nil, castError);
+            return;
         }
+
+        httpResponse = (NSHTTPURLResponse*) response;
         
         if (error) {
             failure(httpResponse, error);
