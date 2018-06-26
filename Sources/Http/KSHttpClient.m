@@ -8,6 +8,7 @@
 
 #import "Kumulos.h"
 #import "KSHttpClient.h"
+#import "NSDictionary+URLEncoding.h"
 
 NSString* const KSHttpMethodGet = @"GET";
 NSString* const KSHttpMethodPost = @"POST";
@@ -136,7 +137,9 @@ NSString* const KSHttpMethodDelete = @"DELETE";
             break;
         
         case KSHttpDataFormatWwwUrlEncoded:
-            // TODO
+            if ([body respondsToSelector:@selector(stringFromEntriesWithUrlFormDataEncoding)]) {
+                encodedData = [[body stringFromEntriesWithUrlFormDataEncoding] dataUsingEncoding:NSUTF8StringEncoding];
+            }
             break;
             
         default:

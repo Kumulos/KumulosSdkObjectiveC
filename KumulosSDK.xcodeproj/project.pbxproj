@@ -13,6 +13,14 @@
 		12562CB220E13A01005CFCED /* KSHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB020E13A01005CFCED /* KSHttpClient.m */; };
 		12562CB420E161A9005CFCED /* KSHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CB320E13A34005CFCED /* KSHttpClient.h */; };
 		12562CB520E161AB005CFCED /* KSHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CB320E13A34005CFCED /* KSHttpClient.h */; };
+		12562CB920E23665005CFCED /* NSString+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CB720E23665005CFCED /* NSString+URLEncoding.h */; };
+		12562CBA20E23665005CFCED /* NSString+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CB720E23665005CFCED /* NSString+URLEncoding.h */; };
+		12562CBB20E23665005CFCED /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
+		12562CBC20E23665005CFCED /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
+		12562CBF20E23C1E005CFCED /* NSDictionary+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CBD20E23C1E005CFCED /* NSDictionary+URLEncoding.h */; };
+		12562CC020E23C1E005CFCED /* NSDictionary+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CBD20E23C1E005CFCED /* NSDictionary+URLEncoding.h */; };
+		12562CC120E23C1E005CFCED /* NSDictionary+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CBE20E23C1E005CFCED /* NSDictionary+URLEncoding.m */; };
+		12562CC220E23C1E005CFCED /* NSDictionary+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CBE20E23C1E005CFCED /* NSDictionary+URLEncoding.m */; };
 		12577D781FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 12577D761FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld */; };
 		12577D7B1FDFF51C00218A06 /* Kumulos+Analytics.h in Headers */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12577D7C1FDFF51C00218A06 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
@@ -77,6 +85,10 @@
 		125321C31F7511F0007077AC /* Kumulos+Location.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Location.m"; sourceTree = "<group>"; };
 		12562CB020E13A01005CFCED /* KSHttpClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSHttpClient.m; sourceTree = "<group>"; };
 		12562CB320E13A34005CFCED /* KSHttpClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSHttpClient.h; sourceTree = "<group>"; };
+		12562CB720E23665005CFCED /* NSString+URLEncoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		12562CB820E23665005CFCED /* NSString+URLEncoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
+		12562CBD20E23C1E005CFCED /* NSDictionary+URLEncoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+URLEncoding.h"; sourceTree = "<group>"; };
+		12562CBE20E23C1E005CFCED /* NSDictionary+URLEncoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+URLEncoding.m"; sourceTree = "<group>"; };
 		12577D771FDFF01300218A06 /* KAnalyticsModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = KAnalyticsModel.xcdatamodel; sourceTree = "<group>"; };
 		12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Analytics.h"; sourceTree = "<group>"; };
 		12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Analytics.m"; sourceTree = "<group>"; };
@@ -151,6 +163,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		12562CB620E235E5005CFCED /* Http */ = {
+			isa = PBXGroup;
+			children = (
+				12562CB320E13A34005CFCED /* KSHttpClient.h */,
+				12562CB020E13A01005CFCED /* KSHttpClient.m */,
+				12562CB720E23665005CFCED /* NSString+URLEncoding.h */,
+				12562CB820E23665005CFCED /* NSString+URLEncoding.m */,
+				12562CBD20E23C1E005CFCED /* NSDictionary+URLEncoding.h */,
+				12562CBE20E23C1E005CFCED /* NSDictionary+URLEncoding.m */,
+			);
+			path = Http;
+			sourceTree = "<group>";
+		};
 		12735B3E1E4CDCA700ED4488 = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +197,7 @@
 		12735B8D1E4CDEAF00ED4488 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				12562CB620E235E5005CFCED /* Http */,
 				12735B991E4CE35900ED4488 /* KSAPIOperation.h */,
 				12735B9A1E4CE35900ED4488 /* KSAPIOperation.m */,
 				12735B9B1E4CE35900ED4488 /* KSAPIResponse.h */,
@@ -205,8 +231,6 @@
 				12659F671FE13C29003C31BF /* AnalyticsHelper.m */,
 				129BC4E22062AD3E005AE632 /* KumulosEvents.h */,
 				129BC4E52062AE61005AE632 /* KumulosEvents.m */,
-				12562CB320E13A34005CFCED /* KSHttpClient.h */,
-				12562CB020E13A01005CFCED /* KSHttpClient.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -241,8 +265,10 @@
 				12735BBD1E4CE35900ED4488 /* MobileProvision.h in Headers */,
 				12577D7B1FDFF51C00218A06 /* Kumulos+Analytics.h in Headers */,
 				12735BB91E4CE35900ED4488 /* Kumulos+Stats.h in Headers */,
+				12562CB920E23665005CFCED /* NSString+URLEncoding.h in Headers */,
 				12735BB01E4CE35900ED4488 /* KSAPIResponse.h in Headers */,
 				125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */,
+				12562CBF20E23C1E005CFCED /* NSDictionary+URLEncoding.h in Headers */,
 				12735BB41E4CE35900ED4488 /* Kumulos.h in Headers */,
 				12735BAE1E4CE35900ED4488 /* KSAPIOperation.h in Headers */,
 				125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
@@ -265,11 +291,13 @@
 				12735BD61E4CE59700ED4488 /* KSAPIResponse.h in Headers */,
 				12735BE21E4CE5AB00ED4488 /* Kumulos.h in Headers */,
 				12735BD21E4CE58E00ED4488 /* KSAPIOperation.h in Headers */,
+				12562CBA20E23665005CFCED /* NSString+URLEncoding.h in Headers */,
 				12735BE81E4CE5B400ED4488 /* Kumulos+Protected.h in Headers */,
 				12735BDC1E4CE5A200ED4488 /* KSessionTokenManager.h in Headers */,
 				12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */,
 				125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */,
+				12562CC020E23C1E005CFCED /* NSDictionary+URLEncoding.h in Headers */,
 				12562CB520E161AB005CFCED /* KSHttpClient.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -386,7 +414,9 @@
 				12735BBA1E4CE35900ED4488 /* Kumulos+Stats.m in Sources */,
 				12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */,
 				129BC4E62062AE61005AE632 /* KumulosEvents.m in Sources */,
+				12562CBB20E23665005CFCED /* NSString+URLEncoding.m in Sources */,
 				12562CB120E13A01005CFCED /* KSHttpClient.m in Sources */,
+				12562CC120E23C1E005CFCED /* NSDictionary+URLEncoding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,6 +424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12562CBC20E23665005CFCED /* NSString+URLEncoding.m in Sources */,
 				12735BE51E4CE5AF00ED4488 /* Kumulos.m in Sources */,
 				12735BDF1E4CE5A700ED4488 /* KSessionTokenManager.m in Sources */,
 				12562CB220E13A01005CFCED /* KSHttpClient.m in Sources */,
@@ -401,6 +432,7 @@
 				12735BD41E4CE59300ED4488 /* KSAPIOperation.m in Sources */,
 				12735C011E4CE5D700ED4488 /* MobileProvision.m in Sources */,
 				12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */,
+				12562CC220E23C1E005CFCED /* NSDictionary+URLEncoding.m in Sources */,
 				12735BD91E4CE59C00ED4488 /* KSAPIResponse.m in Sources */,
 				12735BF41E4CE5C500ED4488 /* Kumulos+Stats.m in Sources */,
 			);
