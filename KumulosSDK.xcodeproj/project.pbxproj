@@ -52,7 +52,6 @@
 		12735BBA1E4CE35900ED4488 /* Kumulos+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA51E4CE35900ED4488 /* Kumulos+Stats.m */; };
 		12735BBB1E4CE35900ED4488 /* KumulosPushSubscriptionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BA61E4CE35900ED4488 /* KumulosPushSubscriptionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735BBD1E4CE35900ED4488 /* MobileProvision.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BA81E4CE35900ED4488 /* MobileProvision.h */; };
-		12735BBF1E4CE35900ED4488 /* RpcHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */; };
 		12735BD21E4CE58E00ED4488 /* KSAPIOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735BD41E4CE59300ED4488 /* KSAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735B9A1E4CE35900ED4488 /* KSAPIOperation.m */; };
 		12735BD61E4CE59700ED4488 /* KSAPIResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B9B1E4CE35900ED4488 /* KSAPIResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -68,9 +67,6 @@
 		12735BFE1E4CE5D300ED4488 /* MobileProvision.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BA81E4CE35900ED4488 /* MobileProvision.h */; };
 		12735C011E4CE5D700ED4488 /* MobileProvision.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA91E4CE35900ED4488 /* MobileProvision.m */; };
 		12735C041E4CE5D900ED4488 /* MobileProvision.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA91E4CE35900ED4488 /* MobileProvision.m */; };
-		12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */; };
-		12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
-		12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */; };
 		129BC4E32062AD3E005AE632 /* KumulosEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 129BC4E22062AD3E005AE632 /* KumulosEvents.h */; };
 		129BC4E62062AE61005AE632 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
 		12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B531F8BB4FF0063288E /* libz.tbd */; };
@@ -123,8 +119,6 @@
 		12735BA71E4CE35900ED4488 /* KumulosPushSubscriptionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KumulosPushSubscriptionManager.m; sourceTree = "<group>"; };
 		12735BA81E4CE35900ED4488 /* MobileProvision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MobileProvision.h; sourceTree = "<group>"; };
 		12735BA91E4CE35900ED4488 /* MobileProvision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileProvision.m; sourceTree = "<group>"; };
-		12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RpcHttpClient.h; sourceTree = "<group>"; };
-		12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RpcHttpClient.m; sourceTree = "<group>"; };
 		129BC4E22062AD3E005AE632 /* KumulosEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosEvents.h; sourceTree = "<group>"; };
 		129BC4E52062AE61005AE632 /* KumulosEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KumulosEvents.m; sourceTree = "<group>"; };
 		12AA0B511F8BB4C00063288E /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/KSCrash.framework"; sourceTree = "<group>"; };
@@ -215,8 +209,6 @@
 				12735BA71E4CE35900ED4488 /* KumulosPushSubscriptionManager.m */,
 				12735BA81E4CE35900ED4488 /* MobileProvision.h */,
 				12735BA91E4CE35900ED4488 /* MobileProvision.m */,
-				12735BAA1E4CE35900ED4488 /* RpcHttpClient.h */,
-				12735BAB1E4CE35900ED4488 /* RpcHttpClient.m */,
 				12735B921E4CDFEE00ED4488 /* KumulosSDK.h */,
 				12735B8E1E4CDEAF00ED4488 /* Info-iOS.plist */,
 				12735B8F1E4CDEAF00ED4488 /* Info-macOS.plist */,
@@ -275,7 +267,6 @@
 				12735BB61E4CE35900ED4488 /* Kumulos+Protected.h in Headers */,
 				12562CB420E161A9005CFCED /* KSHttpClient.h in Headers */,
 				12735BB21E4CE35900ED4488 /* KSessionTokenManager.h in Headers */,
-				12735BBF1E4CE35900ED4488 /* RpcHttpClient.h in Headers */,
 				12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */,
 				12735BB71E4CE35900ED4488 /* Kumulos+Push.h in Headers */,
 				12659F6A1FE13C3E003C31BF /* AnalyticsHelper.h in Headers */,
@@ -294,7 +285,6 @@
 				12562CBA20E23665005CFCED /* NSString+URLEncoding.h in Headers */,
 				12735BE81E4CE5B400ED4488 /* Kumulos+Protected.h in Headers */,
 				12735BDC1E4CE5A200ED4488 /* KSessionTokenManager.h in Headers */,
-				12735C051E4CE5DC00ED4488 /* RpcHttpClient.h in Headers */,
 				125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */,
 				12562CC020E23C1E005CFCED /* NSDictionary+URLEncoding.h in Headers */,
@@ -406,7 +396,6 @@
 				12735BB31E4CE35900ED4488 /* KSessionTokenManager.m in Sources */,
 				12735BAF1E4CE35900ED4488 /* KSAPIOperation.m in Sources */,
 				12577D7C1FDFF51C00218A06 /* Kumulos+Analytics.m in Sources */,
-				12735C0B1E4CE5E300ED4488 /* RpcHttpClient.m in Sources */,
 				125321C61F7511F0007077AC /* Kumulos+Location.m in Sources */,
 				12735C041E4CE5D900ED4488 /* MobileProvision.m in Sources */,
 				12735BB11E4CE35900ED4488 /* KSAPIResponse.m in Sources */,
@@ -431,7 +420,6 @@
 				125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
 				12735BD41E4CE59300ED4488 /* KSAPIOperation.m in Sources */,
 				12735C011E4CE5D700ED4488 /* MobileProvision.m in Sources */,
-				12735C0A1E4CE5E200ED4488 /* RpcHttpClient.m in Sources */,
 				12562CC220E23C1E005CFCED /* NSDictionary+URLEncoding.m in Sources */,
 				12735BD91E4CE59C00ED4488 /* KSAPIResponse.m in Sources */,
 				12735BF41E4CE5C500ED4488 /* Kumulos+Stats.m in Sources */,

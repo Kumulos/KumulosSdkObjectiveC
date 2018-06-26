@@ -6,7 +6,6 @@
 //
 
 #import "Kumulos.h"
-#import "RpcHttpClient.h"
 #import "KSHttpClient.h"
 
 #if TARGET_OS_IOS
@@ -22,7 +21,7 @@
 
 @property (nonatomic) NSOperationQueue* operationQueue;
 
-@property (nonatomic) RpcHttpClient* rpcHttpClient;
+@property (nonatomic) KSHttpClient* rpcHttpClient;
 @property (nonatomic) KSHttpClient* pushHttpClient;
 
 #if TARGET_OS_IOS

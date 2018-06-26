@@ -46,21 +46,19 @@
     NSString* path = [self buildMethodPath];
     NSDictionary* params = [self prepareParams];
     
-    [self.kumulos.rpcHttpClient POST:path parameters:params progress:nil
-                             success:^(NSURLSessionTask* task, id response) {
-                                 if (self.isCancelled) {
-                                     return;
-                                 }
-                                 
-                                 [self handleResponse:response];
-                             }
-                             failure:^(NSURLSessionTask* task, NSError* error) {
-                                 if (self.isCancelled) {
-                                     return;
-                                 }
-                                 
-                                 [self handleNetworkingError:error];
-                             }];
+    [self.kumulos.rpcHttpClient post:path data:params onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+        if (self.isCancelled) {
+            return;
+        }
+        
+        [self handleResponse:decodedBody];
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (self.isCancelled) {
+            return;
+        }
+        
+        [self handleNetworkingError:error];
+    }];
 }
 
 - (void) handleResponse:(id)response {
