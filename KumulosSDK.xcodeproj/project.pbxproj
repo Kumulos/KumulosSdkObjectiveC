@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		12BBE9A520E3D2B800DC9916 /* KumulosSDKiOSCombined */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 12BBE9A620E3D2B800DC9916 /* Build configuration list for PBXAggregateTarget "KumulosSDKiOSCombined" */;
+			buildPhases = (
+				12BBE9A920E3D3D900DC9916 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = KumulosSDKiOSCombined;
+			productName = KumulosSDKiOSCombined;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		125321C61F7511F0007077AC /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
@@ -432,6 +446,11 @@
 						DevelopmentTeam = AY85FBK9Q6;
 						ProvisioningStyle = Automatic;
 					};
+					12BBE9A520E3D2B800DC9916 = {
+						CreatedOnToolsVersion = 9.4.1;
+						DevelopmentTeam = AY85FBK9Q6;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 12735B421E4CDCA700ED4488 /* Build configuration list for PBXProject "KumulosSDK" */;
@@ -449,6 +468,7 @@
 				12735B491E4CDD3100ED4488 /* KumulosSDK iOS */,
 				12735B801E4CDDB500ED4488 /* KumulosSDK macOS */,
 				12BBE98020E3CC4200DC9916 /* KumulosSDKiOS */,
+				12BBE9A520E3D2B800DC9916 /* KumulosSDKiOSCombined */,
 			);
 		};
 /* End PBXProject section */
@@ -469,6 +489,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		12BBE9A920E3D3D900DC9916 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nCOMBINED_DIR=\"$PROJECT_DIR/build/combined\"\n\nrm -rf \"$COMBINED_DIR\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphoneos\" clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphonesimulator\" clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKiOS.a\" \"$BUILD_DIR/Release-iphoneos/libKumulosSDKiOS.a\" \"$BUILD_DIR/Release-iphonesimulator/libKumulosSDKiOS.a\"\n\ncp -R \"$BUILD_DIR/Release-iphoneos/include/KumulosSDKiOS/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		12735B451E4CDD3100ED4488 /* Sources */ = {
@@ -866,9 +902,8 @@
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -901,15 +936,32 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		12BBE9A720E3D2B800DC9916 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		12BBE9A820E3D2B800DC9916 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -948,6 +1000,15 @@
 			buildConfigurations = (
 				12BBE98820E3CC4200DC9916 /* Debug */,
 				12BBE98920E3CC4200DC9916 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		12BBE9A620E3D2B800DC9916 /* Build configuration list for PBXAggregateTarget "KumulosSDKiOSCombined" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				12BBE9A720E3D2B800DC9916 /* Debug */,
+				12BBE9A820E3D2B800DC9916 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
