@@ -23,6 +23,7 @@
 #import <KSCrash/KSCrashInstallationStandard.h>
 #endif
 
+static NSString * const KSBackendBaseUrl = @"https://api.kumulos.com";
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
@@ -126,13 +127,19 @@ static Kumulos* _shared;
 
 - (void) initNetworkingHelpers {
     self.operationQueue = [[NSOperationQueue alloc] init];
-    self.rpcHttpClient = [[RpcHttpClient alloc] initWithApiKey:self.apiKey andSecretKey:self.secretKey];
-    self.pushHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSPushBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+    
+    self.rpcHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSBackendBaseUrl requestBodyFormat:KSHttpDataFormatWwwUrlEncoded responseBodyFormat:KSHttpDataFormatPList];
+    [self.rpcHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
+    
+    self.pushHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSPushBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
+    [self.pushHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
     
 #if TARGET_OS_IOS
-    self.eventsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+    self.eventsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
+    [self.eventsHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
 #else
-    self.statsHttpClient = [[AuthedJsonHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl apiKey:self.apiKey andSecretKey:self.secretKey];
+    self.statsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
+    [self.statsHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
 #endif
 }
 

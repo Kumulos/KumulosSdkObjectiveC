@@ -47,17 +47,7 @@
     NSDictionary* params = @{@"uuids": uuids};
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels/subscriptions", [Kumulos installId]];
     
-    [self.kumulos.pushHttpClient POST:path parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (!complete) {
-            return;
-        }
-        
-        complete(nil);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (complete) {
-            complete(error);
-        }
-    }];
+    [self makeRequest:KSHttpMethodPost to:path withData:params andCompletion:complete];
 }
 
 - (void) unsubscribeFromChannels:(NSArray<NSString *> *)uuids{
@@ -68,17 +58,7 @@
     NSDictionary* params = @{@"uuids": uuids};
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels/subscriptions", [Kumulos installId]];
     
-    [self.kumulos.pushHttpClient DELETE:path parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (!complete) {
-            return;
-        }
-        
-        complete(nil);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (complete) {
-            complete(error);
-        }
-    }];
+    [self makeRequest:KSHttpMethodDelete to:path withData:params andCompletion:complete];
 }
 
 - (void) setSubscriptions:(NSArray<NSString *> *)uuids {
@@ -89,17 +69,7 @@
     NSDictionary* params = @{@"uuids": uuids};
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels/subscriptions", [Kumulos installId]];
     
-    [self.kumulos.pushHttpClient PUT:path parameters:params success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if (!complete) {
-            return;
-        }
-        
-        complete(nil);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        if (complete) {
-            complete(error);
-        }
-    }];
+    [self makeRequest:KSHttpMethodPut to:path withData:params andCompletion:complete];
 }
 
 - (void) clearSubscriptions {
@@ -141,18 +111,19 @@
     
     NSString* path = @"/v1/channels";
     
-    [self.kumulos.pushHttpClient POST:path parameters:params  progress:nil success:^(NSURLSessionDataTask* _Nonnull task, id _Nullable responseObject) {
-        if (nil == responseObject) {
+    [self.kumulos.pushHttpClient post:path data:params onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+        if (nil == decodedBody) {
             complete([NSError
                       errorWithDomain:KSErrorDomain
                       code:KSErrorCodeUnknownError
                       userInfo:@{@"error": @"No channel returned for create request"}
                       ], nil);
+            return;
         }
         
-        KSPushChannel* channel = [KSPushChannel createFromObject:responseObject];
+        KSPushChannel* channel = [KSPushChannel createFromObject:decodedBody];
         complete(nil, channel);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
         complete(error, nil);
     }];
 }
@@ -160,16 +131,17 @@
 - (void) listChannels:(KSPushChannelsSuccessBlock)complete {
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels", [Kumulos installId]];
     
-    [self.kumulos.pushHttpClient GET:path parameters:nil progress:nil success:^(NSURLSessionDataTask* _Nonnull task, id _Nullable responseObject) {
-        if (nil == responseObject) {
+    [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+        if (nil == decodedBody) {
             complete([NSError
                       errorWithDomain:KSErrorDomain
                       code:KSErrorCodeUnknownError
                       userInfo:@{@"error": @"No channels returned for list request"}
                       ], nil);
+            return;
         }
         
-        NSArray* data = responseObject;
+        NSArray* data = decodedBody;
         NSMutableArray<KSPushChannel*>* channels = [[NSMutableArray alloc] initWithCapacity:data.count];
         
         [data enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
@@ -177,8 +149,20 @@
         }];
         
         complete(nil, channels);
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
         complete(error, nil);
+    }];
+}
+
+- (void) makeRequest:(NSString*) method to:(NSString*) path withData:(id)data andCompletion:(KSPushSubscriptionCompletionBlock) complete {
+    [self.kumulos.pushHttpClient sendRequest:method toPath:path withData:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+        if (complete) {
+            complete(nil);
+        }
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+        if (complete) {
+            complete(error);
+        }
     }];
 }
 

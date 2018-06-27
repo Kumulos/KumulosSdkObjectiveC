@@ -110,9 +110,9 @@
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR && !TARGET_OS_IOS
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@", [Kumulos installId]];
     
-    [self.statsHttpClient PUT:path parameters:jsonDict success:^(NSURLSessionDataTask* task, id response) {
+    [self.statsHttpClient put:path data:jsonDict onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         // Noop
-    } failure:^(NSURLSessionDataTask* task, NSError* error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
         // Noop
     }];
 #else

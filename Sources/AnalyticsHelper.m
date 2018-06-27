@@ -201,7 +201,7 @@
     }
     
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
-    [self.kumulos.eventsHttpClient POST:path parameters:data progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+    [self.kumulos.eventsHttpClient post:path data:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         NSError* err = [self pruneEventsBatch:events];
         
         if (err) {
@@ -210,7 +210,7 @@
         }
         
         [self syncEvents];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
         // Failed so assume will be retried some other time
         if (self.bgTask != UIBackgroundTaskInvalid) {
             [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
