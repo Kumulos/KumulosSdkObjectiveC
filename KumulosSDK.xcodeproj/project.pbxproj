@@ -950,6 +950,7 @@
 		12BBE9A720E3D2B800DC9916 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AY85FBK9Q6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -959,6 +960,7 @@
 		12BBE9A820E3D2B800DC9916 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AY85FBK9Q6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
