@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "8.0"
   s.osx.deployment_target = "10.12"
 
-  s.source_files = "Sources"
+  s.source_files = "Sources/**/*.{h,m}"
   s.exclude_files = "Carthage"
   s.module_name = "KumulosSDK"
   s.header_dir = "KumulosSDK"
