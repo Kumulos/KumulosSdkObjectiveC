@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		12BBE9A520E3D2B800DC9916 /* KumulosSDKiOSCombined */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 12BBE9A620E3D2B800DC9916 /* Build configuration list for PBXAggregateTarget "KumulosSDKiOSCombined" */;
+			buildPhases = (
+				12BBE9A920E3D3D900DC9916 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = KumulosSDKiOSCombined;
+			productName = KumulosSDKiOSCombined;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		125321C41F7511F0007077AC /* Kumulos+Location.h in Headers */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		125321C61F7511F0007077AC /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
@@ -73,8 +87,55 @@
 		12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B551F8BB5080063288E /* libc++.tbd */; };
 		12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */; };
 		12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B591F8BB5200063288E /* MessageUI.framework */; };
+		12BBE98A20E3CC9600DC9916 /* KSHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB020E13A01005CFCED /* KSHttpClient.m */; };
+		12BBE98B20E3CC9600DC9916 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
+		12BBE98C20E3CC9600DC9916 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
+		12BBE98D20E3CC9600DC9916 /* KSAPIOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735B9A1E4CE35900ED4488 /* KSAPIOperation.m */; };
+		12BBE98E20E3CC9600DC9916 /* KSAPIResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735B9C1E4CE35900ED4488 /* KSAPIResponse.m */; };
+		12BBE98F20E3CC9600DC9916 /* KSessionTokenManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735B9E1E4CE35900ED4488 /* KSessionTokenManager.m */; };
+		12BBE99020E3CC9600DC9916 /* Kumulos.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA01E4CE35900ED4488 /* Kumulos.m */; };
+		12BBE99120E3CC9600DC9916 /* Kumulos+Push.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA31E4CE35900ED4488 /* Kumulos+Push.m */; };
+		12BBE99220E3CC9600DC9916 /* Kumulos+Stats.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA51E4CE35900ED4488 /* Kumulos+Stats.m */; };
+		12BBE99320E3CC9600DC9916 /* KumulosPushSubscriptionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA71E4CE35900ED4488 /* KumulosPushSubscriptionManager.m */; };
+		12BBE99420E3CC9600DC9916 /* MobileProvision.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA91E4CE35900ED4488 /* MobileProvision.m */; };
+		12BBE99520E3CC9600DC9916 /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
+		12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
+		12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
+		12BBE99820E3CC9600DC9916 /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
+		12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
+		12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; };
+		12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B9B1E4CE35900ED4488 /* KSAPIResponse.h */; };
+		12BBE99C20E3CCB200DC9916 /* Kumulos.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B9F1E4CE35900ED4488 /* Kumulos.h */; };
+		12BBE99D20E3CCB200DC9916 /* Kumulos+Push.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735BA21E4CE35900ED4488 /* Kumulos+Push.h */; };
+		12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735BA61E4CE35900ED4488 /* KumulosPushSubscriptionManager.h */; };
+		12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; };
+		12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; };
+		12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; };
+		12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; };
+		12BBE9A420E3CD9E00DC9916 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */; };
 		12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6872019DC5700A390CD /* KSCrash.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		12BBE97F20E3CC4200DC9916 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */,
+				12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */,
+				12BBE99C20E3CCB200DC9916 /* Kumulos.h in CopyFiles */,
+				12BBE99D20E3CCB200DC9916 /* Kumulos+Push.h in CopyFiles */,
+				12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in CopyFiles */,
+				12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in CopyFiles */,
+				12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in CopyFiles */,
+				12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in CopyFiles */,
+				12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		125321C21F7511F0007077AC /* Kumulos+Location.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Location.h"; sourceTree = "<group>"; };
@@ -126,6 +187,10 @@
 		12AA0B551F8BB5080063288E /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
 		12AA0B591F8BB5200063288E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
+		12BBE96320E3950D00DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		12BBE97120E3CA7500DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		12BBE98120E3CC4200DC9916 /* libKumulosSDKiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libKumulosSDKiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		12D7C6872019DC5700A390CD /* KSCrash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KSCrash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -151,6 +216,14 @@
 				125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */,
 				125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */,
 				125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		12BBE97E20E3CC4200DC9916 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				12BBE9A420E3CD9E00DC9916 /* libKSCrashLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -184,6 +257,7 @@
 			children = (
 				12735B4A1E4CDD3100ED4488 /* KumulosSDK.framework */,
 				12735B811E4CDDB500ED4488 /* KumulosSDK.framework */,
+				12BBE98120E3CC4200DC9916 /* libKumulosSDKiOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -230,6 +304,9 @@
 		12735BC11E4CE4E800ED4488 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */,
+				12BBE97120E3CA7500DC9916 /* libKSCrashLib.a */,
+				12BBE96320E3950D00DC9916 /* libKSCrashLib.a */,
 				12D7C6872019DC5700A390CD /* KSCrash.framework */,
 				12577DB11FE018FD00218A06 /* CoreData.framework */,
 				125CA77D1F8BD8640008CAA4 /* KSCrash.framework */,
@@ -331,6 +408,23 @@
 			productReference = 12735B811E4CDDB500ED4488 /* KumulosSDK.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		12BBE98020E3CC4200DC9916 /* KumulosSDKiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 12BBE98720E3CC4200DC9916 /* Build configuration list for PBXNativeTarget "KumulosSDKiOS" */;
+			buildPhases = (
+				12BBE97D20E3CC4200DC9916 /* Sources */,
+				12BBE97E20E3CC4200DC9916 /* Frameworks */,
+				12BBE97F20E3CC4200DC9916 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KumulosSDKiOS;
+			productName = KumulosSDKiOS;
+			productReference = 12BBE98120E3CC4200DC9916 /* libKumulosSDKiOS.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -345,6 +439,16 @@
 					};
 					12735B801E4CDDB500ED4488 = {
 						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+					12BBE98020E3CC4200DC9916 = {
+						CreatedOnToolsVersion = 9.4.1;
+						DevelopmentTeam = AY85FBK9Q6;
+						ProvisioningStyle = Automatic;
+					};
+					12BBE9A520E3D2B800DC9916 = {
+						CreatedOnToolsVersion = 9.4.1;
+						DevelopmentTeam = AY85FBK9Q6;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -363,6 +467,8 @@
 			targets = (
 				12735B491E4CDD3100ED4488 /* KumulosSDK iOS */,
 				12735B801E4CDDB500ED4488 /* KumulosSDK macOS */,
+				12BBE98020E3CC4200DC9916 /* KumulosSDKiOS */,
+				12BBE9A520E3D2B800DC9916 /* KumulosSDKiOSCombined */,
 			);
 		};
 /* End PBXProject section */
@@ -383,6 +489,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		12BBE9A920E3D3D900DC9916 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nCOMBINED_DIR=\"$PROJECT_DIR/build/combined\"\n\nrm -rf \"$COMBINED_DIR\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphoneos\" clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphonesimulator\" clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKiOS.a\" \"$BUILD_DIR/Release-iphoneos/libKumulosSDKiOS.a\" \"$BUILD_DIR/Release-iphonesimulator/libKumulosSDKiOS.a\"\n\ncp -R \"$BUILD_DIR/Release-iphoneos/include/KumulosSDKiOS/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		12735B451E4CDD3100ED4488 /* Sources */ = {
@@ -423,6 +545,29 @@
 				12735BD91E4CE59C00ED4488 /* KSAPIResponse.m in Sources */,
 				12735BF41E4CE5C500ED4488 /* Kumulos+Stats.m in Sources */,
 				12562CF520E275BA005CFCED /* KSUrlEncoding.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		12BBE97D20E3CC4200DC9916 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				12BBE98A20E3CC9600DC9916 /* KSHttpClient.m in Sources */,
+				12BBE98B20E3CC9600DC9916 /* NSString+URLEncoding.m in Sources */,
+				12BBE98C20E3CC9600DC9916 /* KSUrlEncoding.m in Sources */,
+				12BBE98D20E3CC9600DC9916 /* KSAPIOperation.m in Sources */,
+				12BBE98E20E3CC9600DC9916 /* KSAPIResponse.m in Sources */,
+				12BBE98F20E3CC9600DC9916 /* KSessionTokenManager.m in Sources */,
+				12BBE99020E3CC9600DC9916 /* Kumulos.m in Sources */,
+				12BBE99120E3CC9600DC9916 /* Kumulos+Push.m in Sources */,
+				12BBE99220E3CC9600DC9916 /* Kumulos+Stats.m in Sources */,
+				12BBE99320E3CC9600DC9916 /* KumulosPushSubscriptionManager.m in Sources */,
+				12BBE99420E3CC9600DC9916 /* MobileProvision.m in Sources */,
+				12BBE99520E3CC9600DC9916 /* Kumulos+Location.m in Sources */,
+				12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */,
+				12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */,
+				12BBE99820E3CC9600DC9916 /* AnalyticsHelper.m in Sources */,
+				12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -728,6 +873,98 @@
 			};
 			name = Release;
 		};
+		12BBE98820E3CC4200DC9916 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		12BBE98920E3CC4200DC9916 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		12BBE9A720E3D2B800DC9916 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		12BBE9A820E3D2B800DC9916 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -754,6 +991,24 @@
 			buildConfigurations = (
 				12735B871E4CDDB500ED4488 /* Debug */,
 				12735B881E4CDDB500ED4488 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		12BBE98720E3CC4200DC9916 /* Build configuration list for PBXNativeTarget "KumulosSDKiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				12BBE98820E3CC4200DC9916 /* Debug */,
+				12BBE98920E3CC4200DC9916 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		12BBE9A620E3D2B800DC9916 /* Build configuration list for PBXAggregateTarget "KumulosSDKiOSCombined" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				12BBE9A720E3D2B800DC9916 /* Debug */,
+				12BBE9A820E3D2B800DC9916 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
