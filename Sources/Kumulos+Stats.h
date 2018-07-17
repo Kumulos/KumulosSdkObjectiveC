@@ -35,8 +35,3 @@ typedef NS_ENUM(NSInteger, RuntimeType) {
     RuntimeTypeCordova,
     RuntimeTypeJavaRuntime
 };
-
-typedef NS_ENUM(NSInteger, TargetType) {
-    TargetTypeDebug = 1,
-    TargetTypeRelease
-};
