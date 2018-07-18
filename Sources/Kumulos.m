@@ -44,6 +44,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_sessionIdleTimeoutSeconds = 40;
         self->_runtimeInfo = nil;
         self->_sdkInfo = nil;
+        self->_targetType = TargetTypeNotOverridden;
     }
     return self;
 }
@@ -65,6 +66,11 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 - (instancetype _Nonnull) setSdkInfo:(NSDictionary *)info {
     self->_sdkInfo = info;
+    return self;
+}
+
+- (instancetype)setTargetType:(KSTargetType)type {
+    self->_targetType = type;
     return self;
 }
 

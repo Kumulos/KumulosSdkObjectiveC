@@ -24,10 +24,17 @@
 }
 
 - (void) bundleAndSendInfo {
-    TargetType target = TargetTypeRelease;
+    KSTargetType target;
+    
+    if (TargetTypeNotOverridden == self.config.targetType) {
+        target = TargetTypeRelease;
 #ifdef DEBUG
-    target = TargetTypeDebug;
+        target = TargetTypeDebug;
 #endif
+    }
+    else {
+        target = self.config.targetType;
+    }
 
     NSDictionary *app = @{
                           @"bundle" : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleIdentifier"],
