@@ -3,7 +3,6 @@
 //  KumulosSDK iOS
 //
 
-@import CoreData;
 #import "AnalyticsHelper.h"
 #import "Kumulos+Protected.h"
 #import "KumulosEvents.h"
@@ -17,6 +16,14 @@
 @property (atomic) NSDate* becameInactiveAt;
 @property (atomic) UIBackgroundTaskIdentifier bgTask;
 
+@end
+
+@implementation KSEventModel : NSManagedObject
+@synthesize identifier;
+@synthesize eventType;
+@synthesize happenedAt;
+@synthesize properties;
+@synthesize uuid;
 @end
 
 @implementation AnalyticsHelper
@@ -42,14 +49,7 @@
 }
 
 - (void) initContext {
-    NSURL* url = [[NSBundle bundleForClass:[self class]] URLForResource:@"KAnalyticsModel" withExtension:@"momd"];
-    
-    if (!url) {
-        NSLog(@"Failed to find analytics models");
-        return;
-    }
-    
-    NSManagedObjectModel* objectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
+    NSManagedObjectModel* objectModel = [self getDataModel];
     
     if (!objectModel) {
         NSLog(@"Failed to create object model");
@@ -61,8 +61,10 @@
     NSURL* docsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     NSURL* storeUrl = [NSURL URLWithString:@"KAnalyticsDb.sqlite" relativeToURL:docsUrl];
     
+    NSDictionary* options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
+
     NSError* err = nil;
-    [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&err];
+    [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&err];
     
     if (err) {
         NSLog(@"Failed to set up persistent store: %@", err);
@@ -301,6 +303,52 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self syncEvents];
     });
+}
+
+#pragma mark - CoreData model
+
+- (NSManagedObjectModel*) getDataModel {
+    NSManagedObjectModel* model = [NSManagedObjectModel new];
+    
+    if (!model) {
+        return nil;
+    }
+    
+    NSEntityDescription* eventEntity = [NSEntityDescription new];
+    eventEntity.name = @"Event";
+    eventEntity.managedObjectClassName = NSStringFromClass(KSEventModel.class);
+    
+    NSMutableArray<NSAttributeDescription*>* eventProps = [NSMutableArray array];
+    
+    NSAttributeDescription* eventTypeProp = [NSAttributeDescription new];
+    eventTypeProp.name = @"eventType";
+    eventTypeProp.attributeType = NSStringAttributeType;
+    eventTypeProp.optional = NO;
+    [eventProps addObject:eventTypeProp];
+    
+    NSAttributeDescription* happenedAtProp = [NSAttributeDescription new];
+    happenedAtProp.name = @"happenedAt";
+    happenedAtProp.attributeType = NSInteger64AttributeType;
+    happenedAtProp.optional = NO;
+    happenedAtProp.defaultValue = @(0);
+    [eventProps addObject:happenedAtProp];
+    
+    NSAttributeDescription* propertiesProp = [NSAttributeDescription new];
+    propertiesProp.name = @"properties";
+    propertiesProp.attributeType = NSBinaryDataAttributeType;
+    propertiesProp.optional = YES;
+    [eventProps addObject:propertiesProp];
+    
+    NSAttributeDescription* uuidProp = [NSAttributeDescription new];
+    uuidProp.name = @"uuid";
+    uuidProp.attributeType = NSStringAttributeType;
+    uuidProp.optional = NO;
+    [eventProps addObject:uuidProp];
+    
+    [eventEntity setProperties:eventProps];
+    [model setEntities:@[eventEntity]];
+    
+    return model;
 }
 
 @end
