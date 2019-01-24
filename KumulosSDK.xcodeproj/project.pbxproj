@@ -35,7 +35,6 @@
 		12562CF520E275BA005CFCED /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
 		12562CFA20E27807005CFCED /* KSUrlEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CF920E27807005CFCED /* KSUrlEncoding.h */; };
 		12562CFB20E27807005CFCED /* KSUrlEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CF920E27807005CFCED /* KSUrlEncoding.h */; };
-		12577D781FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 12577D761FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld */; };
 		12577D7B1FDFF51C00218A06 /* Kumulos+Analytics.h in Headers */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12577D7C1FDFF51C00218A06 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
 		12577DB21FE018FD00218A06 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12577DB11FE018FD00218A06 /* CoreData.framework */; };
@@ -146,7 +145,6 @@
 		12562CB820E23665005CFCED /* NSString+URLEncoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
 		12562CF320E275BA005CFCED /* KSUrlEncoding.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSUrlEncoding.m; sourceTree = "<group>"; };
 		12562CF920E27807005CFCED /* KSUrlEncoding.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSUrlEncoding.h; sourceTree = "<group>"; };
-		12577D771FDFF01300218A06 /* KAnalyticsModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = KAnalyticsModel.xcdatamodel; sourceTree = "<group>"; };
 		12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Analytics.h"; sourceTree = "<group>"; };
 		12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Analytics.m"; sourceTree = "<group>"; };
 		12577DB11FE018FD00218A06 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
@@ -290,7 +288,6 @@
 				125321C31F7511F0007077AC /* Kumulos+Location.m */,
 				125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */,
 				125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */,
-				12577D761FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld */,
 				12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */,
 				12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */,
 				12659F691FE13C3E003C31BF /* AnalyticsHelper.h */,
@@ -511,7 +508,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12577D781FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld in Sources */,
 				12735BFD1E4CE5CF00ED4488 /* KumulosPushSubscriptionManager.m in Sources */,
 				12735BB51E4CE35900ED4488 /* Kumulos.m in Sources */,
 				125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
@@ -1016,19 +1012,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		12577D761FDFF01300218A06 /* KAnalyticsModel.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				12577D771FDFF01300218A06 /* KAnalyticsModel.xcdatamodel */,
-			);
-			currentVersion = 12577D771FDFF01300218A06 /* KAnalyticsModel.xcdatamodel */;
-			path = KAnalyticsModel.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 12735B3F1E4CDCA700ED4488 /* Project object */;
 }

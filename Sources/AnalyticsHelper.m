@@ -3,7 +3,6 @@
 //  KumulosSDK iOS
 //
 
-@import CoreData;
 #import "AnalyticsHelper.h"
 #import "Kumulos+Protected.h"
 #import "KumulosEvents.h"
@@ -17,6 +16,65 @@
 @property (atomic) NSDate* becameInactiveAt;
 @property (atomic) UIBackgroundTaskIdentifier bgTask;
 
+@end
+
+@implementation KSEventModel : NSManagedObject
+
+@synthesize identifier;
+@synthesize eventType;
+@synthesize happenedAt;
+@synthesize properties;
+@synthesize uuid;
+
++ (instancetype _Nullable) eventWithType:(NSString* _Nonnull) eventType happenedAt:(NSDate* _Nonnull) happenedAt andProperties:(NSDictionary* _Nullable) properties forEntity:(NSEntityDescription*) entity {
+    KSEventModel* event = [[KSEventModel alloc] initWithEntity:entity insertIntoManagedObjectContext:nil];
+
+    if (!event) {
+        return nil;
+    }
+
+    NSNumber* happenedAtMillis = [NSNumber numberWithDouble:[happenedAt timeIntervalSince1970] * 1000];
+    NSString* uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
+    NSData* propsJson = nil;
+    NSError* err = nil;
+    
+    if (properties) {
+        propsJson = [NSJSONSerialization dataWithJSONObject:properties options:0 error:&err];
+        
+        if (err) {
+            NSLog(@"Failed to encode properties, properties will be nil");
+            propsJson = nil;
+            err = nil;
+        }
+    }
+    
+    event.uuid = uuid;
+    event.eventType = eventType;
+    event.happenedAt = happenedAtMillis;
+    event.properties = propsJson;
+
+    return event;
+}
+
+- (NSDictionary* _Nonnull) asDict {
+    NSError* err = nil;
+    id propsObject = nil;
+    
+    if (self.properties) {
+        propsObject = [NSJSONSerialization JSONObjectWithData:self.properties options:0 error:&err];
+        if (err) {
+            NSLog(@"Failed to decode event properties: %@", err);
+        }
+    }
+    
+    return @{
+             @"type": self.eventType,
+             @"uuid": self.uuid,
+             @"timestamp": self.happenedAt,
+             @"data": (propsObject) ? propsObject : [NSNull null]
+             };
+}
+    
 @end
 
 @implementation AnalyticsHelper
@@ -42,14 +100,7 @@
 }
 
 - (void) initContext {
-    NSURL* url = [[NSBundle bundleForClass:[self class]] URLForResource:@"KAnalyticsModel" withExtension:@"momd"];
-    
-    if (!url) {
-        NSLog(@"Failed to find analytics models");
-        return;
-    }
-    
-    NSManagedObjectModel* objectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:url];
+    NSManagedObjectModel* objectModel = [self getDataModel];
     
     if (!objectModel) {
         NSLog(@"Failed to create object model");
@@ -61,8 +112,10 @@
     NSURL* docsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
     NSURL* storeUrl = [NSURL URLWithString:@"KAnalyticsDb.sqlite" relativeToURL:docsUrl];
     
+    NSDictionary* options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
+
     NSError* err = nil;
-    [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:nil error:&err];
+    [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&err];
     
     if (err) {
         NSLog(@"Failed to set up persistent store: %@", err);
@@ -117,33 +170,19 @@
             return;
         }
         
-        NSManagedObject* event = [[NSManagedObject alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
-        
+        KSEventModel* event = [KSEventModel
+                               eventWithType:eventType
+                               happenedAt:happenedAt
+                               andProperties:properties
+                               forEntity:entity];
+
         if (!event) {
             return;
         }
         
         NSError* err = nil;
         
-        NSNumber* happenedAtMillis = [NSNumber numberWithDouble:[happenedAt timeIntervalSince1970] * 1000];
-        NSString* uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
-        NSData* propsJson = nil;
-        
-        if (properties) {
-            propsJson = [NSJSONSerialization dataWithJSONObject:properties options:0 error:&err];
-            
-            if (err) {
-                NSLog(@"Failed to encode properties, properties will be nil");
-                propsJson = nil;
-                err = nil;
-            }
-        }
-        
-        [event setValue:uuid forKey:@"uuid"];
-        [event setValue:happenedAtMillis forKey:@"happenedAt"];
-        [event setValue:eventType forKey:@"eventType"];
-        [event setValue:propsJson forKey:@"properties"];
-        
+        [context insertObject:event];
         [context save:&err];
         
         if (err) {
@@ -167,7 +206,7 @@
 }
 
 - (void) syncEvents {
-    NSArray* results = [self fetchEventsBatch];
+    NSArray<KSEventModel*>* results = [self fetchEventsBatch];
     
     if (results.count) {
         [self syncEventsBatch:results];
@@ -178,26 +217,11 @@
     }
 }
 
-- (void) syncEventsBatch:(NSArray<NSManagedObject*>*) events {
+- (void) syncEventsBatch:(NSArray<KSEventModel*>*) events {
     NSMutableArray* data = [[NSMutableArray alloc] initWithCapacity:events.count];
     
-    for (NSManagedObject* event in events) {
-        NSError* err = nil;
-        NSData* props = [event valueForKey:@"properties"];
-        id propsObject = nil;
-        if (props) {
-            propsObject = [NSJSONSerialization JSONObjectWithData:props options:0 error:&err];
-            if (err) {
-                NSLog(@"Failed to decode event properties: %@", err);
-            }
-        }
-        
-        [data addObject:@{
-                          @"type": [event valueForKey:@"eventType"],
-                          @"uuid": [event valueForKey:@"uuid"],
-                          @"timestamp": [event valueForKey:@"happenedAt"],
-                          @"data": (propsObject) ? propsObject : [NSNull null]
-                          }];
+    for (KSEventModel* event in events) {
+        [data addObject:[event asDict]];
     }
     
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
@@ -219,10 +243,10 @@
     }];
 }
 
-- (NSError*) pruneEventsBatch:(NSArray<NSManagedObject*>*) events {
+- (NSError*) pruneEventsBatch:(NSArray<KSEventModel*>*) events {
     NSError* err = nil;
 
-    for (NSManagedObject* event in events) {
+    for (KSEventModel* event in events) {
         [self.analyticsContext deleteObject:event];
     }
     
@@ -231,7 +255,7 @@
     return err;
 }
 
-- (NSArray<NSManagedObject*>* _Nonnull) fetchEventsBatch {
+- (NSArray<KSEventModel*>* _Nonnull) fetchEventsBatch {
     NSFetchRequest* request = [NSFetchRequest fetchRequestWithEntityName:@"Event"];
     request.returnsObjectsAsFaults = NO;
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"happenedAt" ascending:YES] ];
@@ -240,7 +264,7 @@
     
     NSError* err = nil;
     
-    NSArray<NSManagedObject*>* results = [self.analyticsContext executeFetchRequest:request error:&err];
+    NSArray<KSEventModel*>* results = [self.analyticsContext executeFetchRequest:request error:&err];
     
     if (err) {
         NSLog(@"Failed to fetch events batch: %@", err);
@@ -301,6 +325,52 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self syncEvents];
     });
+}
+
+#pragma mark - CoreData model definition
+
+- (NSManagedObjectModel*) getDataModel {
+    NSManagedObjectModel* model = [NSManagedObjectModel new];
+    
+    if (!model) {
+        return nil;
+    }
+    
+    NSEntityDescription* eventEntity = [NSEntityDescription new];
+    eventEntity.name = @"Event";
+    eventEntity.managedObjectClassName = NSStringFromClass(KSEventModel.class);
+    
+    NSMutableArray<NSAttributeDescription*>* eventProps = [NSMutableArray array];
+    
+    NSAttributeDescription* eventTypeProp = [NSAttributeDescription new];
+    eventTypeProp.name = @"eventType";
+    eventTypeProp.attributeType = NSStringAttributeType;
+    eventTypeProp.optional = NO;
+    [eventProps addObject:eventTypeProp];
+    
+    NSAttributeDescription* happenedAtProp = [NSAttributeDescription new];
+    happenedAtProp.name = @"happenedAt";
+    happenedAtProp.attributeType = NSInteger64AttributeType;
+    happenedAtProp.optional = NO;
+    happenedAtProp.defaultValue = @(0);
+    [eventProps addObject:happenedAtProp];
+    
+    NSAttributeDescription* propertiesProp = [NSAttributeDescription new];
+    propertiesProp.name = @"properties";
+    propertiesProp.attributeType = NSBinaryDataAttributeType;
+    propertiesProp.optional = YES;
+    [eventProps addObject:propertiesProp];
+    
+    NSAttributeDescription* uuidProp = [NSAttributeDescription new];
+    uuidProp.name = @"uuid";
+    uuidProp.attributeType = NSStringAttributeType;
+    uuidProp.optional = NO;
+    [eventProps addObject:uuidProp];
+    
+    [eventEntity setProperties:eventProps];
+    [model setEntities:@[eventEntity]];
+    
+    return model;
 }
 
 @end
