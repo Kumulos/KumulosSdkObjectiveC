@@ -328,12 +328,8 @@
     self.startNewSession = YES;
     self.sessionIdleTimer = nil;
 
-    [self trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil asynchronously:NO];
+    [self trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil asynchronously:NO flushingImmediately:YES];
     self.becameInactiveAt = nil;
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self syncEvents];
-    });
 }
 
 #pragma mark - CoreData model definition
