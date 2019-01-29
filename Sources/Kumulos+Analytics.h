@@ -35,4 +35,11 @@
  */
 - (void) associateUserWithInstall:(NSString* _Nonnull) userIdentifier attributes:(NSDictionary* _Nonnull) attributes;
 
+/**
+ * Returns the identifier for the user currently associated with the Kumulos installation record
+ *
+ * If no user is associated, it returns the Kumulos installation ID
+ */
+- (NSString* _Nonnull) currentUserIdentifier;
+
 @end
