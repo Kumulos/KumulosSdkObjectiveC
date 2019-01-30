@@ -57,8 +57,9 @@ static NSString* _Nonnull const userIdLocker = @"";
 
     @synchronized (userIdLocker) {
         [NSUserDefaults.standardUserDefaults setObject:userIdentifier forKey:KUMULOS_USER_ID_KEY];
-        [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
     }
+
+    [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
 }
 
 @end
