@@ -123,8 +123,9 @@
     }
     
     self.analyticsContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    
-    self.analyticsContext.persistentStoreCoordinator = storeCoordinator;
+    [self.analyticsContext performBlockAndWait:^{
+        self.analyticsContext.persistentStoreCoordinator = storeCoordinator;
+    }];
 }
 
 - (void) registerListeners {
@@ -206,27 +207,32 @@
 }
 
 - (void) syncEvents {
-    NSArray<KSEventModel*>* results = [self fetchEventsBatch];
-    
-    if (results.count) {
-        [self syncEventsBatch:results];
-    }
-    else if (self.bgTask != UIBackgroundTaskInvalid) {
-        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-        self.bgTask = UIBackgroundTaskInvalid;
-    }
+    [self.analyticsContext performBlockAndWait:^{
+        NSArray<KSEventModel*>* results = [self fetchEventsBatch];
+
+        if (results.count) {
+            [self syncEventsBatch:results];
+        }
+        else if (self.bgTask != UIBackgroundTaskInvalid) {
+            [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
+            self.bgTask = UIBackgroundTaskInvalid;
+        }
+    }];
 }
 
 - (void) syncEventsBatch:(NSArray<KSEventModel*>*) events {
-    NSMutableArray* data = [[NSMutableArray alloc] initWithCapacity:events.count];
+    NSMutableArray* data = [NSMutableArray arrayWithCapacity:events.count];
+    NSMutableArray<NSManagedObjectID*>* eventIds = [NSMutableArray arrayWithCapacity:events.count];
     
     for (KSEventModel* event in events) {
         [data addObject:[event asDict]];
+        [eventIds addObject:event.objectID];
     }
     
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
+
     [self.kumulos.eventsHttpClient post:path data:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
-        NSError* err = [self pruneEventsBatch:events];
+        NSError* err = [self pruneEventsBatch:eventIds];
         
         if (err) {
             NSLog(@"Failed to prune events: %@", err);
@@ -243,15 +249,18 @@
     }];
 }
 
-- (NSError*) pruneEventsBatch:(NSArray<KSEventModel*>*) events {
-    NSError* err = nil;
+- (NSError*) pruneEventsBatch:(NSArray<NSManagedObjectID*>*) eventIds {
+    __block NSError* err = nil;
 
-    for (KSEventModel* event in events) {
-        [self.analyticsContext deleteObject:event];
-    }
-    
-    [self.analyticsContext save:&err];
-    
+    [self.analyticsContext performBlockAndWait:^{
+        for (NSManagedObjectID* eventId in eventIds) {
+            KSEventModel* event = [self.analyticsContext objectWithID:eventId];
+            [self.analyticsContext deleteObject:event];
+        }
+
+        [self.analyticsContext save:&err];
+    }];
+
     return err;
 }
 
@@ -319,12 +328,8 @@
     self.startNewSession = YES;
     self.sessionIdleTimer = nil;
 
-    [self trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil asynchronously:NO];
+    [self trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil asynchronously:NO flushingImmediately:YES];
     self.becameInactiveAt = nil;
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self syncEvents];
-    });
 }
 
 #pragma mark - CoreData model definition
