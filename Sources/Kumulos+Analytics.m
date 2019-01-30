@@ -7,6 +7,8 @@
 #import "Kumulos+Analytics.h"
 #import "Kumulos+Protected.h"
 
+static NSString* _Nonnull const userIdLocker = @"";
+
 @implementation Kumulos (Analytics)
 
 - (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties {
@@ -18,22 +20,45 @@
 }
 
 - (void) associateUserWithInstall:(NSString *)userIdentifier {
-    if (!userIdentifier || [userIdentifier isEqualToString:@""]) {
-        NSLog(@"User identifier cannot be empty, aborting!");
-        return;
-    }
-    
-    NSDictionary* params = @{ @"id": userIdentifier };
-    [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
+    [self associateUserWithInstallImpl:userIdentifier attributes:nil];
 }
 
 - (void) associateUserWithInstall:(NSString *)userIdentifier attributes:(NSDictionary * _Nonnull)attributes {
+    [self associateUserWithInstallImpl:userIdentifier attributes:attributes];
+}
+
+- (NSString*) currentUserIdentifier {
+    @synchronized (userIdLocker) {
+        NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
+        if (userId) {
+            return userId;
+        }
+    }
+
+    return Kumulos.installId;
+}
+
+#pragma mark - Helpers
+
+- (void) associateUserWithInstallImpl:(NSString *)userIdentifier attributes:(NSDictionary *)attributes {
     if (!userIdentifier || [userIdentifier isEqualToString:@""]) {
         NSLog(@"User identifier cannot be empty, aborting!");
         return;
     }
-    
-    NSDictionary* params = @{ @"id": userIdentifier, @"attributes": attributes };
+
+    NSDictionary* params;
+
+    if (attributes != nil) {
+        params = @{ @"id": userIdentifier, @"attributes": attributes };
+    }
+    else {
+        params = @{ @"id": userIdentifier };
+    }
+
+    @synchronized (userIdLocker) {
+        [NSUserDefaults.standardUserDefaults setObject:userIdentifier forKey:KUMULOS_USER_ID_KEY];
+    }
+
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
 }
 
