@@ -38,6 +38,20 @@ static NSString* _Nonnull const userIdLocker = @"";
     return Kumulos.installId;
 }
 
+- (void) clearUserAssociation {
+    NSString* currentUserId = nil;
+    @synchronized (userIdLocker) {
+        currentUserId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
+    }
+
+    NSDictionary* props = @{@"oldUserIdentifier": currentUserId ?: NSNull.null};
+    [self trackEvent:KumulosEventUserAssociationCleared withProperties:props];
+
+    @synchronized (userIdLocker) {
+        [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_USER_ID_KEY];
+    }
+}
+
 #pragma mark - Helpers
 
 - (void) associateUserWithInstallImpl:(NSString *)userIdentifier attributes:(NSDictionary *)attributes {
