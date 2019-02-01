@@ -46,6 +46,6 @@
  *
  * If no user is associated, it returns the Kumulos installation ID
  */
-- (NSString* _Nonnull) currentUserIdentifier;
++ (NSString* _Nonnull) currentUserIdentifier;
 
 @end

@@ -27,7 +27,7 @@ static NSString* _Nonnull const userIdLocker = @"";
     [self associateUserWithInstallImpl:userIdentifier attributes:attributes];
 }
 
-- (NSString*) currentUserIdentifier {
++ (NSString*) currentUserIdentifier {
     @synchronized (userIdLocker) {
         NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
         if (userId) {

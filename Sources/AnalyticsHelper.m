@@ -27,7 +27,7 @@
 @synthesize uuid;
 @synthesize userIdentifier;
 
-+ (instancetype _Nullable) eventWithType:(NSString* _Nonnull) eventType happenedAt:(NSDate* _Nonnull) happenedAt andProperties:(NSDictionary* _Nullable) properties forEntity:(NSEntityDescription*) entity withKumulos:(Kumulos*) kumulos {
++ (instancetype _Nullable) eventWithType:(NSString* _Nonnull) eventType happenedAt:(NSDate* _Nonnull) happenedAt andProperties:(NSDictionary* _Nullable) properties forEntity:(NSEntityDescription*) entity {
     KSEventModel* event = [[KSEventModel alloc] initWithEntity:entity insertIntoManagedObjectContext:nil];
 
     if (!event) {
@@ -53,7 +53,7 @@
     event.eventType = eventType;
     event.happenedAt = happenedAtMillis;
     event.properties = propsJson;
-    event.userIdentifier = kumulos.currentUserIdentifier;
+    event.userIdentifier = Kumulos.currentUserIdentifier;
 
     return event;
 }
@@ -178,8 +178,7 @@
                                eventWithType:eventType
                                happenedAt:happenedAt
                                andProperties:properties
-                               forEntity:entity
-                               withKumulos:self.kumulos];
+                               forEntity:entity];
 
         if (!event) {
             return;
