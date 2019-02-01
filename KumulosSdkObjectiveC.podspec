@@ -33,8 +33,6 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Analytics.h'
   ]
 
-  s.ios.resources = 'Sources/KAnalyticsModel.xcdatamodeld'
-
   s.osx.public_header_files = [
       'Sources/KumulosSDK.h',
       'Sources/Kumulos.h',
