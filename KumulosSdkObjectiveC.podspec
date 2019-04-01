@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "1.7.0"
+  s.version = "1.8.0"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
