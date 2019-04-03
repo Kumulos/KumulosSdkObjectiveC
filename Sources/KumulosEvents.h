@@ -14,3 +14,4 @@ extern NSString* const KumulosEventPushRegistered;
 extern NSString* const KumulosEventPushOpened;
 extern NSString* const KumulosEventBeaconEnteredProximity;
 extern NSString* const KumulosEventLocationUpdated;
+extern NSString* const KumulosEventDeviceUnsubscribed;
