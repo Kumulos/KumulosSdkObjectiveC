@@ -54,7 +54,7 @@ static NSInteger const KSPushDeviceType = 1;
     [self.analyticsHelper trackEvent:KumulosEventPushRegistered withProperties:info flushingImmediately:YES];
 }
 
-- (void) pushTokenDelete {
+- (void) pushUnregister {
     [self.analyticsHelper trackEvent:KumulosEventDeviceUnsubscribed withProperties:nil flushingImmediately:YES];
 }
 

@@ -28,7 +28,7 @@
 /**
  Unsubscribe your device from the Kumulos Push service
  */
-- (void) pushTokenDelete;
+- (void) pushUnregister;
 
 /**
  * Tracks a conversion from a notification object to let Kumulos know that the given push 'converted' the user
