@@ -15,3 +15,4 @@ NSString* const KumulosEventPushOpened = @"k.push.opened";
 NSString* const KumulosEventBeaconEnteredProximity = @"k.engage.beaconEnteredProximity";
 NSString* const KumulosEventLocationUpdated = @"k.engage.locationUpdated";
 NSString* const KumulosEventDeviceUnsubscribed = @"k.push.deviceUnsubscribed";
+NSString* const KumulosEventInAppConsentChanged = @"k.inApp.statusUpdated";

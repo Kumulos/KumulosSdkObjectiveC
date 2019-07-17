@@ -10,6 +10,7 @@
 
 #if TARGET_OS_IOS
 #import "AnalyticsHelper.h"
+#import "InApp/KSInAppHelper.h"
 #endif
 
 #define KUMULOS_INSTALL_ID_KEY @"KumulosUUID"
@@ -28,6 +29,7 @@
 #if TARGET_OS_IOS
 @property (nonatomic) AnalyticsHelper* analyticsHelper;
 @property (nonatomic) KSHttpClient* eventsHttpClient;
+@property (nonatomic) KSInAppHelper* inAppHelper;
 #else
 @property (nonatomic) KSHttpClient* statsHttpClient;
 #endif

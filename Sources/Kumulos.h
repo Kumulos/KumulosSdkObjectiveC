@@ -29,6 +29,11 @@ typedef NS_ENUM(NSInteger, KSTargetType) {
     TargetTypeRelease
 };
 
+typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
+    KSInAppConsentStrategyAutoEnroll,
+    KSInAppConsentStrategyExplicitByUser
+};
+
 @interface KSConfig : NSObject
 
 @property (nonatomic,readonly) NSString* _Nonnull apiKey;
@@ -40,11 +45,16 @@ typedef NS_ENUM(NSInteger, KSTargetType) {
 @property (nonatomic,readonly) NSDictionary* _Nullable sdkInfo;
 @property (nonatomic,readonly) KSTargetType targetType;
 
+@property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
+
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
 - (instancetype _Nullable) init NS_UNAVAILABLE;
 
 - (instancetype _Nonnull) enableCrashReporting;
+#if TARGET_OS_IOS
+- (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy;
+#endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;
 
