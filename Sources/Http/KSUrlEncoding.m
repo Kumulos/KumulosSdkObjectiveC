@@ -49,7 +49,7 @@ NSArray* _Nonnull KSUrlEncodedStringFromObjectWithParent(NSString* _Nullable key
               [NSString stringWithFormat:@"%@", obj].urlEncodedString]];
 }
 
-NSString* _Nonnull KSUrlEncodedStringFromDictionary(NSDictionary* obj) {
+NSString* _Nonnull KSUrlEncodedStringFromDictionary(NSDictionary* _Nonnull obj) {
     NSArray* pairs = KSUrlEncodedStringFromObjectWithParent(nil, obj);
     
     return [pairs componentsJoinedByString:@"&"];

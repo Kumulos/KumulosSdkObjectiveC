@@ -5,4 +5,4 @@
 
 #import <Foundation/Foundation.h>
 
-NSString* _Nonnull KSUrlEncodedStringFromDictionary(NSDictionary* obj);
+NSString* _Nonnull KSUrlEncodedStringFromDictionary(NSDictionary* _Nonnull obj);

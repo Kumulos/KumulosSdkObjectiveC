@@ -21,11 +21,11 @@
 
 @implementation KSEventModel : NSManagedObject
 
-@synthesize eventType;
-@synthesize happenedAt;
-@synthesize properties;
-@synthesize uuid;
-@synthesize userIdentifier;
+@dynamic eventType;
+@dynamic happenedAt;
+@dynamic properties;
+@dynamic uuid;
+@dynamic userIdentifier;
 
 + (instancetype _Nullable) eventWithType:(NSString* _Nonnull) eventType happenedAt:(NSDate* _Nonnull) happenedAt andProperties:(NSDictionary* _Nullable) properties forEntity:(NSEntityDescription*) entity {
     KSEventModel* event = [[KSEventModel alloc] initWithEntity:entity insertIntoManagedObjectContext:nil];
