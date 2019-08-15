@@ -230,7 +230,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
                                                                            nil]]];
         [fetchRequest setPredicate:predicate];
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt"
-                                                                       ascending:NO];
+                                                                       ascending:YES];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
 
         NSError *err = nil;
