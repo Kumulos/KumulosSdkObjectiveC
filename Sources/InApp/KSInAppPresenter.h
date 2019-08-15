@@ -12,6 +12,6 @@
 @interface KSInAppPresenter : NSObject <WKScriptMessageHandler,WKNavigationDelegate>
 
 - (instancetype _Nullable) initWithKumulos:(Kumulos* _Nonnull) kumulos;
-- (void) queueAndPresentMessages:(NSArray<KSInAppMessage*>* _Nonnull) messages;
+- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>* _Nonnull) messages;
 
 @end

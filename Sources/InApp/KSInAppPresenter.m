@@ -50,17 +50,32 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     return self;
 }
 
-- (void) queueAndPresentMessages:(NSArray<KSInAppMessage*>*)messages {
-    // TODO on first launch from sync handler app can still be transitioning - refactor to trigger from became active (necessary for correct resume behaviour anyways)
-//    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
-//        NSLog(@"Application not active, aborting presentation routine");
-//        return;
-//    }
-
-    [self.messageQueue addObjectsFromArray:messages];
-
-    if (!self.messageQueue.count) {
+- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages {
+    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+        NSLog(@"Application not active, aborting presentation routine");
         return;
+    }
+
+    @synchronized (self.messageQueue) {
+        for (KSInAppMessage* message in messages) {
+            BOOL exists = NO;
+            for (KSInAppMessage* queuedMessage in self.messageQueue) {
+                if (message.id == queuedMessage.id) {
+                    exists = YES;
+                    break;
+                }
+            }
+
+            if (exists) {
+                continue;
+            }
+
+            [self.messageQueue addObject:message];
+        }
+
+        if (!self.messageQueue.count) {
+            return;
+        }
     }
 
     [self performSelectorOnMainThread:@selector(initViews) withObject:nil waitUntilDone:YES];
@@ -77,8 +92,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) cancelCurrentPresentationQueue {
-    [self.messageQueue removeAllObjects];
-    self.currentMessage = nil;
+    @synchronized (self.messageQueue) {
+        [self.messageQueue removeAllObjects];
+        self.currentMessage = nil;
+    }
+
     [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
 }
 
@@ -178,18 +196,22 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     NSLog(@"Received message: %@", message.body);
     NSString* type = message.body[@"type"];
     if ([type isEqualToString:@"READY"]) {
-        [self presentFromQueue];
+        @synchronized (self.messageQueue) {
+            [self presentFromQueue];
+        }
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
         [self.frame bringSubviewToFront:self.webView];
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
-        [self.messageQueue removeObjectAtIndex:0];
-        self.currentMessage = nil;
+        @synchronized (self.messageQueue) {
+            [self.messageQueue removeObjectAtIndex:0];
+            self.currentMessage = nil;
 
-        if (!self.messageQueue.count) {
-            [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
-        } else {
-            [self presentFromQueue];
+            if (!self.messageQueue.count) {
+                [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
+            } else {
+                [self presentFromQueue];
+            }
         }
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {
         [self handleActions:message.body[@"data"][@"actions"]];
@@ -203,8 +225,10 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    [self.messageQueue removeAllObjects];
-    self.currentMessage = nil;
+    @synchronized (self.messageQueue) {
+        [self.messageQueue removeAllObjects];
+        self.currentMessage = nil;
+    }
 
     [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:NO];
 }

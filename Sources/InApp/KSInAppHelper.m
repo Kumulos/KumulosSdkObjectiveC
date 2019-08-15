@@ -96,7 +96,6 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     NSString* consentKey = [self keyForUserConsent];
 
     if (consentGiven) {
-        // TODO start sync etc.
         [NSUserDefaults.standardUserDefaults setObject:@(consentGiven) forKey:consentKey];
         [self handleAutoEnrollmentAndSyncSetup];
     } else {
@@ -112,9 +111,9 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     }
 
     if ([self inAppEnabled]) {
+        // TODO don't sync here, sync from fetch handler
         [self sync];
-        NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
-        [self.presenter queueAndPresentMessages:messagesToPresent];
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
         // TODO swizzle fetch handler (now)
         // TODO iOS13 background task service (later)
     }
@@ -144,8 +143,10 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
         [self persistInAppMessages:messagesToPersist];
 
-        NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
-        [self.presenter queueAndPresentMessages:messagesToPresent];
+        if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
+            NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
+            [self.presenter queueMessagesForPresentation:messagesToPresent];
+        }
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
         // Noop
     }];
@@ -274,6 +275,14 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             }
         }
     }];
+}
+
+#pragma mark - State delegates
+
+- (void) appBecameActive {
+    NSLog(@"Became active");
+    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
+    [self.presenter queueMessagesForPresentation:messagesToPresent];
 }
 
 #pragma mark - Data model
