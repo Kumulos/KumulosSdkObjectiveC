@@ -46,6 +46,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_sdkInfo = nil;
         self->_targetType = TargetTypeNotOverridden;
         self->_inAppConsentStrategy = -1;
+        self->_inAppDeepLinkHandler = nil;
     }
     return self;
 }
@@ -57,6 +58,11 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 - (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy {
     self->_inAppConsentStrategy = consentStrategy;
+    return self;
+}
+
+- (instancetype)setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler {
+    self->_inAppDeepLinkHandler = deepLinkHandler;
     return self;
 }
 

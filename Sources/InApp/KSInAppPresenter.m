@@ -10,6 +10,7 @@
 #import "../Kumulos+Protected.h"
 @import UIKit;
 @import WebKit;
+@import StoreKit;
 
 //NSString* const _Nonnull KSInAppRendererUrl = @"https://iar.app.delivery";
 NSString* const _Nonnull KSInAppRendererUrl = @"http://192.168.1.195:8000";
@@ -49,8 +50,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     return self;
 }
 
-// TODO rename queueMessages?
-- (void) presentMessages:(NSArray<KSInAppMessage*>*)messages {
+- (void) queueAndPresentMessages:(NSArray<KSInAppMessage*>*)messages {
     // TODO on first launch from sync handler app can still be transitioning - refactor to trigger from became active (necessary for correct resume behaviour anyways)
 //    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
 //        NSLog(@"Application not active, aborting presentation routine");
@@ -58,6 +58,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 //    }
 
     [self.messageQueue addObjectsFromArray:messages];
+
+    if (!self.messageQueue.count) {
+        return;
+    }
+
     [self performSelectorOnMainThread:@selector(initViews) withObject:nil waitUntilDone:YES];
 }
 
@@ -69,6 +74,12 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
     self.currentMessage = self.messageQueue[0];
     [self postClientMessage:@"PRESENT_MESSAGE" withData:self.currentMessage.content];
+}
+
+- (void) cancelCurrentPresentationQueue {
+    [self.messageQueue removeAllObjects];
+    self.currentMessage = nil;
+    [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
 }
 
 #pragma mark - View management
@@ -236,6 +247,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
     if (userAction != nil) {
         [self handleUserAction:userAction];
+        [self cancelCurrentPresentationQueue];
     }
 }
 
@@ -244,7 +256,14 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     if ([type isEqualToString:KSInAppActionPromptPushPermission]) {
         [self.kumulos pushRequestDeviceToken];
     } else if ([type isEqualToString:KSInAppActionDeepLink]) {
-        // TODO call registered handler in config on main thread
+        if (self.kumulos.config.inAppDeepLinkHandler == nil) {
+            return;
+        }
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary* data = userAction[@"data"][@"deepLink"] ?: @{};
+            self.kumulos.config.inAppDeepLinkHandler(data);
+        });
     } else if ([type isEqualToString:KSInAppActionOpenUrl]) {
         NSURL* url = [NSURL URLWithString:userAction[@"data"][@"url"]];
 
@@ -258,7 +277,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
             });
         }
     } else if ([type isEqualToString:KSInAppActionRequestRating]) {
-        // TODO launch review UI thing (our window / new window?)
+        if (@available(iOS 10.3.0, *)) {
+            [SKStoreReviewController requestReview];
+        } else {
+            NSLog(@"Requesting a rating not supported on this iOS version");
+        }
     }
 }
 

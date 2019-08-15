@@ -114,7 +114,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     if ([self inAppEnabled]) {
         [self sync];
         NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
-        [self.presenter presentMessages:messagesToPresent];
+        [self.presenter queueAndPresentMessages:messagesToPresent];
         // TODO swizzle fetch handler (now)
         // TODO iOS13 background task service (later)
     }
@@ -145,9 +145,9 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [self persistInAppMessages:messagesToPersist];
 
         NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
-        [self.presenter presentMessages:messagesToPresent];
+        [self.presenter queueAndPresentMessages:messagesToPresent];
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
-        // TODO
+        // Noop
     }];
 }
 
@@ -220,8 +220,13 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"presentedWhen IN %@", presentedWhenOptions];
-        // TODO any other conditions?
+        NSCompoundPredicate* predicate = [NSCompoundPredicate
+                                          andPredicateWithSubpredicates:@[[NSPredicate
+                                                                           predicateWithFormat:@"presentedWhen IN %@",
+                                                                           presentedWhenOptions],
+                                                                          [NSPredicate
+                                                                           predicateWithFormat:@"openedAt = %@",
+                                                                           nil]]];
         [fetchRequest setPredicate:predicate];
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt"
                                                                        ascending:NO];
@@ -261,7 +266,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
         if (err == nil && messageEntities != nil && messageEntities.count == 1) {
             messageEntities[0].openedAt = [NSDate date];
-            
+
             [context save:&err];
 
             if (err != nil) {
