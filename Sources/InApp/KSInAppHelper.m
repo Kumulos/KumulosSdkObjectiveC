@@ -70,6 +70,11 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     }];
 }
 
+- (void) appBecameActive {
+    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
+    [self.presenter queueMessagesForPresentation:messagesToPresent];
+}
+
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
@@ -113,6 +118,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     if ([self inAppEnabled]) {
         // TODO don't sync here, sync from fetch handler
         [self sync];
+
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
         // TODO swizzle fetch handler (now)
         // TODO iOS13 background task service (later)
@@ -120,7 +126,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 }
 
 
-#pragma mark - Message stuff
+#pragma mark - Message management
 
 -(void)sync {
     NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
@@ -143,10 +149,16 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
         [self persistInAppMessages:messagesToPersist];
 
-        if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
-            NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
-            [self.presenter queueMessagesForPresentation:messagesToPresent];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+                return;
+            }
+
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
+                [self.presenter queueMessagesForPresentation:messagesToPresent];
+            });
+        });
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
         // Noop
     }];
@@ -175,6 +187,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             [fetchRequest setPredicate:predicate];
             NSArray<KSInAppMessageEntity*>* fetchedObjects = [context executeFetchRequest:fetchRequest error:nil];
 
+            // Upsert
             KSInAppMessageEntity* model = fetchedObjects.count == 1 ? fetchedObjects[0] : [[KSInAppMessageEntity alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
 
             model.id = partId;
@@ -197,6 +210,9 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             }
         }
 
+        // Evict
+        [self evictMessages:context];
+
         NSError* err = nil;
         [context save:&err];
 
@@ -210,6 +226,28 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     }];
 }
 
+- (void) evictMessages:(NSManagedObjectContext* _Nonnull)context {
+    NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+    [fetchRequest setIncludesPendingChanges:YES];
+
+    NSPredicate* predicate = [NSPredicate
+                              predicateWithFormat:@"(openedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
+                              nil, nil, nil, [NSDate date]];
+    [fetchRequest setPredicate:predicate];
+
+    NSError* err = nil;
+    NSArray<KSInAppMessageEntity*>* toEvict = [context executeFetchRequest:fetchRequest error:&err];
+
+    if (err != nil) {
+        NSLog(@"Failed to evict messages %@", err);
+        return;
+    }
+
+    for (KSInAppMessageEntity* message in toEvict) {
+        [context deleteObject:message];
+    }
+}
+
 -(NSArray<KSInAppMessage*>*) getMessagesToPresent:(NSArray<NSString*>*)presentedWhenOptions {
     NSArray<KSInAppMessage*>* __block messages = @[];
 
@@ -221,13 +259,11 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
-        NSCompoundPredicate* predicate = [NSCompoundPredicate
-                                          andPredicateWithSubpredicates:@[[NSPredicate
-                                                                           predicateWithFormat:@"presentedWhen IN %@",
-                                                                           presentedWhenOptions],
-                                                                          [NSPredicate
-                                                                           predicateWithFormat:@"openedAt = %@",
-                                                                           nil]]];
+        NSPredicate* predicate = [NSPredicate
+                                  predicateWithFormat:@"(presentedWhen IN %@) AND (openedAt = %@)",
+                                  presentedWhenOptions,
+                                  nil];
+
         [fetchRequest setPredicate:predicate];
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt"
                                                                        ascending:YES];
@@ -275,14 +311,6 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             }
         }
     }];
-}
-
-#pragma mark - State delegates
-
-- (void) appBecameActive {
-    NSLog(@"Became active");
-    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
-    [self.presenter queueMessagesForPresentation:messagesToPresent];
 }
 
 #pragma mark - Data model
