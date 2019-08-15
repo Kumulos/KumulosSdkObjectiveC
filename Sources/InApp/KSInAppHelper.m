@@ -78,8 +78,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
-    NSString* key = [NSString stringWithFormat:@"%@:%@", KUMULOS_IN_APP_CONSENTED_FOR_USER, Kumulos.currentUserIdentifier];
-    return key;
+    return KUMULOS_IN_APP_CONSENTED_FOR_USER;
 }
 
 -(BOOL)inAppEnabled {
@@ -105,6 +104,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [self handleAutoEnrollmentAndSyncSetup];
     } else {
         // TODO stop sync, reset flags etc.
+        [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
         [NSUserDefaults.standardUserDefaults removeObjectForKey:consentKey];
     }
 }
@@ -311,6 +311,42 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             }
         }
     }];
+}
+
+- (void)handleAssociatedUserChange {
+    if (![self inAppEnabled]) {
+        return;
+    }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self.messagesContext performBlockAndWait:^{
+            NSManagedObjectContext* context = self.messagesContext;
+            NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+            [fetchRequest setIncludesPendingChanges:YES];
+
+            NSError* err = nil;
+            NSArray<KSInAppMessageEntity*>* messages = [context executeFetchRequest:fetchRequest error:&err];
+
+            if (err != nil) {
+                return;
+            }
+
+            for (KSInAppMessageEntity* message in messages) {
+                [context deleteObject:message];
+            }
+
+            [context save:&err];
+
+            if (err != nil) {
+                NSLog(@"Failed to clean up messages: %@", err);
+                return;
+            }
+        }];
+
+        [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
+        [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+        [self handleAutoEnrollmentAndSyncSetup];
+    });
 }
 
 #pragma mark - Data model

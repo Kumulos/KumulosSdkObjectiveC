@@ -51,10 +51,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages {
-    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
-        NSLog(@"Application not active, aborting presentation routine");
-        return;
-    }
+    // TODO main thread
+//    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+//        NSLog(@"Application not active, aborting presentation routine");
+//        return;
+//    }
 
     @synchronized (self.messageQueue) {
         for (KSInAppMessage* message in messages) {
@@ -91,13 +92,13 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     [self postClientMessage:@"PRESENT_MESSAGE" withData:self.currentMessage.content];
 }
 
-- (void) cancelCurrentPresentationQueue {
+- (void) cancelCurrentPresentationQueue:(BOOL)waitForViewCleanup {
     @synchronized (self.messageQueue) {
         [self.messageQueue removeAllObjects];
         self.currentMessage = nil;
     }
 
-    [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
+    [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:waitForViewCleanup];
 }
 
 #pragma mark - View management
@@ -225,12 +226,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    @synchronized (self.messageQueue) {
-        [self.messageQueue removeAllObjects];
-        self.currentMessage = nil;
-    }
+    [self cancelCurrentPresentationQueue:NO];
+}
 
-    [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:NO];
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    [self cancelCurrentPresentationQueue:NO];
 }
 
 - (void) handleActions:(NSArray<NSDictionary*>*)actions {
@@ -271,7 +271,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
     if (userAction != nil) {
         [self handleUserAction:userAction];
-        [self cancelCurrentPresentationQueue];
+        [self cancelCurrentPresentationQueue:YES];
     }
 }
 

@@ -21,5 +21,6 @@ extern NSString* _Nonnull const KSInAppPresentedFromInbox;
 - (void) updateUserConsent:(BOOL)consentGiven;
 - (void) sync;
 - (void) markMessageOpened:(KSInAppMessage* _Nonnull)message;
+- (void) handleAssociatedUserChange;
 
 @end
