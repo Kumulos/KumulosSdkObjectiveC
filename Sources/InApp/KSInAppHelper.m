@@ -153,7 +153,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 }
 
 -(void)persistInAppMessages:(NSArray<NSDictionary*>*)messages {
-    [self.messagesContext performBlock:^{
+    [self.messagesContext performBlockAndWait:^{
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
 
