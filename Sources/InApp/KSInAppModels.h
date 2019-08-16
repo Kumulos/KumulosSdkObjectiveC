@@ -34,4 +34,7 @@
 
 + (instancetype) fromEntity:(KSInAppMessageEntity*)entity;
 
+- (BOOL) isEqual:(id)other;
+- (NSUInteger) hash;
+
 @end

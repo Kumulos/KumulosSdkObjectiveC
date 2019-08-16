@@ -11,10 +11,11 @@
 #import "Kumulos+Protected.h"
 #import "MobileProvision.h"
 #import "KumulosEvents.h"
-#import "KSUserNotificationCenterDelegate.h"
+#import "Kumulos+PushProtected.h"
 
 static NSInteger const KSPushTokenTypeProduction = 1;
 static NSInteger const KSPushDeviceType = 1;
+static NSInteger const KSDeepLinkTypeInApp = 1;
 
 static IMP ks_existingPushRegisterDelegate = NULL;
 static IMP ks_existingPushRegisterFailDelegate = NULL;
@@ -25,9 +26,28 @@ void kumulos_applicationDidRegisterForRemoteNotifications(id self, SEL _cmd, UIA
 void kumulos_applicationdidFailToRegisterForRemoteNotifications(id self, SEL _cmd, UIApplication* application, NSError* error);
 void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id self, SEL _cmd, UIApplication* applicaiton, NSDictionary* notification, KSCompletionHandler completionHandler);
 
-@interface Kumulos (PushPrivate)
+@implementation KSPushNotification
 
-@property (nonatomic) KSUserNotificationCenterDelegate* notificationCenterDelegate;
++ (instancetype) fromUserInfo:(NSDictionary*)userInfo {
+    KSPushNotification* notification = [KSPushNotification new];
+
+    NSDictionary* custom = userInfo[@"custom"];
+
+    notification->_id = custom[@"a"][@"k.message"][@"id"];
+    notification->_data = custom[@"a"];
+    notification->_url = custom[@"u"] ? [NSURL URLWithString:custom[@"u"]] : nil;
+
+    return notification;
+}
+
+- (NSDictionary*) inAppDeepLink {
+    NSDictionary* deepLink = self.data[@"k.deeplink"];
+    if (!deepLink || [deepLink[@"type"] intValue] != KSDeepLinkTypeInApp) {
+        return nil;
+    }
+
+    return deepLink;
+}
 
 @end
 
@@ -45,7 +65,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
         ks_existingPushRegisterDelegate = class_replaceMethod(class, didRegisterSelector, (IMP)kumulos_applicationDidRegisterForRemoteNotifications, regType);
 
         // Failed to register handler
-        SEL didFailToRegisterSelector = @selector(application:didRegisterForRemoteNotificationsWithDeviceToken:);
+        SEL didFailToRegisterSelector = @selector(application:didFailToRegisterForRemoteNotificationsWithError:);
         const char *regFailType = [[NSString stringWithFormat:@"%s%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(UIApplication*), @encode(NSError*)] UTF8String];
 
         ks_existingPushRegisterFailDelegate = class_replaceMethod(class, didFailToRegisterSelector, (IMP)kumulos_applicationdidFailToRegisterForRemoteNotifications, regFailType);
@@ -122,6 +142,31 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     [self.analyticsHelper trackEvent:KumulosEventPushOpened withProperties:params];
 }
 
+- (void) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
+    if (!userInfo) {
+        return;
+    }
+
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
+
+    [self pushTrackOpenFromNotification:userInfo];
+
+    // Handle URL pushes
+    if (notification.url) {
+        if (@available(iOS 10.0, *)) {
+            [UIApplication.sharedApplication openURL:notification.url options:@{} completionHandler:^(BOOL success) {
+                /* noop */
+            }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIApplication.sharedApplication openURL:notification.url];
+            });
+        }
+    }
+
+    [self.inAppHelper handlePushOpen:notification];
+}
+
 - (NSNumber*) pushGetTokenType {
     UIApplicationReleaseMode releaseMode = [MobileProvision releaseMode];
     
@@ -143,28 +188,6 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
     
     return [token copy];
-}
-
-- (void) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
-    if (!userInfo) {
-        return;
-    }
-
-    [self pushTrackOpenFromNotification:userInfo];
-
-    // Handle URL pushes
-    NSURL* url = [NSURL URLWithString:userInfo[@"custom"][@"u"]];
-    if (url) {
-        if (@available(iOS 10.0, *)) {
-            [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success) {
-                /* noop */
-            }];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIApplication.sharedApplication openURL:url];
-            });
-        }
-    }
 }
 
 @end
@@ -198,6 +221,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
         });
     }
 
+    // iOS9 open handler
     if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive) {
         if (@available(iOS 10, *)) {
             // Noop (tap handler in delegate will deal with opening the URL
@@ -206,5 +230,18 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
         }
     }
 
-    completionHandler(fetchResult);
+    if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
+        [Kumulos.shared.inAppHelper sync:^(int result) {
+            if (result < 0) {
+                fetchResult = UIBackgroundFetchResultFailed;
+            } else if (result > 1) {
+                fetchResult = UIBackgroundFetchResultNewData;
+            }
+            // No data case is default, allow override from other handler
+
+            completionHandler(fetchResult);
+        }];
+    } else {
+        completionHandler(fetchResult);
+    }
 }

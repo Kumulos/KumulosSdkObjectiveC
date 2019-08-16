@@ -45,4 +45,18 @@
     return message;
 }
 
+- (BOOL)isEqual:(id)other
+{
+    if (other && [other isKindOfClass:KSInAppMessage.class]) {
+        return [self.id isEqualToNumber:((KSInAppMessage*)other).id];
+    }
+
+    return [super isEqual:other];
+}
+
+- (NSUInteger)hash
+{
+    return [self.id hash];
+}
+
 @end

@@ -23,6 +23,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 @property (nonatomic) Kumulos* _Nonnull kumulos;
 @property (nonatomic) KSInAppPresenter* _Nonnull presenter;
 @property (nonatomic) NSManagedObjectContext* messagesContext;
+@property (nonatomic) NSMutableArray<NSNumber*>* pendingTickleIds;
 
 @end
 
@@ -33,6 +34,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 - (instancetype)initWithKumulos:(Kumulos* _Nonnull)kumulos {
     if (self = [super init]) {
         self.kumulos = kumulos;
+        self.pendingTickleIds = [[NSMutableArray alloc] initWithCapacity:1];
         self.presenter = [[KSInAppPresenter alloc] initWithKumulos:kumulos];
         [self initContext];
         [self handleAutoEnrollmentAndSyncSetup];
@@ -71,8 +73,10 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 }
 
 - (void) appBecameActive {
-    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
-    [self.presenter queueMessagesForPresentation:messagesToPresent];
+    @synchronized (self.pendingTickleIds) {
+        NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
+        [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
+    }
 }
 
 #pragma mark - State helpers
@@ -117,7 +121,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
     if ([self inAppEnabled]) {
         // TODO don't sync here, sync from fetch handler
-        [self sync];
+        [self sync:nil];
 
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
         // TODO swizzle fetch handler (now)
@@ -128,7 +132,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
 #pragma mark - Message management
 
--(void)sync {
+-(void)sync:(void (^_Nullable)(int result))onComplete {
     NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
     NSString* after = @"";
 
@@ -136,6 +140,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         NSDateFormatter* formatter = [NSDateFormatter new];
         [formatter setTimeStyle:NSDateFormatterFullStyle];
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedString]];
     }
 
@@ -144,10 +149,17 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         NSArray<NSDictionary*>* messagesToPersist = decodedBody;
         if (!messagesToPersist.count) {
+            if (onComplete) {
+                onComplete(0);
+            }
             return;
         }
 
         [self persistInAppMessages:messagesToPersist];
+
+        if (onComplete) {
+            onComplete(1);
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
@@ -156,11 +168,13 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
-                [self.presenter queueMessagesForPresentation:messagesToPresent];
+                [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
             });
         });
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
-        // Noop
+        if (onComplete) {
+            onComplete(-1);
+        }
     }];
 }
 
@@ -260,8 +274,9 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         NSPredicate* predicate = [NSPredicate
-                                  predicateWithFormat:@"(presentedWhen IN %@) AND (openedAt = %@)",
+                                  predicateWithFormat:@"((presentedWhen IN %@) OR (id IN %@)) AND (openedAt = %@)",
                                   presentedWhenOptions,
+                                  self.pendingTickleIds,
                                   nil];
 
         [fetchRequest setPredicate:predicate];
@@ -313,6 +328,8 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     }];
 }
 
+#pragma mark - Interop with other components
+
 - (void)handleAssociatedUserChange {
     if (![self inAppEnabled]) {
         return;
@@ -346,6 +363,25 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
         [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
         [self handleAutoEnrollmentAndSyncSetup];
+    });
+}
+
+- (void) handlePushOpen:(KSPushNotification *)notification {
+    if (![self inAppEnabled] || !notification.inAppDeepLink) {
+        return;
+    }
+
+    BOOL isActive = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSNumber* inAppPartId = notification.inAppDeepLink[@"data"][@"id"];
+        @synchronized (self.pendingTickleIds) {
+            [self.pendingTickleIds addObject:inAppPartId];
+            if (isActive) {
+                NSArray<KSInAppMessage*>* messages = [self getMessagesToPresent:@[]];
+                [self.presenter queueMessagesForPresentation:messages presentingTickles:self.pendingTickleIds];
+            }
+        }
     });
 }
 

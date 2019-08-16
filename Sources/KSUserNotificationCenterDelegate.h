@@ -6,7 +6,6 @@
 #import <Foundation/Foundation.h>
 @import UserNotifications;
 #import "Kumulos.h"
-#import "Kumulos+Push.h"
 
 @interface KSUserNotificationCenterDelegate : NSObject <UNUserNotificationCenterDelegate>
 - (instancetype)initWithKumulos:(Kumulos*)kumulos;

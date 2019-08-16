@@ -3,9 +3,12 @@
 //  KumulosSDK
 //
 
+#import "Kumulos+Push.h"
+#import "KSUserNotificationCenterDelegate.h"
+
 @interface Kumulos (PushProtected)
 
 - (void) pushInit;
-- (void) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo;
+- (void) pushHandleOpenWithUserInfo:(NSDictionary* _Nullable)userInfo;
 
 @end

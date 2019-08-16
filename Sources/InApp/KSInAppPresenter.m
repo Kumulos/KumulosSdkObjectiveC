@@ -13,7 +13,7 @@
 @import StoreKit;
 
 //NSString* const _Nonnull KSInAppRendererUrl = @"https://iar.app.delivery";
-NSString* const _Nonnull KSInAppRendererUrl = @"http://192.168.1.195:8000";
+NSString* const _Nonnull KSInAppRendererUrl = @"http://192.168.1.195:8080";
 
 NSString* const _Nonnull KSInAppActionCloseMessage = @"closeMessage";
 NSString* const _Nonnull KSInAppActionTrackEvent = @"trackConversionEvent";
@@ -33,7 +33,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
 @property (nonatomic) WKUserContentController* contentController;
 
-@property (atomic) NSMutableArray<KSInAppMessage*>* _Nonnull messageQueue;
+@property (atomic) NSMutableOrderedSet<KSInAppMessage*>* _Nonnull messageQueue;
+@property (atomic) NSMutableOrderedSet<NSNumber*>* _Nonnull pendingTickleIds;
 @property (atomic) KSInAppMessage* _Nullable currentMessage;
 
 @end
@@ -43,14 +44,15 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 - (instancetype)initWithKumulos:(Kumulos *)kumulos {
     if (self = [super init]) {
         self.kumulos = kumulos;
-        self.messageQueue = [[NSMutableArray alloc] initWithCapacity:5];
+        self.messageQueue = [[NSMutableOrderedSet alloc] initWithCapacity:5];
+        self.pendingTickleIds = [[NSMutableOrderedSet alloc] initWithCapacity:2];
         self.currentMessage = nil;
     }
 
     return self;
 }
 
-- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages {
+- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages presentingTickles:(NSArray<NSNumber*>*)tickleIds {
     // TODO main thread
 //    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
 //        NSLog(@"Application not active, aborting presentation routine");
@@ -58,28 +60,58 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 //    }
 
     @synchronized (self.messageQueue) {
-        for (KSInAppMessage* message in messages) {
-            BOOL exists = NO;
-            for (KSInAppMessage* queuedMessage in self.messageQueue) {
-                if (message.id == queuedMessage.id) {
-                    exists = YES;
-                    break;
-                }
-            }
+        if (!messages.count && !self.messageQueue.count) {
+            return;
+        }
 
-            if (exists) {
+        for (KSInAppMessage* message in messages) {
+            if ([self.messageQueue containsObject:message]) {
                 continue;
             }
 
             [self.messageQueue addObject:message];
         }
 
-        if (!self.messageQueue.count) {
-            return;
+        if (tickleIds != nil && tickleIds.count > 0) {
+            for (NSNumber* tickleId in [tickleIds reverseObjectEnumerator]) {
+                if ([self.pendingTickleIds containsObject:tickleId]) {
+                    continue;
+                }
+
+                [self.pendingTickleIds insertObject:tickleId atIndex:0];
+            }
+
+            [self.messageQueue sortUsingComparator:^NSComparisonResult(KSInAppMessage* _Nonnull a, KSInAppMessage* _Nonnull b) {
+                BOOL aIsTickle = [self.pendingTickleIds containsObject:a.id];
+                BOOL bIsTickle = [self.pendingTickleIds containsObject:b.id];
+
+                if (aIsTickle && !bIsTickle) {
+                    return NSOrderedAscending;
+                } else if (!aIsTickle && bIsTickle) {
+                    return NSOrderedDescending;
+                } else if (aIsTickle && bIsTickle) {
+                    NSUInteger aIdx = [self.pendingTickleIds indexOfObject: a.id];
+                    NSUInteger bIdx = [self.pendingTickleIds indexOfObject: b.id];
+
+                    if (aIdx < bIdx) {
+                        return NSOrderedAscending;
+                    } else if (aIdx > bIdx) {
+                        return NSOrderedDescending;
+                    }
+                }
+
+                return NSOrderedSame;
+            }];
         }
     }
 
     [self performSelectorOnMainThread:@selector(initViews) withObject:nil waitUntilDone:YES];
+
+    if (self.currentMessage
+        && ![self.currentMessage.id isEqualToNumber:self.messageQueue[0].id]
+        && [self.messageQueue[0].id isEqualToNumber:self.pendingTickleIds[0]]) {
+        [self presentFromQueue];
+    }
 }
 
 - (void) presentFromQueue {
@@ -92,9 +124,25 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     [self postClientMessage:@"PRESENT_MESSAGE" withData:self.currentMessage.content];
 }
 
+- (void) handleMessageClosed {
+    @synchronized (self.messageQueue) {
+        [self.messageQueue removeObjectAtIndex:0];
+        [self.pendingTickleIds removeObject:self.currentMessage.id];
+        self.currentMessage = nil;
+
+        if (!self.messageQueue.count) {
+            [self.pendingTickleIds removeAllObjects];
+            [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
+        } else {
+            [self presentFromQueue];
+        }
+    }
+}
+
 - (void) cancelCurrentPresentationQueue:(BOOL)waitForViewCleanup {
     @synchronized (self.messageQueue) {
         [self.messageQueue removeAllObjects];
+        [self.pendingTickleIds removeAllObjects];
         self.currentMessage = nil;
     }
 
@@ -203,17 +251,10 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
         [self.frame bringSubviewToFront:self.webView];
+        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
+        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
-        @synchronized (self.messageQueue) {
-            [self.messageQueue removeObjectAtIndex:0];
-            self.currentMessage = nil;
-
-            if (!self.messageQueue.count) {
-                [self performSelectorOnMainThread:@selector(destroyViews) withObject:nil waitUntilDone:YES];
-            } else {
-                [self presentFromQueue];
-            }
-        }
+        [self handleMessageClosed];
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {
         [self handleActions:message.body[@"data"][@"actions"]];
     } else {
@@ -310,15 +351,3 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 @end
-
-//export enum HostMessageType {
-//    PRESENT_MESSAGE = 'PRESENT_MESSAGE',
-//    CLOSE_MESSAGE = 'CLOSE_MESSAGE'
-//}
-//
-//export enum ClientMessageType {
-//    READY = 'READY',
-//    MESSAGE_OPENED = 'MESSAGE_OPENED',
-//    MESSAGE_CLOSED = 'MESSAGE_CLOSED',
-//    EXECUTE_ACTIONS = 'EXECUTE_ACTIONS'
-//}
