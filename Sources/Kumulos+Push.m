@@ -145,6 +145,28 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     return [token copy];
 }
 
+- (void) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
+    if (!userInfo) {
+        return;
+    }
+
+    [self pushTrackOpenFromNotification:userInfo];
+
+    // Handle URL pushes
+    NSURL* url = [NSURL URLWithString:userInfo[@"custom"][@"u"]];
+    if (url) {
+        if (@available(iOS 10.0, *)) {
+            [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success) {
+                /* noop */
+            }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIApplication.sharedApplication openURL:url];
+            });
+        }
+    }
+}
+
 @end
 
 #pragma mark - Swizzled behaviour hooks
@@ -180,15 +202,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
         if (@available(iOS 10, *)) {
             // Noop (tap handler in delegate will deal with opening the URL
         } else {
-            [Kumulos.shared pushTrackOpenFromNotification:userInfo];
-
-            // Handle opening URLs on notification taps
-            NSURL* url = [NSURL URLWithString:userInfo[@"custom"][@"u"]];
-            if (url) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [UIApplication.sharedApplication openURL:url];
-                });
-            }
+            [Kumulos.shared pushHandleOpenWithUserInfo:userInfo];
         }
     }
 

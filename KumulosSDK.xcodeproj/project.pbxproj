@@ -208,6 +208,7 @@
 		12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSUserNotificationCenterDelegate.m; sourceTree = "<group>"; };
 		12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSUserNotificationCenterDelegate.h; sourceTree = "<group>"; };
+		12BD21C02306EE8300BE0D18 /* Kumulos+PushProtected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+PushProtected.h"; sourceTree = "<group>"; };
 		12D7C6872019DC5700A390CD /* KSCrash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KSCrash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12E861D323016D8A009EF70B /* Kumulos+InApp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+InApp.h"; sourceTree = "<group>"; };
 		12E861D423016D8A009EF70B /* Kumulos+InApp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+InApp.m"; sourceTree = "<group>"; };
@@ -313,6 +314,7 @@
 				12E861D323016D8A009EF70B /* Kumulos+InApp.h */,
 				12E861D423016D8A009EF70B /* Kumulos+InApp.m */,
 				12735BA21E4CE35900ED4488 /* Kumulos+Push.h */,
+				12BD21C02306EE8300BE0D18 /* Kumulos+PushProtected.h */,
 				12735BA31E4CE35900ED4488 /* Kumulos+Push.m */,
 				12735BA41E4CE35900ED4488 /* Kumulos+Stats.h */,
 				12735BA51E4CE35900ED4488 /* Kumulos+Stats.m */,

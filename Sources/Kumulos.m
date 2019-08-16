@@ -13,6 +13,7 @@
 
 #if TARGET_OS_IOS
 #import "Kumulos+Push.h"
+#import "Kumulos+PushProtected.h"
 #endif
 
 #ifdef COCOAPODS

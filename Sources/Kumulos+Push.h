@@ -10,8 +10,6 @@
 
 @interface Kumulos (Push)
 
-- (void) pushInit;
-
 /**
  * Requests a push token from the user.
  * 

@@ -4,6 +4,7 @@
 //
 
 #import "KSUserNotificationCenterDelegate.h"
+#import "Kumulos+PushProtected.h"
 
 @interface KSUserNotificationCenterDelegate ()
 
@@ -28,16 +29,13 @@
 
 // iOS10+ handler for when a user taps a notification
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler {
-    NSDictionary* userInfo = response.notification.request.content.userInfo;
-    [self.kumulos pushTrackOpenFromNotification:userInfo];
-
-    // Handle URL pushes
-    NSURL* url = [NSURL URLWithString:userInfo[@"custom"][@"u"]];
-    if (url) {
-        [UIApplication.sharedApplication openURL:url options:@{} completionHandler:^(BOOL success) {
-            /* noop */
-        }];
+    if ([response.actionIdentifier isEqualToString:UNNotificationDismissActionIdentifier]) {
+        completionHandler();
+        return;
     }
+
+    NSDictionary* userInfo = response.notification.request.content.userInfo;
+    [self.kumulos pushHandleOpenWithUserInfo:userInfo];
 
     completionHandler();
 }
