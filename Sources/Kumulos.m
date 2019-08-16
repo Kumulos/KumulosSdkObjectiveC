@@ -128,6 +128,7 @@ static Kumulos* _shared;
 #if TARGET_OS_IOS
         [self initAnalytics];
         [self initInApp];
+        [self pushInit];
 #endif
         
         [self statsSendInstallInfo];
