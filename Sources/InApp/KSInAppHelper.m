@@ -169,8 +169,8 @@
             model.openedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
             model.presentedWhen = message[@"presentedWhen"];
             model.content = message[@"content"];
-            model.data = message[@"data"];
-            model.badgeConfig = message[@"badge"];
+            model.data = [message[@"data"] isEqual:NSNull.null] ? nil : message[@"data"];
+            model.badgeConfig = [message[@"badge"] isEqual:NSNull.null] ? nil : message[@"badge"];
             model.inboxConfig = [message[@"inbox"] isEqual:NSNull.null] ? nil : message[@"inbox"];
 
             if (model.inboxConfig != nil) {
