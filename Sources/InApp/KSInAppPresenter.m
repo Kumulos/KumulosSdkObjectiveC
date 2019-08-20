@@ -238,7 +238,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
     BOOL hasClose = NO;
     NSString* trackEvent = nil;
-    NSString* subscribeToChannel = nil;
+    NSString* subscribeToChannelUuid = nil;
     NSDictionary* userAction = nil;
 
     for (NSDictionary* action in actions) {
@@ -249,7 +249,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         } else if ([type isEqualToString:KSInAppActionTrackEvent]) {
             trackEvent = action[@"data"][@"eventType"];
         } else if ([type isEqualToString:KSInAppActionSubscribeChannel]) {
-            subscribeToChannel = action[@"data"][@"channelUuid"];
+            subscribeToChannelUuid = action[@"data"][@"channelUuid"];
         } else {
             userAction = action;
         }
@@ -264,9 +264,9 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         [self.kumulos trackEvent:trackEvent withProperties:nil];
     }
 
-    if (subscribeToChannel != nil) {
+    if (subscribeToChannelUuid != nil) {
         KumulosPushSubscriptionManager* psm = [[KumulosPushSubscriptionManager alloc] initWithKumulos:self.kumulos];
-        [psm subscribeToChannels:@[subscribeToChannel]];
+        [psm subscribeToChannels:@[subscribeToChannelUuid]];
     }
 
     if (userAction != nil) {
