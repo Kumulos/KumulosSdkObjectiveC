@@ -3,6 +3,7 @@
 //  KumulosSDK
 //
 
+#import <objc/runtime.h>
 #import "KSInAppHelper.h"
 #import "../Kumulos+Analytics.h"
 #import "../Kumulos+Protected.h"
@@ -17,6 +18,11 @@ NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
 NSString* _Nonnull const KSInAppPresentedNextOpen = @"next-open";
 NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
+
+static IMP ks_existingBackgroundFetchDelegate = NULL;
+
+typedef void (^KSCompletionHandler)(UIBackgroundFetchResult);
+void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIApplication* application, KSCompletionHandler completionHandler);
 
 @interface KSInAppHelper ()
 
@@ -79,6 +85,20 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     }
 }
 
+- (void) setupSyncTask {
+    // TODO iOS13 background task service (later)
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = UIApplication.sharedApplication.delegate.class;
+
+        // Perform background fetch
+        SEL performFetchSelector = @selector(application:performFetchWithCompletionHandler:);
+        const char *fetchType = [[NSString stringWithFormat:@"%s%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(UIApplication*), @encode(KSCompletionHandler)] UTF8String];
+
+        ks_existingBackgroundFetchDelegate = class_replaceMethod(class, performFetchSelector, (IMP)kumulos_applicationPerformFetchWithCompletionHandler, fetchType);
+    });
+}
+
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
@@ -107,7 +127,6 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [NSUserDefaults.standardUserDefaults setObject:@(consentGiven) forKey:consentKey];
         [self handleAutoEnrollmentAndSyncSetup];
     } else {
-        // TODO stop sync, reset flags etc.
         [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
         [NSUserDefaults.standardUserDefaults removeObjectForKey:consentKey];
     }
@@ -120,12 +139,8 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     }
 
     if ([self inAppEnabled]) {
-        // TODO don't sync here, sync from fetch handler
-        [self sync:nil];
-
+        [self setupSyncTask];
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
-        // TODO swizzle fetch handler (now)
-        // TODO iOS13 background task service (later)
     }
 }
 
@@ -528,3 +543,36 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 }
 
 @end
+
+#pragma mark - Swizzled behaviour handlers
+
+void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIApplication* application, KSCompletionHandler completionHandler) {
+    UIBackgroundFetchResult __block fetchResult = UIBackgroundFetchResultNoData;
+    dispatch_semaphore_t __block fetchBarrier = dispatch_semaphore_create(0);
+
+    if (ks_existingBackgroundFetchDelegate) {
+        ((void(*)(id,SEL,UIApplication*,KSCompletionHandler))ks_existingBackgroundFetchDelegate)(self, _cmd, application, ^(UIBackgroundFetchResult result) {
+            fetchResult = result;
+            dispatch_semaphore_signal(fetchBarrier);
+        });
+    } else {
+        dispatch_semaphore_signal(fetchBarrier);
+    }
+
+    if ([Kumulos.shared.inAppHelper inAppEnabled]) {
+        [Kumulos.shared.inAppHelper sync:^(int result) {
+            dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
+
+            if (result < 0) {
+                fetchResult = UIBackgroundFetchResultFailed;
+            } else if (result > 1) {
+                fetchResult = UIBackgroundFetchResultNewData;
+            }
+            // No data case is default, allow override from other handler
+
+            completionHandler(fetchResult);
+        }];
+    } else {
+        completionHandler(fetchResult);
+    }
+}

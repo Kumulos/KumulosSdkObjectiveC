@@ -214,11 +214,15 @@ void kumulos_applicationdidFailToRegisterForRemoteNotifications(id self, SEL _cm
 // iOS9+ handler for background data pushes (content-available)
 void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id self, SEL _cmd, UIApplication* application, NSDictionary* userInfo, KSCompletionHandler completionHandler) {
     UIBackgroundFetchResult __block fetchResult = UIBackgroundFetchResultNoData;
+    dispatch_semaphore_t __block fetchBarrier = dispatch_semaphore_create(0);
 
     if (ks_existingPushReceiveDelegate) {
         ((void(*)(id,SEL,UIApplication*,NSDictionary*,KSCompletionHandler))ks_existingPushReceiveDelegate)(self, _cmd, application, userInfo, ^(UIBackgroundFetchResult result) {
             fetchResult = result;
+            dispatch_semaphore_signal(fetchBarrier);
         });
+    } else {
+        dispatch_semaphore_signal(fetchBarrier);
     }
 
     // iOS9 open handler
@@ -232,6 +236,8 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
     if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
         [Kumulos.shared.inAppHelper sync:^(int result) {
+            dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
+
             if (result < 0) {
                 fetchResult = UIBackgroundFetchResultFailed;
             } else if (result > 1) {
