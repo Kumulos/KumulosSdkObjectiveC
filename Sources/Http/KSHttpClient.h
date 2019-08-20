@@ -32,9 +32,9 @@ typedef void (^ _Nullable KSHttpFailureBlock)(NSHTTPURLResponse* _Nullable respo
 
 - (instancetype _Nullable) initWithBaseUrl:(NSString* _Nonnull) baseUrl requestBodyFormat:(KSHttpDataFormat) requestFormat responseBodyFormat:(KSHttpDataFormat) responseFormat;
 
-- (void) setBasicAuthWithUser:(NSString* _Nonnull) user andPassword:(NSString*) password;
+- (void) setBasicAuthWithUser:(NSString* _Nonnull) user andPassword:(NSString* _Nonnull) password;
 
-- (NSURLSessionDataTask*) sendRequest:(NSString* _Nonnull) method toPath:(NSString*) path withData:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
+- (NSURLSessionDataTask*) sendRequest:(NSString* _Nonnull) method toPath:(NSString* _Nonnull) path withData:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
 - (NSURLSessionDataTask*) get:(NSString* _Nonnull) path onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
 - (NSURLSessionDataTask*) post:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;
 - (NSURLSessionDataTask*) put:(NSString* _Nonnull) path data:(id _Nullable) data onSuccess:(KSHttpSuccessBlock) success onFailure:(KSHttpFailureBlock) failure;

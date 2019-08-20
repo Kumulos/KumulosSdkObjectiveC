@@ -45,12 +45,18 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_runtimeInfo = nil;
         self->_sdkInfo = nil;
         self->_targetType = TargetTypeNotOverridden;
+        self->_inAppConsentStrategy = -1;
     }
     return self;
 }
 
 - (instancetype _Nonnull) enableCrashReporting {
     self->_crashReportingEnabled = YES;
+    return self;
+}
+
+- (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy {
+    self->_inAppConsentStrategy = consentStrategy;
     return self;
 }
 
@@ -115,6 +121,7 @@ static Kumulos* _shared;
         
 #if TARGET_OS_IOS
         [self initAnalytics];
+        [self initInApp];
 #endif
         
         [self statsSendInstallInfo];
@@ -152,6 +159,9 @@ static Kumulos* _shared;
 #if TARGET_OS_IOS
 - (void) initAnalytics {
     self.analyticsHelper = [[AnalyticsHelper alloc] initWithKumulos:self];
+}
+- (void) initInApp {
+    self.inAppHelper = [[KSInAppHelper alloc] initWithKumulos:self];
 }
 #endif
 
