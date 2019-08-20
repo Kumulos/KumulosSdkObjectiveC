@@ -251,8 +251,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
         [self.frame bringSubviewToFront:self.webView];
-        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
-        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+
+        if (@available(iOS 10, *)) {
+            NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
+            [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+        }
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
         [self handleMessageClosed];
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {
