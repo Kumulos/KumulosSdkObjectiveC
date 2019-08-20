@@ -43,7 +43,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         self.pendingTickleIds = [[NSMutableArray alloc] initWithCapacity:1];
         self.presenter = [[KSInAppPresenter alloc] initWithKumulos:kumulos];
         [self initContext];
-        [self handleAutoEnrollmentAndSyncSetup];
+        [self handleEnrollmentAndSyncSetup];
     }
 
     return self;
@@ -106,7 +106,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 }
 
 -(BOOL)inAppEnabled {
-    BOOL enabled = self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyExplicitByUser || self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyAutoEnroll;
+    BOOL enabled = self.kumulos.config.inAppConsentStrategy != KSInAppConsentStrategyNotEnabled;
 
     return enabled && [self userConsented];
 }
@@ -125,16 +125,19 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
     if (consentGiven) {
         [NSUserDefaults.standardUserDefaults setObject:@(consentGiven) forKey:consentKey];
-        [self handleAutoEnrollmentAndSyncSetup];
+        [self handleEnrollmentAndSyncSetup];
     } else {
         [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
         [NSUserDefaults.standardUserDefaults removeObjectForKey:consentKey];
     }
 }
 
--(void) handleAutoEnrollmentAndSyncSetup {
+-(void) handleEnrollmentAndSyncSetup {
     if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyAutoEnroll && [self userConsented] == NO) {
         [self updateUserConsent:YES];
+        return;
+    } else if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyNotEnabled && [self userConsented] == YES) {
+        [self updateUserConsent:NO];
         return;
     }
 
@@ -377,7 +380,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
         [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
         [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-        [self handleAutoEnrollmentAndSyncSetup];
+        [self handleEnrollmentAndSyncSetup];
     });
 }
 
