@@ -8,14 +8,21 @@
 #import "../Kumulos+Protected.h"
 #import "../KumulosEvents.h"
 #import "../Http/NSString+URLEncoding.h"
+#import "KSInAppPresenter.h"
 
 #define KUMULOS_MESSAGES_LAST_SYNC_TIME @"KumulosMessagesLastSyncTime"
 #define KUMULOS_IN_APP_CONSENTED_FOR_USER @"KumulosInAppConsentedForUser"
+NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
+
+NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
+NSString* _Nonnull const KSInAppPresentedNextOpen = @"next-open";
+NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
 @interface KSInAppHelper ()
 
 @property (nonatomic) Kumulos* _Nonnull kumulos;
-@property NSManagedObjectContext* messagesContext;
+@property (nonatomic) KSInAppPresenter* _Nonnull presenter;
+@property (nonatomic) NSManagedObjectContext* messagesContext;
 
 @end
 
@@ -23,9 +30,10 @@
 
 #pragma mark - Initialization
 
-- (instancetype)initWithKumulos:(id)kumulos {
+- (instancetype)initWithKumulos:(Kumulos* _Nonnull)kumulos {
     if (self = [super init]) {
         self.kumulos = kumulos;
+        self.presenter = [[KSInAppPresenter alloc] initWithKumulos:kumulos];
         [self initContext];
         [self handleAutoEnrollmentAndSyncSetup];
     }
@@ -62,6 +70,11 @@
     }];
 }
 
+- (void) appBecameActive {
+    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
+    [self.presenter queueMessagesForPresentation:messagesToPresent];
+}
+
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
@@ -88,7 +101,6 @@
     NSString* consentKey = [self keyForUserConsent];
 
     if (consentGiven) {
-        // TODO start sync etc.
         [NSUserDefaults.standardUserDefaults setObject:@(consentGiven) forKey:consentKey];
         [self handleAutoEnrollmentAndSyncSetup];
     } else {
@@ -104,14 +116,17 @@
     }
 
     if ([self inAppEnabled]) {
+        // TODO don't sync here, sync from fetch handler
         [self sync];
+
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
         // TODO swizzle fetch handler (now)
         // TODO iOS13 background task service (later)
     }
 }
 
 
-#pragma mark - Message stuff
+#pragma mark - Message management
 
 -(void)sync {
     NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
@@ -127,20 +142,30 @@
     NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", Kumulos.currentUserIdentifier, after];
 
     [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
-        NSArray<NSDictionary*>* messages = decodedBody;
-        if (!messages.count) {
+        NSArray<NSDictionary*>* messagesToPersist = decodedBody;
+        if (!messagesToPersist.count) {
             return;
         }
 
-        [self persistInAppMessages:messages];
-        // TODO run presentation(immediate)
+        [self persistInAppMessages:messagesToPersist];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+                return;
+            }
+
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
+                [self.presenter queueMessagesForPresentation:messagesToPresent];
+            });
+        });
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
-        // TODO
+        // Noop
     }];
 }
 
 -(void)persistInAppMessages:(NSArray<NSDictionary*>*)messages {
-    [self.messagesContext performBlock:^{
+    [self.messagesContext performBlockAndWait:^{
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
 
@@ -160,9 +185,10 @@
             [fetchRequest setEntity:entity];
             NSPredicate* predicate = [NSPredicate predicateWithFormat:@"id = %@", partId];
             [fetchRequest setPredicate:predicate];
-            NSArray<KSInAppMessage*>* fetchedObjects = [context executeFetchRequest:fetchRequest error:nil];
+            NSArray<KSInAppMessageEntity*>* fetchedObjects = [context executeFetchRequest:fetchRequest error:nil];
 
-            KSInAppMessage* model = fetchedObjects.count == 1 ? fetchedObjects[0] : [[KSInAppMessage alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
+            // Upsert
+            KSInAppMessageEntity* model = fetchedObjects.count == 1 ? fetchedObjects[0] : [[KSInAppMessageEntity alloc] initWithEntity:entity insertIntoManagedObjectContext:context];
 
             model.id = partId;
             model.updatedAt = [dateParser dateFromString:message[@"updatedAt"]];
@@ -184,6 +210,9 @@
             }
         }
 
+        // Evict
+        [self evictMessages:context];
+
         NSError* err = nil;
         [context save:&err];
 
@@ -197,7 +226,108 @@
     }];
 }
 
+- (void) evictMessages:(NSManagedObjectContext* _Nonnull)context {
+    NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+    [fetchRequest setIncludesPendingChanges:YES];
+
+    NSPredicate* predicate = [NSPredicate
+                              predicateWithFormat:@"(openedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
+                              nil, nil, nil, [NSDate date]];
+    [fetchRequest setPredicate:predicate];
+
+    NSError* err = nil;
+    NSArray<KSInAppMessageEntity*>* toEvict = [context executeFetchRequest:fetchRequest error:&err];
+
+    if (err != nil) {
+        NSLog(@"Failed to evict messages %@", err);
+        return;
+    }
+
+    for (KSInAppMessageEntity* message in toEvict) {
+        [context deleteObject:message];
+    }
+}
+
+-(NSArray<KSInAppMessage*>*) getMessagesToPresent:(NSArray<NSString*>*)presentedWhenOptions {
+    NSArray<KSInAppMessage*>* __block messages = @[];
+
+    [self.messagesContext performBlockAndWait:^{
+        NSManagedObjectContext* context = self.messagesContext;
+        NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
+
+        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setIncludesPendingChanges:NO];
+        [fetchRequest setReturnsObjectsAsFaults:NO];
+        NSPredicate* predicate = [NSPredicate
+                                  predicateWithFormat:@"(presentedWhen IN %@) AND (openedAt = %@)",
+                                  presentedWhenOptions,
+                                  nil];
+
+        [fetchRequest setPredicate:predicate];
+        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt"
+                                                                       ascending:YES];
+        [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+
+        NSError *err = nil;
+        NSArray *entities = [context executeFetchRequest:fetchRequest error:&err];
+        if (err != nil) {
+            NSLog(@"Failed to fetch: %@", err);
+            return;
+        }
+
+        if (!entities.count) {
+            return;
+        }
+
+        messages = [self mapEntitiesToModels:entities];
+    }];
+
+    return messages;
+}
+
+- (void)markMessageOpened:(KSInAppMessage *)message {
+    [self.kumulos trackEvent:KumulosEventMessageOpened withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
+    [self.messagesContext performBlock:^{
+        NSManagedObjectContext* context = self.messagesContext;
+        NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
+
+        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setIncludesPendingChanges:NO];
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"id = %@", message.id];
+        [fetchRequest setPredicate:predicate];
+
+        NSError* err = nil;
+        NSArray<KSInAppMessageEntity*>* messageEntities = [context executeFetchRequest:fetchRequest error:&err];
+
+        if (err == nil && messageEntities != nil && messageEntities.count == 1) {
+            messageEntities[0].openedAt = [NSDate date];
+
+            [context save:&err];
+
+            if (err != nil) {
+                NSLog(@"Failed to update message: %@", err);
+            }
+        }
+    }];
+}
+
 #pragma mark - Data model
+
+- (NSArray<KSInAppMessage*>*) mapEntitiesToModels:(NSArray<KSInAppMessageEntity*>*)entities {
+    if (nil == entities || !entities.count) {
+        return @[];
+    }
+
+    NSMutableArray<KSInAppMessage*>* models = [[NSMutableArray alloc] initWithCapacity:entities.count];
+    for (KSInAppMessageEntity* entity in entities) {
+        KSInAppMessage* model = [KSInAppMessage fromEntity:entity];
+        [models addObject:model];
+    }
+
+    return models;
+}
 
 - (NSManagedObjectModel*)getDataModel {
     NSManagedObjectModel* model = [NSManagedObjectModel new];
@@ -208,7 +338,7 @@
 
     NSEntityDescription* messageEntity = [NSEntityDescription new];
     messageEntity.name = @"Message";
-    messageEntity.managedObjectClassName = NSStringFromClass(KSInAppMessage.class);
+    messageEntity.managedObjectClassName = NSStringFromClass(KSInAppMessageEntity.class);
 
     NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:10];
 

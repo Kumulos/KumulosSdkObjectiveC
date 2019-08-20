@@ -18,6 +18,7 @@
 
 typedef void (^ _Nullable KSAPIOperationSuccessBlock)(KSAPIResponse* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOperation* _Nonnull);
+typedef void (^ _Nullable KSInAppDeepLinkHandlerBlock)(NSDictionary* _Nonnull data);
 
 /**
  * Config options for initializing a Kumulos instance
@@ -46,6 +47,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 @property (nonatomic,readonly) KSTargetType targetType;
 
 @property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
+@property (nonatomic,readonly) KSInAppDeepLinkHandlerBlock inAppDeepLinkHandler;
 
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
@@ -54,6 +56,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (instancetype _Nonnull) enableCrashReporting;
 #if TARGET_OS_IOS
 - (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy;
+- (instancetype _Nonnull) setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler;
 #endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;
