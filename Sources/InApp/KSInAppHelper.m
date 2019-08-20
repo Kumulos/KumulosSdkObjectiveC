@@ -237,6 +237,8 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         }
 
         [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+
+        [self trackMessageDelivery:messages];
     }];
 }
 
@@ -326,6 +328,12 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             }
         }
     }];
+}
+
+- (void) trackMessageDelivery:(NSArray<NSDictionary*>*)messages {
+    for (NSDictionary* message in messages) {
+        [self.kumulos trackEvent:KumulosEventMessageDelivered withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message[@"id"]}];
+    }
 }
 
 #pragma mark - Interop with other components

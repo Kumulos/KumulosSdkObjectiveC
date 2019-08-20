@@ -17,3 +17,4 @@ NSString* const KumulosEventLocationUpdated = @"k.engage.locationUpdated";
 NSString* const KumulosEventDeviceUnsubscribed = @"k.push.deviceUnsubscribed";
 NSString* const KumulosEventInAppConsentChanged = @"k.inApp.statusUpdated";
 NSString* const KumulosEventMessageOpened = @"k.message.opened";
+NSString* const KumulosEventMessageDelivered = @"k.message.delivered";
