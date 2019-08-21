@@ -127,8 +127,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         [NSUserDefaults.standardUserDefaults setObject:@(consentGiven) forKey:consentKey];
         [self handleEnrollmentAndSyncSetup];
     } else {
-        [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
-        [NSUserDefaults.standardUserDefaults removeObjectForKey:consentKey];
+        [self resetMessagingState];
     }
 }
 
@@ -145,6 +144,12 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         [self setupSyncTask];
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     }
+}
+
+-(void) resetMessagingState {
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
+    [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
 }
 
 
@@ -378,8 +383,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             }
         }];
 
-        [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
-        [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+        [self resetMessagingState];
         [self handleEnrollmentAndSyncSetup];
     });
 }
