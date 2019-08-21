@@ -109,7 +109,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
 - (void) presentFromQueue {
     if (!self.messageQueue.count) {
-        NSLog(@"Queue is empty, aborting");
         return;
     }
 
@@ -240,7 +239,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         return;
     }
 
-    NSLog(@"Received message: %@", message.body);
     NSString* type = message.body[@"type"];
     if ([type isEqualToString:@"READY"]) {
         @synchronized (self.messageQueue) {
@@ -260,7 +258,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {
         [self handleActions:message.body[@"data"][@"actions"]];
     } else {
-        NSLog(@"Unknown message type: %@", type);
+        NSLog(@"Unknown message: %@", message.body);
     }
 }
 
@@ -277,8 +275,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) handleActions:(NSArray<NSDictionary*>*)actions {
-    NSLog(@"%@", actions);
-
     BOOL hasClose = NO;
     NSString* trackEvent = nil;
     NSString* subscribeToChannel = nil;
