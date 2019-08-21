@@ -12,7 +12,7 @@
 #import "KSInAppPresenter.h"
 
 #define KUMULOS_MESSAGES_LAST_SYNC_TIME @"KumulosMessagesLastSyncTime"
-#define KUMULOS_IN_APP_CONSENTED_FOR_USER @"KumulosInAppConsentedForUser"
+#define KUMULOS_IN_APP_CONSENTED_KEY @"KumulosInAppConsented"
 NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
 
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
@@ -102,7 +102,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
-    return KUMULOS_IN_APP_CONSENTED_FOR_USER;
+    return KUMULOS_IN_APP_CONSENTED_KEY;
 }
 
 -(BOOL)inAppEnabled {
