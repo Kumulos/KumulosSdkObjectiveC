@@ -12,8 +12,7 @@
 @import WebKit;
 @import StoreKit;
 
-//NSString* const _Nonnull KSInAppRendererUrl = @"https://iar.app.delivery";
-NSString* const _Nonnull KSInAppRendererUrl = @"http://192.168.1.195:8080";
+NSString* const _Nonnull KSInAppRendererUrl = @"https://iar.app.delivery";
 
 NSString* const _Nonnull KSInAppActionCloseMessage = @"closeMessage";
 NSString* const _Nonnull KSInAppActionTrackEvent = @"trackConversionEvent";
