@@ -1,20 +1,21 @@
 //
-//  Kumulos+InApp.m
+//  KumulosInApp.m
 //  KumulosSDK
 //
 
-#import "Kumulos+InApp.h"
+#import "KumulosInApp.h"
 #import "Kumulos+Protected.h"
 
-@implementation Kumulos (InApp)
+@implementation KumulosInApp
 
--(void)updateInAppConsentForUser:(BOOL)consentGiven {
-    if (self.config.inAppConsentStrategy != KSInAppConsentStrategyExplicitByUser) {
++ (void)updateConsentForUser:(BOOL)consentGiven {
+    if (Kumulos.shared.config.inAppConsentStrategy != KSInAppConsentStrategyExplicitByUser) {
         [NSException raise:@"Kumulos: Invalid In-app consent strategy" format:@"You can only manage in-app messaging consent when the feature is enabled and strategy is set to KSInAppConsentStrategyExplicitByUser"];
         return;
     }
 
-    [self.inAppHelper updateUserConsent:consentGiven];
+    [Kumulos.shared.inAppHelper updateUserConsent:consentGiven];
 }
 
 @end
+
