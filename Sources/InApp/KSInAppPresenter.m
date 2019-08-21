@@ -119,6 +119,10 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         return;
     }
 
+    if (self.loadingSpinner) {
+        [self.loadingSpinner performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:YES];
+    }
+
     self.currentMessage = self.messageQueue[0];
     [self postClientMessage:@"PRESENT_MESSAGE" withData:self.currentMessage.content];
 }
@@ -197,6 +201,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     // Spinner
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.translatesAutoresizingMaskIntoConstraints = NO;
+    self.loadingSpinner.hidesWhenStopped = YES;
     [self.loadingSpinner startAnimating];
     [self.frame addSubview:self.loadingSpinner];
 
@@ -249,7 +254,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         }
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
-        [self.frame bringSubviewToFront:self.webView];
 
         if (@available(iOS 10, *)) {
             NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
