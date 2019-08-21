@@ -52,12 +52,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages presentingTickles:(NSArray<NSNumber*>*)tickleIds {
-    // TODO main thread
-//    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
-//        NSLog(@"Application not active, aborting presentation routine");
-//        return;
-//    }
-
     @synchronized (self.messageQueue) {
         if (!messages.count && !self.messageQueue.count) {
             return;
