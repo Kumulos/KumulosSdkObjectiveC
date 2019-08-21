@@ -28,7 +28,6 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
 @property (nonatomic) Kumulos* _Nonnull kumulos;
 @property (nonatomic) KSInAppPresenter* _Nonnull presenter;
-@property (nonatomic) NSManagedObjectContext* messagesContext;
 @property (nonatomic) NSMutableArray<NSNumber*>* pendingTickleIds;
 
 @end
@@ -382,6 +381,35 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 }
 
 #pragma mark - Interop with other components
+
+- (BOOL)presentMessageWithId:(NSNumber*)messageId {
+    BOOL __block result = YES;
+
+    [self.messagesContext performBlockAndWait:^{
+        NSManagedObjectContext* context = self.messagesContext;
+
+        NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+        [fetchRequest setIncludesPendingChanges:NO];
+        [fetchRequest setReturnsObjectsAsFaults:NO];
+        NSPredicate* messageById = [NSPredicate
+                                    predicateWithFormat:@"(id = %@)",
+                                    messageId];
+        [fetchRequest setPredicate:messageById];
+
+        NSError* err = nil;
+        NSArray<KSInAppMessageEntity*>* items = [context executeFetchRequest:fetchRequest error:&err];
+
+        if (err != nil || items.count != 1) {
+            result = NO;
+            return;
+        }
+
+        KSInAppMessage* message = [KSInAppMessage fromEntity:items.firstObject];
+        [self.presenter queueMessagesForPresentation:@[message] presentingTickles:@[messageId]];
+    }];
+
+    return result;
+}
 
 - (void)handleAssociatedUserChange {
     if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyNotEnabled) {
