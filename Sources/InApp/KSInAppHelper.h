@@ -21,7 +21,8 @@ extern NSString* _Nonnull const KSInAppPresentedFromInbox;
 - (instancetype _Nullable) initWithKumulos:(Kumulos* _Nonnull) kumulos;
 - (void) updateUserConsent:(BOOL)consentGiven;
 - (void) sync:(void (^_Nullable)(int result))onComplete;
-- (void) markMessageOpened:(KSInAppMessage* _Nonnull)message;
+- (void) trackMessageOpened:(KSInAppMessage* _Nonnull)message;
+- (void) markMessageDismissed:(KSInAppMessage* _Nonnull)message;
 - (void) handleAssociatedUserChange;
 - (void) handlePushOpen:(KSPushNotification* _Nonnull)notification;
 @end

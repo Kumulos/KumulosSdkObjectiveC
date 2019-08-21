@@ -229,7 +229,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
             model.id = partId;
             model.updatedAt = [dateParser dateFromString:message[@"updatedAt"]];
-            model.openedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
+            model.dismissedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
             model.presentedWhen = message[@"presentedWhen"];
             model.content = message[@"content"];
             model.data = message[@"data"];
@@ -268,7 +268,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     [fetchRequest setIncludesPendingChanges:YES];
 
     NSPredicate* predicate = [NSPredicate
-                              predicateWithFormat:@"(openedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
+                              predicateWithFormat:@"(dismissedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
                               nil, nil, nil, [NSDate date]];
     [fetchRequest setPredicate:predicate];
 
@@ -297,7 +297,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         NSPredicate* predicate = [NSPredicate
-                                  predicateWithFormat:@"((presentedWhen IN %@) OR (id IN %@)) AND (openedAt = %@)",
+                                  predicateWithFormat:@"((presentedWhen IN %@) OR (id IN %@)) AND (dismissedAt = %@)",
                                   presentedWhenOptions,
                                   self.pendingTickleIds,
                                   nil];
@@ -324,8 +324,12 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     return messages;
 }
 
-- (void)markMessageOpened:(KSInAppMessage *)message {
+- (void)trackMessageOpened:(KSInAppMessage *)message {
     [self.kumulos trackEvent:KumulosEventMessageOpened withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
+}
+
+- (void)markMessageDismissed:(KSInAppMessage *)message {
+    [self.kumulos trackEvent:KumulosEventMessageDismissed withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
     [self.messagesContext performBlock:^{
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
@@ -340,7 +344,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         NSArray<KSInAppMessageEntity*>* messageEntities = [context executeFetchRequest:fetchRequest error:&err];
 
         if (err == nil && messageEntities != nil && messageEntities.count == 1) {
-            messageEntities[0].openedAt = [NSDate date];
+            messageEntities[0].dismissedAt = [NSDate date];
 
             [context save:&err];
 
@@ -494,11 +498,11 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     inboxTo.optional = YES;
     [messageProps addObject:inboxTo];
 
-    NSAttributeDescription* openedAt = [NSAttributeDescription new];
-    openedAt.name = @"openedAt";
-    openedAt.attributeType = NSDateAttributeType;
-    openedAt.optional = YES;
-    [messageProps addObject:openedAt];
+    NSAttributeDescription* dismissedAt = [NSAttributeDescription new];
+    dismissedAt.name = @"dismissedAt";
+    dismissedAt.attributeType = NSDateAttributeType;
+    dismissedAt.optional = YES;
+    [messageProps addObject:dismissedAt];
 
     [messageEntity setProperties:messageProps];
     [model setEntities:@[messageEntity]];

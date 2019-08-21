@@ -259,6 +259,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
             NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
             [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
         }
+
+        [self.kumulos.inAppHelper trackMessageOpened:self.currentMessage];
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
         [self handleMessageClosed];
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {
@@ -303,7 +305,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     }
 
     if (hasClose) {
-        [self.kumulos.inAppHelper markMessageOpened:self.currentMessage];
+        [self.kumulos.inAppHelper markMessageDismissed:self.currentMessage];
         [self postClientMessage:@"CLOSE_MESSAGE" withData:nil];
     }
 

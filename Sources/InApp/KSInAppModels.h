@@ -17,7 +17,7 @@
 @property (nonatomic,strong) NSDictionary* inboxConfig;
 @property (nonatomic,strong) NSDate* inboxFrom;
 @property (nonatomic,strong) NSDate* inboxTo;
-@property (nonatomic,strong) NSDate* openedAt;
+@property (nonatomic,strong) NSDate* dismissedAt;
 
 @end
 
@@ -30,7 +30,7 @@
 @property (nonatomic,strong) NSDictionary* data;
 @property (nonatomic,strong) NSDictionary* badgeConfig;
 @property (nonatomic,strong) NSDictionary* inboxConfig;
-@property (nonatomic,strong) NSDate* openedAt;
+@property (nonatomic,strong) NSDate* dismissedAt;
 
 + (instancetype) fromEntity:(KSInAppMessageEntity*)entity;
 
