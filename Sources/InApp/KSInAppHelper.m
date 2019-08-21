@@ -384,7 +384,10 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #pragma mark - Interop with other components
 
 - (void)handleAssociatedUserChange {
-    if (![self inAppEnabled] && ![self userConsented]) {
+    if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyNotEnabled) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self updateUserConsent:NO];
+        });
         return;
     }
 
