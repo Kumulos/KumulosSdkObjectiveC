@@ -13,7 +13,7 @@
 
 #define KUMULOS_MESSAGES_LAST_SYNC_TIME @"KumulosMessagesLastSyncTime"
 #define KUMULOS_IN_APP_CONSENTED_KEY @"KumulosInAppConsented"
-NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
+static NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
 
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
 NSString* _Nonnull const KSInAppPresentedNextOpen = @"next-open";
