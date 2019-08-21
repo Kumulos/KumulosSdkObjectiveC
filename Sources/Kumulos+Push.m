@@ -41,7 +41,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 }
 
 - (NSDictionary*) inAppDeepLink {
-    NSDictionary* deepLink = self.data[@"k.deeplink"];
+    NSDictionary* deepLink = self.data[@"k.deepLink"];
     if (!deepLink || [deepLink[@"type"] intValue] != KSDeepLinkTypeInApp) {
         return nil;
     }
