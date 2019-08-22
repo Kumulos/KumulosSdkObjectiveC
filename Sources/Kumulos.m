@@ -13,6 +13,7 @@
 
 #if TARGET_OS_IOS
 #import "Kumulos+Push.h"
+#import "Kumulos+PushProtected.h"
 #endif
 
 #ifdef COCOAPODS
@@ -45,7 +46,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_runtimeInfo = nil;
         self->_sdkInfo = nil;
         self->_targetType = TargetTypeNotOverridden;
-        self->_inAppConsentStrategy = -1;
+        self->_inAppConsentStrategy = KSInAppConsentStrategyNotEnabled;
         self->_inAppDeepLinkHandler = nil;
     }
     return self;
@@ -128,6 +129,7 @@ static Kumulos* _shared;
 #if TARGET_OS_IOS
         [self initAnalytics];
         [self initInApp];
+        [self pushInit];
 #endif
         
         [self statsSendInstallInfo];

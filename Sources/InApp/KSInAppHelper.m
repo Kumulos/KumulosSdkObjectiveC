@@ -3,6 +3,7 @@
 //  KumulosSDK
 //
 
+#import <objc/runtime.h>
 #import "KSInAppHelper.h"
 #import "../Kumulos+Analytics.h"
 #import "../Kumulos+Protected.h"
@@ -11,18 +12,24 @@
 #import "KSInAppPresenter.h"
 
 #define KUMULOS_MESSAGES_LAST_SYNC_TIME @"KumulosMessagesLastSyncTime"
-#define KUMULOS_IN_APP_CONSENTED_FOR_USER @"KumulosInAppConsentedForUser"
-NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
+#define KUMULOS_IN_APP_CONSENTED_KEY @"KumulosInAppConsented"
+static NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
 
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
 NSString* _Nonnull const KSInAppPresentedNextOpen = @"next-open";
 NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
+
+static IMP ks_existingBackgroundFetchDelegate = NULL;
+
+typedef void (^KSCompletionHandler)(UIBackgroundFetchResult);
+void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIApplication* application, KSCompletionHandler completionHandler);
 
 @interface KSInAppHelper ()
 
 @property (nonatomic) Kumulos* _Nonnull kumulos;
 @property (nonatomic) KSInAppPresenter* _Nonnull presenter;
 @property (nonatomic) NSManagedObjectContext* messagesContext;
+@property (nonatomic) NSMutableArray<NSNumber*>* pendingTickleIds;
 
 @end
 
@@ -33,9 +40,10 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 - (instancetype)initWithKumulos:(Kumulos* _Nonnull)kumulos {
     if (self = [super init]) {
         self.kumulos = kumulos;
+        self.pendingTickleIds = [[NSMutableArray alloc] initWithCapacity:1];
         self.presenter = [[KSInAppPresenter alloc] initWithKumulos:kumulos];
         [self initContext];
-        [self handleAutoEnrollmentAndSyncSetup];
+        [self handleEnrollmentAndSyncSetup];
     }
 
     return self;
@@ -71,19 +79,34 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 }
 
 - (void) appBecameActive {
-    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
-    [self.presenter queueMessagesForPresentation:messagesToPresent];
+    @synchronized (self.pendingTickleIds) {
+        NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
+        [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
+    }
+}
+
+- (void) setupSyncTask {
+    // TODO iOS13 background task service (later)
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Class class = UIApplication.sharedApplication.delegate.class;
+
+        // Perform background fetch
+        SEL performFetchSelector = @selector(application:performFetchWithCompletionHandler:);
+        const char *fetchType = [[NSString stringWithFormat:@"%s%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(UIApplication*), @encode(KSCompletionHandler)] UTF8String];
+
+        ks_existingBackgroundFetchDelegate = class_replaceMethod(class, performFetchSelector, (IMP)kumulos_applicationPerformFetchWithCompletionHandler, fetchType);
+    });
 }
 
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
-    NSString* key = [NSString stringWithFormat:@"%@:%@", KUMULOS_IN_APP_CONSENTED_FOR_USER, Kumulos.currentUserIdentifier];
-    return key;
+    return KUMULOS_IN_APP_CONSENTED_KEY;
 }
 
 -(BOOL)inAppEnabled {
-    BOOL enabled = self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyExplicitByUser || self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyAutoEnroll;
+    BOOL enabled = self.kumulos.config.inAppConsentStrategy != KSInAppConsentStrategyNotEnabled;
 
     return enabled && [self userConsented];
 }
@@ -102,33 +125,63 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
     if (consentGiven) {
         [NSUserDefaults.standardUserDefaults setObject:@(consentGiven) forKey:consentKey];
-        [self handleAutoEnrollmentAndSyncSetup];
+        [self handleEnrollmentAndSyncSetup];
     } else {
-        // TODO stop sync, reset flags etc.
-        [NSUserDefaults.standardUserDefaults removeObjectForKey:consentKey];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self resetMessagingState];
+        });
     }
 }
 
--(void) handleAutoEnrollmentAndSyncSetup {
+-(void) handleEnrollmentAndSyncSetup {
     if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyAutoEnroll && [self userConsented] == NO) {
         [self updateUserConsent:YES];
+        return;
+    } else if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyNotEnabled && [self userConsented] == YES) {
+        [self updateUserConsent:NO];
         return;
     }
 
     if ([self inAppEnabled]) {
-        // TODO don't sync here, sync from fetch handler
-        [self sync];
-
+        [self setupSyncTask];
         [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
-        // TODO swizzle fetch handler (now)
-        // TODO iOS13 background task service (later)
     }
+}
+
+-(void) resetMessagingState {
+    [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
+    [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
+    [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+
+    [self.messagesContext performBlockAndWait:^{
+        NSManagedObjectContext* context = self.messagesContext;
+        NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+        [fetchRequest setIncludesPendingChanges:YES];
+
+        NSError* err = nil;
+        NSArray<KSInAppMessageEntity*>* messages = [context executeFetchRequest:fetchRequest error:&err];
+
+        if (err != nil) {
+            return;
+        }
+
+        for (KSInAppMessageEntity* message in messages) {
+            [context deleteObject:message];
+        }
+
+        [context save:&err];
+
+        if (err != nil) {
+            NSLog(@"Failed to clean up messages: %@", err);
+            return;
+        }
+    }];
 }
 
 
 #pragma mark - Message management
 
--(void)sync {
+-(void)sync:(void (^_Nullable)(int result))onComplete {
     NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
     NSString* after = @"";
 
@@ -136,6 +189,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         NSDateFormatter* formatter = [NSDateFormatter new];
         [formatter setTimeStyle:NSDateFormatterFullStyle];
         [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedString]];
     }
 
@@ -144,10 +198,17 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         NSArray<NSDictionary*>* messagesToPersist = decodedBody;
         if (!messagesToPersist.count) {
+            if (onComplete) {
+                onComplete(0);
+            }
             return;
         }
 
         [self persistInAppMessages:messagesToPersist];
+
+        if (onComplete) {
+            onComplete(1);
+        }
 
         dispatch_async(dispatch_get_main_queue(), ^{
             if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
@@ -156,11 +217,13 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
-                [self.presenter queueMessagesForPresentation:messagesToPresent];
+                [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
             });
         });
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
-        // Noop
+        if (onComplete) {
+            onComplete(-1);
+        }
     }];
 }
 
@@ -192,7 +255,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 
             model.id = partId;
             model.updatedAt = [dateParser dateFromString:message[@"updatedAt"]];
-            model.openedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
+            model.dismissedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
             model.presentedWhen = message[@"presentedWhen"];
             model.content = message[@"content"];
             model.data = [message[@"data"] isEqual:NSNull.null] ? nil : message[@"data"];
@@ -231,7 +294,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     [fetchRequest setIncludesPendingChanges:YES];
 
     NSPredicate* predicate = [NSPredicate
-                              predicateWithFormat:@"(openedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
+                              predicateWithFormat:@"(dismissedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
                               nil, nil, nil, [NSDate date]];
     [fetchRequest setPredicate:predicate];
 
@@ -260,8 +323,9 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
         NSPredicate* predicate = [NSPredicate
-                                  predicateWithFormat:@"(presentedWhen IN %@) AND (openedAt = %@)",
+                                  predicateWithFormat:@"((presentedWhen IN %@) OR (id IN %@)) AND (dismissedAt = %@)",
                                   presentedWhenOptions,
+                                  self.pendingTickleIds,
                                   nil];
 
         [fetchRequest setPredicate:predicate];
@@ -286,8 +350,12 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     return messages;
 }
 
-- (void)markMessageOpened:(KSInAppMessage *)message {
+- (void)trackMessageOpened:(KSInAppMessage *)message {
     [self.kumulos trackEvent:KumulosEventMessageOpened withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
+}
+
+- (void)markMessageDismissed:(KSInAppMessage *)message {
+    [self.kumulos trackEvent:KumulosEventMessageDismissed withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
     [self.messagesContext performBlock:^{
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
@@ -302,7 +370,7 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
         NSArray<KSInAppMessageEntity*>* messageEntities = [context executeFetchRequest:fetchRequest error:&err];
 
         if (err == nil && messageEntities != nil && messageEntities.count == 1) {
-            messageEntities[0].openedAt = [NSDate date];
+            messageEntities[0].dismissedAt = [NSDate date];
 
             [context save:&err];
 
@@ -311,6 +379,41 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
             }
         }
     }];
+}
+
+#pragma mark - Interop with other components
+
+- (void)handleAssociatedUserChange {
+    if (self.kumulos.config.inAppConsentStrategy == KSInAppConsentStrategyNotEnabled) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self updateUserConsent:NO];
+        });
+        return;
+    }
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self resetMessagingState];
+        [self handleEnrollmentAndSyncSetup];
+    });
+}
+
+- (void) handlePushOpen:(KSPushNotification *)notification {
+    if (![self inAppEnabled] || !notification.inAppDeepLink) {
+        return;
+    }
+
+    BOOL isActive = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSNumber* inAppPartId = notification.inAppDeepLink[@"data"][@"id"];
+        @synchronized (self.pendingTickleIds) {
+            [self.pendingTickleIds addObject:inAppPartId];
+            if (isActive) {
+                NSArray<KSInAppMessage*>* messages = [self getMessagesToPresent:@[]];
+                [self.presenter queueMessagesForPresentation:messages presentingTickles:self.pendingTickleIds];
+            }
+        }
+    });
 }
 
 #pragma mark - Data model
@@ -400,11 +503,11 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
     inboxTo.optional = YES;
     [messageProps addObject:inboxTo];
 
-    NSAttributeDescription* openedAt = [NSAttributeDescription new];
-    openedAt.name = @"openedAt";
-    openedAt.attributeType = NSDateAttributeType;
-    openedAt.optional = YES;
-    [messageProps addObject:openedAt];
+    NSAttributeDescription* dismissedAt = [NSAttributeDescription new];
+    dismissedAt.name = @"dismissedAt";
+    dismissedAt.attributeType = NSDateAttributeType;
+    dismissedAt.optional = YES;
+    [messageProps addObject:dismissedAt];
 
     [messageEntity setProperties:messageProps];
     [model setEntities:@[messageEntity]];
@@ -456,3 +559,36 @@ NSString* _Nonnull const KSInAppPresentedFromInbox = @"never";
 }
 
 @end
+
+#pragma mark - Swizzled behaviour handlers
+
+void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIApplication* application, KSCompletionHandler completionHandler) {
+    UIBackgroundFetchResult __block fetchResult = UIBackgroundFetchResultNoData;
+    dispatch_semaphore_t __block fetchBarrier = dispatch_semaphore_create(0);
+
+    if (ks_existingBackgroundFetchDelegate) {
+        ((void(*)(id,SEL,UIApplication*,KSCompletionHandler))ks_existingBackgroundFetchDelegate)(self, _cmd, application, ^(UIBackgroundFetchResult result) {
+            fetchResult = result;
+            dispatch_semaphore_signal(fetchBarrier);
+        });
+    } else {
+        dispatch_semaphore_signal(fetchBarrier);
+    }
+
+    if ([Kumulos.shared.inAppHelper inAppEnabled]) {
+        [Kumulos.shared.inAppHelper sync:^(int result) {
+            dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
+
+            if (result < 0) {
+                fetchResult = UIBackgroundFetchResultFailed;
+            } else if (result > 1) {
+                fetchResult = UIBackgroundFetchResultNewData;
+            }
+            // No data case is default, allow override from other handler
+
+            completionHandler(fetchResult);
+        }];
+    } else {
+        completionHandler(fetchResult);
+    }
+}
