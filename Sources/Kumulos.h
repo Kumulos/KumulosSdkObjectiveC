@@ -31,6 +31,7 @@ typedef NS_ENUM(NSInteger, KSTargetType) {
 };
 
 typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
+    KSInAppConsentStrategyNotEnabled,
     KSInAppConsentStrategyAutoEnroll,
     KSInAppConsentStrategyExplicitByUser
 };

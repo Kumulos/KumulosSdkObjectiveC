@@ -16,6 +16,7 @@
 static NSInteger const KSPushTokenTypeProduction = 1;
 static NSInteger const KSPushDeviceType = 1;
 static NSInteger const KSDeepLinkTypeInApp = 1;
+static NSUInteger const KS_MESSAGE_TYPE_PUSH = 1;
 
 static IMP ks_existingPushRegisterDelegate = NULL;
 static IMP ks_existingPushRegisterFailDelegate = NULL;
@@ -33,7 +34,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
     NSDictionary* custom = userInfo[@"custom"];
 
-    notification->_id = custom[@"a"][@"k.message"][@"id"];
+    notification->_id = custom[@"a"][@"k.message"][@"data"][@"id"];
     notification->_data = custom[@"a"];
     notification->_url = custom[@"u"] ? [NSURL URLWithString:custom[@"u"]] : nil;
 
@@ -41,7 +42,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 }
 
 - (NSDictionary*) inAppDeepLink {
-    NSDictionary* deepLink = self.data[@"k.deeplink"];
+    NSDictionary* deepLink = self.data[@"k.deepLink"];
     if (!deepLink || [deepLink[@"type"] intValue] != KSDeepLinkTypeInApp) {
         return nil;
     }
@@ -125,21 +126,14 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     [self.analyticsHelper trackEvent:KumulosEventDeviceUnsubscribed withProperties:nil flushingImmediately:YES];
 }
 
-- (void) pushTrackOpenFromNotification:(NSDictionary* _Nullable)userInfo {
-    if (nil == userInfo) {
+- (void) pushTrackOpenFromNotification:(KSPushNotification* _Nullable)notification {
+    if (nil == notification) {
         return;
     }
     
-    NSDictionary* notification = userInfo;
-    NSDictionary* custom = notification[@"custom"];
+    NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notification.id};
     
-    if (nil == custom || !custom[@"i"]) {
-        return;
-    }
-    
-    NSDictionary* params = @{@"id": custom[@"i"]};
-    
-    [self.analyticsHelper trackEvent:KumulosEventPushOpened withProperties:params];
+    [self.analyticsHelper trackEvent:KumulosEventMessageOpened withProperties:params];
 }
 
 - (void) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
@@ -149,7 +143,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
     KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
 
-    [self pushTrackOpenFromNotification:userInfo];
+    [self pushTrackOpenFromNotification:notification];
 
     // Handle URL pushes
     if (notification.url) {
@@ -214,11 +208,15 @@ void kumulos_applicationdidFailToRegisterForRemoteNotifications(id self, SEL _cm
 // iOS9+ handler for background data pushes (content-available)
 void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id self, SEL _cmd, UIApplication* application, NSDictionary* userInfo, KSCompletionHandler completionHandler) {
     UIBackgroundFetchResult __block fetchResult = UIBackgroundFetchResultNoData;
+    dispatch_semaphore_t __block fetchBarrier = dispatch_semaphore_create(0);
 
     if (ks_existingPushReceiveDelegate) {
         ((void(*)(id,SEL,UIApplication*,NSDictionary*,KSCompletionHandler))ks_existingPushReceiveDelegate)(self, _cmd, application, userInfo, ^(UIBackgroundFetchResult result) {
             fetchResult = result;
+            dispatch_semaphore_signal(fetchBarrier);
         });
+    } else {
+        dispatch_semaphore_signal(fetchBarrier);
     }
 
     // iOS9 open handler
@@ -232,6 +230,8 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
     if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
         [Kumulos.shared.inAppHelper sync:^(int result) {
+            dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
+
             if (result < 0) {
                 fetchResult = UIBackgroundFetchResultFailed;
             } else if (result > 1) {

@@ -12,8 +12,7 @@
 @import WebKit;
 @import StoreKit;
 
-//NSString* const _Nonnull KSInAppRendererUrl = @"https://iar.app.delivery";
-NSString* const _Nonnull KSInAppRendererUrl = @"http://192.168.1.195:8080";
+NSString* const _Nonnull KSInAppRendererUrl = @"https://iar.app.delivery";
 
 NSString* const _Nonnull KSInAppActionCloseMessage = @"closeMessage";
 NSString* const _Nonnull KSInAppActionTrackEvent = @"trackConversionEvent";
@@ -53,12 +52,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages presentingTickles:(NSArray<NSNumber*>*)tickleIds {
-    // TODO main thread
-//    if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
-//        NSLog(@"Application not active, aborting presentation routine");
-//        return;
-//    }
-
     @synchronized (self.messageQueue) {
         if (!messages.count && !self.messageQueue.count) {
             return;
@@ -116,8 +109,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
 - (void) presentFromQueue {
     if (!self.messageQueue.count) {
-        NSLog(@"Queue is empty, aborting");
         return;
+    }
+
+    if (self.loadingSpinner) {
+        [self.loadingSpinner performSelectorOnMainThread:@selector(startAnimating) withObject:nil waitUntilDone:YES];
     }
 
     self.currentMessage = self.messageQueue[0];
@@ -198,6 +194,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     // Spinner
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.translatesAutoresizingMaskIntoConstraints = NO;
+    self.loadingSpinner.hidesWhenStopped = YES;
     [self.loadingSpinner startAnimating];
     [self.frame addSubview:self.loadingSpinner];
 
@@ -242,7 +239,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         return;
     }
 
-    NSLog(@"Received message: %@", message.body);
     NSString* type = message.body[@"type"];
     if ([type isEqualToString:@"READY"]) {
         @synchronized (self.messageQueue) {
@@ -250,15 +246,19 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         }
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
-        [self.frame bringSubviewToFront:self.webView];
-        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
-        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+
+        if (@available(iOS 10, *)) {
+            NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
+            [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+        }
+
+        [self.kumulos.inAppHelper trackMessageOpened:self.currentMessage];
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
         [self handleMessageClosed];
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {
         [self handleActions:message.body[@"data"][@"actions"]];
     } else {
-        NSLog(@"Unknown message type: %@", type);
+        NSLog(@"Unknown message: %@", message.body);
     }
 }
 
@@ -275,11 +275,9 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) handleActions:(NSArray<NSDictionary*>*)actions {
-    NSLog(@"%@", actions);
-
     BOOL hasClose = NO;
     NSString* trackEvent = nil;
-    NSString* subscribeToChannel = nil;
+    NSString* subscribeToChannelUuid = nil;
     NSDictionary* userAction = nil;
 
     for (NSDictionary* action in actions) {
@@ -290,14 +288,14 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         } else if ([type isEqualToString:KSInAppActionTrackEvent]) {
             trackEvent = action[@"data"][@"eventType"];
         } else if ([type isEqualToString:KSInAppActionSubscribeChannel]) {
-            subscribeToChannel = action[@"data"][@"channelUuid"];
+            subscribeToChannelUuid = action[@"data"][@"channelUuid"];
         } else {
             userAction = action;
         }
     }
 
     if (hasClose) {
-        [self.kumulos.inAppHelper markMessageOpened:self.currentMessage];
+        [self.kumulos.inAppHelper markMessageDismissed:self.currentMessage];
         [self postClientMessage:@"CLOSE_MESSAGE" withData:nil];
     }
 
@@ -305,9 +303,9 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         [self.kumulos trackEvent:trackEvent withProperties:nil];
     }
 
-    if (subscribeToChannel != nil) {
+    if (subscribeToChannelUuid != nil) {
         KumulosPushSubscriptionManager* psm = [[KumulosPushSubscriptionManager alloc] initWithKumulos:self.kumulos];
-        [psm subscribeToChannels:@[subscribeToChannel]];
+        [psm subscribeToChannels:@[subscribeToChannelUuid]];
     }
 
     if (userAction != nil) {

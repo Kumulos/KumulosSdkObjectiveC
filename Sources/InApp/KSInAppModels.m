@@ -16,7 +16,7 @@
 @dynamic inboxConfig;
 @dynamic inboxFrom;
 @dynamic inboxTo;
-@dynamic openedAt;
+@dynamic dismissedAt;
 
 @end
 
@@ -29,7 +29,7 @@
 @synthesize data;
 @synthesize badgeConfig;
 @synthesize inboxConfig;
-@synthesize openedAt;
+@synthesize dismissedAt;
 
 + (instancetype)fromEntity:(KSInAppMessageEntity *)entity {
     KSInAppMessage* message = [KSInAppMessage new];
@@ -40,7 +40,7 @@
     message.data = entity.data;
     message.badgeConfig = entity.badgeConfig;
     message.inboxConfig = entity.inboxConfig;
-    message.openedAt = entity.openedAt;
+    message.dismissedAt = entity.dismissedAt;
 
     return message;
 }
