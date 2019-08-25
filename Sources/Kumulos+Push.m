@@ -24,7 +24,7 @@ static IMP ks_existingPushReceiveDelegate = NULL;
 
 typedef void (^KSCompletionHandler)(UIBackgroundFetchResult);
 void kumulos_applicationDidRegisterForRemoteNotifications(id self, SEL _cmd, UIApplication* application, NSData* deviceToken);
-void kumulos_applicationdidFailToRegisterForRemoteNotifications(id self, SEL _cmd, UIApplication* application, NSError* error);
+void kumulos_applicationDidFailToRegisterForRemoteNotifications(id self, SEL _cmd, UIApplication* application, NSError* error);
 void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id self, SEL _cmd, UIApplication* applicaiton, NSDictionary* notification, KSCompletionHandler completionHandler);
 
 @implementation KSPushNotification
@@ -69,7 +69,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
         SEL didFailToRegisterSelector = @selector(application:didFailToRegisterForRemoteNotificationsWithError:);
         const char *regFailType = [[NSString stringWithFormat:@"%s%s%s%s%s", @encode(void), @encode(id), @encode(SEL), @encode(UIApplication*), @encode(NSError*)] UTF8String];
 
-        ks_existingPushRegisterFailDelegate = class_replaceMethod(class, didFailToRegisterSelector, (IMP)kumulos_applicationdidFailToRegisterForRemoteNotifications, regFailType);
+        ks_existingPushRegisterFailDelegate = class_replaceMethod(class, didFailToRegisterSelector, (IMP)kumulos_applicationDidFailToRegisterForRemoteNotifications, regFailType);
 
         // iOS9 did receive remote delegate
         // iOS9+ content-available handler
@@ -196,8 +196,8 @@ void kumulos_applicationDidRegisterForRemoteNotifications(id self, SEL _cmd, UIA
     [Kumulos.shared pushRegisterWithDeviceToken:deviceToken];
 }
 
-void kumulos_applicationdidFailToRegisterForRemoteNotifications(id self, SEL _cmd, UIApplication* application, NSError* error) {
-    if (ks_existingPushReceiveDelegate) {
+void kumulos_applicationDidFailToRegisterForRemoteNotifications(id self, SEL _cmd, UIApplication* application, NSError* error) {
+    if (ks_existingPushRegisterFailDelegate) {
         ((void(*)(id,SEL,UIApplication*,NSError*))ks_existingPushRegisterFailDelegate)(self, _cmd, application, error);
     }
 
