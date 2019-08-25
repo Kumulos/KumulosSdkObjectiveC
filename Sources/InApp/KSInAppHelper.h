@@ -18,6 +18,8 @@ extern NSString* _Nonnull const KSInAppPresentedFromInbox;
 
 @interface KSInAppHelper : NSObject
 
+@property (nonatomic) NSManagedObjectContext* _Nullable messagesContext;
+
 - (instancetype _Nullable) initWithKumulos:(Kumulos* _Nonnull) kumulos;
 - (void) updateUserConsent:(BOOL)consentGiven;
 - (void) sync:(void (^_Nullable)(int result))onComplete;
@@ -25,4 +27,6 @@ extern NSString* _Nonnull const KSInAppPresentedFromInbox;
 - (void) markMessageDismissed:(KSInAppMessage* _Nonnull)message;
 - (void) handleAssociatedUserChange;
 - (void) handlePushOpen:(KSPushNotification* _Nonnull)notification;
+- (BOOL) presentMessageWithId:(NSNumber* _Nonnull)messageId;
+
 @end
