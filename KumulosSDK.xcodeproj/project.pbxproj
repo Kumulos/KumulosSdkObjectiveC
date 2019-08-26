@@ -54,6 +54,7 @@
 		125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77D1F8BD8640008CAA4 /* KSCrash.framework */; };
 		12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
 		12659F6A1FE13C3E003C31BF /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
+		126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */; };
 		12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735BAE1E4CE35900ED4488 /* KSAPIOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -383,6 +384,7 @@
 				12735BAE1E4CE35900ED4488 /* KSAPIOperation.h in Headers */,
 				12562CFA20E27807005CFCED /* KSUrlEncoding.h in Headers */,
 				125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
+				126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */,
 				12735BB61E4CE35900ED4488 /* Kumulos+Protected.h in Headers */,
 				12562CB420E161A9005CFCED /* KSHttpClient.h in Headers */,
 				12735BB21E4CE35900ED4488 /* KSessionTokenManager.h in Headers */,
