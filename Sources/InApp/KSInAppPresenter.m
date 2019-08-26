@@ -66,7 +66,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         }
 
         if (tickleIds != nil && tickleIds.count > 0) {
-            for (NSNumber* tickleId in [tickleIds reverseObjectEnumerator]) {
+            for (NSNumber* tickleId in tickleIds) {
                 if ([self.pendingTickleIds containsObject:tickleId]) {
                     continue;
                 }
