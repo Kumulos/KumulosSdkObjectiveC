@@ -28,7 +28,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
 @property (nonatomic) Kumulos* _Nonnull kumulos;
 @property (nonatomic) KSInAppPresenter* _Nonnull presenter;
-@property (nonatomic) NSMutableArray<NSNumber*>* pendingTickleIds;
+@property (nonatomic) NSMutableOrderedSet<NSNumber*>* pendingTickleIds;
 
 @end
 
@@ -39,7 +39,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 - (instancetype)initWithKumulos:(Kumulos* _Nonnull)kumulos {
     if (self = [super init]) {
         self.kumulos = kumulos;
-        self.pendingTickleIds = [[NSMutableArray alloc] initWithCapacity:1];
+        self.pendingTickleIds = [[NSMutableOrderedSet alloc] initWithCapacity:1];
         self.presenter = [[KSInAppPresenter alloc] initWithKumulos:kumulos];
         [self initContext];
         [self handleEnrollmentAndSyncSetup];
@@ -357,6 +357,11 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
 - (void)markMessageDismissed:(KSInAppMessage *)message {
     [self.kumulos trackEvent:KumulosEventMessageDismissed withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
+
+    if ([self.pendingTickleIds containsObject:message.id]) {
+        [self.pendingTickleIds removeObject:message.id];
+    }
+
     [self.messagesContext performBlock:^{
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
@@ -413,7 +418,8 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         }
 
         KSInAppMessage* message = [KSInAppMessage fromEntity:items.firstObject];
-        [self.presenter queueMessagesForPresentation:@[message] presentingTickles:@[messageId]];
+        NSOrderedSet* tickles = [NSOrderedSet orderedSetWithObjects:messageId, nil];
+        [self.presenter queueMessagesForPresentation:@[message] presentingTickles:tickles];
     }];
 
     return result;

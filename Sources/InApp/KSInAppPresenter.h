@@ -12,6 +12,6 @@
 @interface KSInAppPresenter : NSObject <WKScriptMessageHandler,WKNavigationDelegate>
 
 - (instancetype _Nullable) initWithKumulos:(Kumulos* _Nonnull) kumulos;
-- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>* _Nonnull) messages presentingTickles:(NSArray<NSNumber*>* _Nullable)tickleIds;
+- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>* _Nonnull) messages presentingTickles:(NSOrderedSet<NSNumber*>* _Nullable)tickleIds;
 
 @end

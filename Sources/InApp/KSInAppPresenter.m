@@ -51,7 +51,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     return self;
 }
 
-- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages presentingTickles:(NSArray<NSNumber*>*)tickleIds {
+- (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>*)messages presentingTickles:(NSOrderedSet<NSNumber*>*)tickleIds {
     @synchronized (self.messageQueue) {
         if (!messages.count && !self.messageQueue.count) {
             return;
