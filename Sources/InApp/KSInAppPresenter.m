@@ -133,6 +133,11 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
             [self presentFromQueue];
         }
     }
+
+    if (@available(iOS 10, *)) {
+        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
+        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+    }
 }
 
 - (void) cancelCurrentPresentationQueue:(BOOL)waitForViewCleanup {
@@ -262,12 +267,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         }
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
-
-        if (@available(iOS 10, *)) {
-            NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
-            [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
-        }
-
         [self.kumulos.inAppHelper trackMessageOpened:self.currentMessage];
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
         [self handleMessageClosed];
