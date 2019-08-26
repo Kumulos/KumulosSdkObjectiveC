@@ -16,9 +16,9 @@
 @end
 
 @interface KSEventModel : NSManagedObject
-@property (nonatomic,strong) NSString* uuid;
-@property (nonatomic,strong) NSString* userIdentifier;
-@property (nonatomic,strong) NSString* eventType;
-@property (nonatomic,strong) NSNumber* happenedAt;
-@property (nonatomic,strong) NSData* properties;
+@property (nonatomic,strong) NSString* _Nonnull uuid;
+@property (nonatomic,strong) NSString* _Nonnull userIdentifier;
+@property (nonatomic,strong) NSString* _Nonnull eventType;
+@property (nonatomic,strong) NSNumber* _Nonnull happenedAt;
+@property (nonatomic,strong) NSData* _Nullable properties;
 @end

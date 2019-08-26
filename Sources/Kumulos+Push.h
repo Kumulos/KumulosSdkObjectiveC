@@ -8,6 +8,16 @@
 #import <Foundation/Foundation.h>
 #import "Kumulos.h"
 
+@interface KSPushNotification : NSObject
+
+@property (nonatomic,readonly) NSNumber* _Nonnull id;
+@property (nonatomic,readonly) NSDictionary* _Nonnull aps;
+@property (nonatomic,readonly) NSDictionary* _Nonnull data;
+@property (nonatomic,readonly) NSURL* _Nullable url;
+@property (nonatomic,readonly) NSDictionary* _Nullable inAppDeepLink;
+
+@end
+
 @interface Kumulos (Push)
 
 /**
@@ -32,8 +42,8 @@
 
 /**
  * Tracks a conversion from a notification object to let Kumulos know that the given push 'converted' the user
- * @param userInfo The remote notification object userInfo that was receieved by the device
+ * @param notification The remote notification model that was receieved by the device
  */
-- (void) pushTrackOpenFromNotification:(NSDictionary* _Nullable)userInfo;
+- (void) pushTrackOpenFromNotification:(KSPushNotification* _Nullable)notification;
 
 @end

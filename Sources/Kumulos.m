@@ -13,6 +13,7 @@
 
 #if TARGET_OS_IOS
 #import "Kumulos+Push.h"
+#import "Kumulos+PushProtected.h"
 #endif
 
 #ifdef COCOAPODS
@@ -45,12 +46,30 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_runtimeInfo = nil;
         self->_sdkInfo = nil;
         self->_targetType = TargetTypeNotOverridden;
+        self->_inAppConsentStrategy = KSInAppConsentStrategyNotEnabled;
+        self->_inAppDeepLinkHandler = nil;
+        self->_pushOpenedHandler = nil;
     }
     return self;
 }
 
 - (instancetype _Nonnull) enableCrashReporting {
     self->_crashReportingEnabled = YES;
+    return self;
+}
+
+- (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy {
+    self->_inAppConsentStrategy = consentStrategy;
+    return self;
+}
+
+- (instancetype)setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler {
+    self->_inAppDeepLinkHandler = deepLinkHandler;
+    return self;
+}
+
+- (instancetype)setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler {
+    self->_pushOpenedHandler = notificationHandler;
     return self;
 }
 
@@ -115,6 +134,8 @@ static Kumulos* _shared;
         
 #if TARGET_OS_IOS
         [self initAnalytics];
+        [self initInApp];
+        [self pushInit];
 #endif
         
         [self statsSendInstallInfo];
@@ -152,6 +173,9 @@ static Kumulos* _shared;
 #if TARGET_OS_IOS
 - (void) initAnalytics {
     self.analyticsHelper = [[AnalyticsHelper alloc] initWithKumulos:self];
+}
+- (void) initInApp {
+    self.inAppHelper = [[KSInAppHelper alloc] initWithKumulos:self];
 }
 #endif
 

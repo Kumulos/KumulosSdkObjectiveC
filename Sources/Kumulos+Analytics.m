@@ -50,6 +50,12 @@ static NSString* _Nonnull const userIdLocker = @"";
     @synchronized (userIdLocker) {
         [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_USER_ID_KEY];
     }
+
+#if TARGET_OS_IOS
+    if (currentUserId != nil && ![currentUserId isEqualToString:Kumulos.installId]) {
+        [self.inAppHelper handleAssociatedUserChange];
+    }
+#endif
 }
 
 #pragma mark - Helpers
@@ -69,11 +75,19 @@ static NSString* _Nonnull const userIdLocker = @"";
         params = @{ @"id": userIdentifier };
     }
 
+    NSString* currentUserIdentifier = nil;
     @synchronized (userIdLocker) {
+        currentUserIdentifier = [NSUserDefaults.standardUserDefaults valueForKey:KUMULOS_USER_ID_KEY];
         [NSUserDefaults.standardUserDefaults setObject:userIdentifier forKey:KUMULOS_USER_ID_KEY];
     }
 
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
+
+#if TARGET_OS_IOS
+    if (currentUserIdentifier == nil || ![currentUserIdentifier isEqualToString:userIdentifier]) {
+        [self.inAppHelper handleAssociatedUserChange];
+    }
+#endif
 }
 
 @end
