@@ -48,6 +48,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_targetType = TargetTypeNotOverridden;
         self->_inAppConsentStrategy = KSInAppConsentStrategyNotEnabled;
         self->_inAppDeepLinkHandler = nil;
+        self->_pushOpenedHandler = nil;
     }
     return self;
 }
@@ -64,6 +65,11 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 - (instancetype)setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler {
     self->_inAppDeepLinkHandler = deepLinkHandler;
+    return self;
+}
+
+- (instancetype)setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler {
+    self->_pushOpenedHandler = notificationHandler;
     return self;
 }
 

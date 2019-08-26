@@ -14,11 +14,13 @@
 
 @class KSAPIOperation;
 @class KSAPIResponse;
+@class KSPushNotification;
 @protocol KSAPIOperationDelegate;
 
 typedef void (^ _Nullable KSAPIOperationSuccessBlock)(KSAPIResponse* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSInAppDeepLinkHandlerBlock)(NSDictionary* _Nonnull data);
+typedef void (^ _Nullable KSPushOpenedHandlerBlock)(KSPushNotification* _Nonnull notification);
 
 /**
  * Config options for initializing a Kumulos instance
@@ -49,6 +51,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 
 @property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
 @property (nonatomic,readonly) KSInAppDeepLinkHandlerBlock inAppDeepLinkHandler;
+@property (nonatomic,readonly) KSPushOpenedHandlerBlock pushOpenedHandler;
 
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
@@ -58,6 +61,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 #if TARGET_OS_IOS
 - (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy;
 - (instancetype _Nonnull) setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler;
+- (instancetype _Nonnull) setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler;
 #endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;

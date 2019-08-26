@@ -35,6 +35,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     NSDictionary* custom = userInfo[@"custom"];
 
     notification->_id = custom[@"a"][@"k.message"][@"data"][@"id"];
+    notification->_aps = userInfo[@"aps"];
     notification->_data = custom[@"a"];
     notification->_url = custom[@"u"] ? [NSURL URLWithString:custom[@"u"]] : nil;
 
@@ -142,7 +143,6 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
 
     KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
-
     [self pushTrackOpenFromNotification:notification];
 
     // Handle URL pushes
@@ -159,6 +159,12 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
 
     [self.inAppHelper handlePushOpen:notification];
+
+    if (self.config.pushOpenedHandler) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.config.pushOpenedHandler(notification);
+        });
+    }
 }
 
 - (NSNumber*) pushGetTokenType {

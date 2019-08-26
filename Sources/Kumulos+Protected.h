@@ -33,7 +33,7 @@
 @property (nonatomic) KSInAppHelper* _Nullable inAppHelper;
 @property (nonatomic) NSObject<UNUserNotificationCenterDelegate>* _Nullable notificationCenterDelegate API_AVAILABLE(ios(10.0));
 #else
-@property (nonatomic) KSHttpClient* statsHttpClient;
+@property (nonatomic) KSHttpClient* _Nullable statsHttpClient;
 #endif
 
 @end

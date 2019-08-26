@@ -11,6 +11,7 @@
 @interface KSPushNotification : NSObject
 
 @property (nonatomic,readonly) NSNumber* _Nonnull id;
+@property (nonatomic,readonly) NSDictionary* _Nonnull aps;
 @property (nonatomic,readonly) NSDictionary* _Nonnull data;
 @property (nonatomic,readonly) NSURL* _Nullable url;
 @property (nonatomic,readonly) NSDictionary* _Nullable inAppDeepLink;
