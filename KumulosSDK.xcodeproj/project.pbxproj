@@ -55,6 +55,8 @@
 		12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
 		12659F6A1FE13C3E003C31BF /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
 		126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */; };
+		126AD08C2314160D00A211B8 /* KSUserNotificationCenterDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */; };
+		126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */; };
 		12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735BAE1E4CE35900ED4488 /* KSAPIOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -136,6 +138,7 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */,
 				12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */,
 				12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */,
 				12BBE99C20E3CCB200DC9916 /* Kumulos.h in CopyFiles */,
@@ -371,6 +374,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				120CD57022DCAF3200067A45 /* KSInAppHelper.h in Headers */,
+				126AD08C2314160D00A211B8 /* KSUserNotificationCenterDelegate.h in Headers */,
 				129BC4E32062AD3E005AE632 /* KumulosEvents.h in Headers */,
 				12BD21CD230D8FB200BE0D18 /* KumulosInApp.h in Headers */,
 				12735BBB1E4CE35900ED4488 /* KumulosPushSubscriptionManager.h in Headers */,
