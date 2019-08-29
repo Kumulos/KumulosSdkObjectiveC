@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UserNotifications/UserNotifications.h>
 
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 #else
@@ -21,6 +22,11 @@ typedef void (^ _Nullable KSAPIOperationSuccessBlock)(KSAPIResponse* _Nonnull, K
 typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSInAppDeepLinkHandlerBlock)(NSDictionary* _Nonnull data);
 typedef void (^ _Nullable KSPushOpenedHandlerBlock)(KSPushNotification* _Nonnull notification);
+
+API_AVAILABLE(ios(10.0), macos(10.14))
+typedef void (^ _Nonnull KSPushReceivedInForegroundCompletionHandler)(UNNotificationPresentationOptions);
+API_AVAILABLE(ios(10.0), macos(10.14))
+typedef void (^ _Nullable KSPushReceivedInForegroundHandlerBlock)(KSPushNotification* _Nonnull notification, KSPushReceivedInForegroundCompletionHandler completionHandler);
 
 /**
  * Config options for initializing a Kumulos instance
@@ -52,6 +58,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 @property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
 @property (nonatomic,readonly) KSInAppDeepLinkHandlerBlock inAppDeepLinkHandler;
 @property (nonatomic,readonly) KSPushOpenedHandlerBlock pushOpenedHandler;
+@property (nonatomic,readonly) KSPushReceivedInForegroundHandlerBlock pushReceivedInForegroundHandler API_AVAILABLE(ios(10.0), macos(10.14));
 
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
@@ -62,6 +69,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy;
 - (instancetype _Nonnull) setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler;
 - (instancetype _Nonnull) setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler;
+- (instancetype _Nonnull) setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler API_AVAILABLE(ios(10.0),macos(10.14));
 #endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;
