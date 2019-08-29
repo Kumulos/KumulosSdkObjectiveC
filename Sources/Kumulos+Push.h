@@ -10,6 +10,8 @@
 
 @interface KSPushNotification : NSObject
 
++ (instancetype _Nonnull) fromUserInfo:(NSDictionary* _Nonnull)userInfo;
+
 @property (nonatomic,readonly) NSNumber* _Nonnull id;
 @property (nonatomic,readonly) NSDictionary* _Nonnull aps;
 @property (nonatomic,readonly) NSDictionary* _Nonnull data;

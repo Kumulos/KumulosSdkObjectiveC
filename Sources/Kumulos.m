@@ -49,6 +49,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_inAppConsentStrategy = KSInAppConsentStrategyNotEnabled;
         self->_inAppDeepLinkHandler = nil;
         self->_pushOpenedHandler = nil;
+        self->_pushReceivedInForegroundHandler = nil;
     }
     return self;
 }
@@ -70,6 +71,11 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 - (instancetype)setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler {
     self->_pushOpenedHandler = notificationHandler;
+    return self;
+}
+
+- (instancetype)setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler  API_AVAILABLE(macos(10.14)){
+    self->_pushReceivedInForegroundHandler = receivedHandler;
     return self;
 }
 
