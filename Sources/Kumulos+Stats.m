@@ -15,6 +15,8 @@
 #import "KumulosEvents.h"
 #endif
 
+static const NSString* KSSdkVersion = @"2.1.1";
+
 @implementation Kumulos (Stats)
 
 - (void) statsSendInstallInfo {
@@ -45,11 +47,8 @@
     NSDictionary *sdk = self.config.sdkInfo;
     
     if (nil == sdk) {
-        NSBundle* frameworkBundle = [NSBundle bundleForClass:[self class]];
-        NSString* frameworkVersion = [[frameworkBundle infoDictionary] objectForKey:@"CFBundleShortVersionString"];
-        
         sdk = @{@"id" : @(SDKTypeObjC),
-                @"version" : frameworkVersion};
+                @"version" : KSSdkVersion};
     }
     
     NSDictionary *runtime = self.config.runtimeInfo;
