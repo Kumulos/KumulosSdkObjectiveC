@@ -141,10 +141,20 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         return;
     }
 
-    if ([self inAppEnabled]) {
-        [self setupSyncTask];
-        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+    if (![self inAppEnabled]) {
+        return;
     }
+
+    [self setupSyncTask];
+    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self sync:^(int result) {
+            if (result > 0) {
+                [self appBecameActive];
+            }
+        }];
+    });
 }
 
 -(void) resetMessagingState {
