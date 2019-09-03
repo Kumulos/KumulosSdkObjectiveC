@@ -78,10 +78,24 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 }
 
 - (void) appBecameActive {
-    @synchronized (self.pendingTickleIds) {
-        NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
-        [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
-    }
+    [self presentImmediateAndNextOpenContent];
+
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        void (^onComplete)(int) = ^void(int result) {
+            if (result  > 0) {
+                [self presentImmediateAndNextOpenContent];
+            }
+        };
+
+#if DEBUG
+        [self sync:onComplete];
+#else
+        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+        if (lastSyncTime && [lastSyncTime timeIntervalSinceNow] < -3600) {
+            [self sync:onComplete];
+        }
+#endif
+    });
 }
 
 - (void) setupSyncTask {
@@ -151,7 +165,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [self sync:^(int result) {
             if (result > 0) {
-                [self appBecameActive];
+                [self presentImmediateAndNextOpenContent];
             }
         }];
     });
@@ -404,6 +418,13 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 }
 
 #pragma mark - Interop with other components
+
+- (void) presentImmediateAndNextOpenContent {
+    @synchronized (self.pendingTickleIds) {
+        NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately, KSInAppPresentedNextOpen]];
+        [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
+    }
+}
 
 - (BOOL)presentMessageWithId:(NSNumber*)messageId {
     BOOL __block result = YES;
