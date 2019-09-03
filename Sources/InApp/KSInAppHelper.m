@@ -29,6 +29,8 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 @property (nonatomic) Kumulos* _Nonnull kumulos;
 @property (nonatomic) KSInAppPresenter* _Nonnull presenter;
 @property (nonatomic) NSMutableOrderedSet<NSNumber*>* pendingTickleIds;
+@property (nonatomic) dispatch_queue_t syncQueue;
+@property (nonatomic) dispatch_semaphore_t syncBarrier;
 
 @end
 
@@ -41,6 +43,8 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         self.kumulos = kumulos;
         self.pendingTickleIds = [[NSMutableOrderedSet alloc] initWithCapacity:1];
         self.presenter = [[KSInAppPresenter alloc] initWithKumulos:kumulos];
+        self.syncQueue = dispatch_queue_create([@"kumulos.in-app.sync" cStringUsingEncoding:NSUTF8StringEncoding], DISPATCH_QUEUE_SERIAL);
+        self.syncBarrier = dispatch_semaphore_create(0);
         [self initContext];
         [self handleEnrollmentAndSyncSetup];
     }
@@ -80,22 +84,20 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 - (void) appBecameActive {
     [self presentImmediateAndNextOpenContent];
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        void (^onComplete)(int) = ^void(int result) {
-            if (result  > 0) {
-                [self presentImmediateAndNextOpenContent];
-            }
-        };
+    void (^onComplete)(int) = ^void(int result) {
+        if (result  > 0) {
+            [self presentImmediateAndNextOpenContent];
+        }
+    };
 
 #if DEBUG
-        [self sync:onComplete];
+    [self sync:onComplete];
 #else
-        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
-        if (lastSyncTime && [lastSyncTime timeIntervalSinceNow] < -3600) {
-            [self sync:onComplete];
-        }
+    NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+    if (lastSyncTime && [lastSyncTime timeIntervalSinceNow] < -3600) {
+        [self sync:onComplete];
+    }
 #endif
-    });
 }
 
 - (void) setupSyncTask {
@@ -162,7 +164,11 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     [self setupSyncTask];
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
 
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+            return;
+        }
+
         [self sync:^(int result) {
             if (result > 0) {
                 [self presentImmediateAndNextOpenContent];
@@ -205,49 +211,59 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #pragma mark - Message management
 
 -(void)sync:(void (^_Nullable)(int result))onComplete {
-    NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
-    NSString* after = @"";
+    dispatch_async(self.syncQueue, ^{
+        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+        NSString* after = @"";
 
-    if (lastSyncTime != nil) {
-        NSDateFormatter* formatter = [NSDateFormatter new];
-        [formatter setTimeStyle:NSDateFormatterFullStyle];
-        [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
-        [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-        after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedString]];
-    }
-
-    NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", Kumulos.currentUserIdentifier, after];
-
-    [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
-        NSArray<NSDictionary*>* messagesToPersist = decodedBody;
-        if (!messagesToPersist.count) {
-            if (onComplete) {
-                onComplete(0);
-            }
-            return;
+        if (lastSyncTime != nil) {
+            NSDateFormatter* formatter = [NSDateFormatter new];
+            [formatter setTimeStyle:NSDateFormatterFullStyle];
+            [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
+            [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+            after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedString]];
         }
 
-        [self persistInAppMessages:messagesToPersist];
+        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", Kumulos.currentUserIdentifier, after];
 
-        if (onComplete) {
-            onComplete(1);
-        }
+        [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+            NSArray<NSDictionary*>* messagesToPersist = decodedBody;
+            if (!messagesToPersist.count) {
+                if (onComplete) {
+                    onComplete(0);
+                }
 
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+                dispatch_semaphore_signal(self.syncBarrier);
                 return;
             }
 
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
-                [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
+            [self persistInAppMessages:messagesToPersist];
+
+            if (onComplete) {
+                onComplete(1);
+            }
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (UIApplication.sharedApplication.applicationState != UIApplicationStateActive) {
+                    return;
+                }
+
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSArray<KSInAppMessage*>* messagesToPresent = [self getMessagesToPresent:@[KSInAppPresentedImmediately]];
+                    [self.presenter queueMessagesForPresentation:messagesToPresent presentingTickles:self.pendingTickleIds];
+                });
             });
-        });
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
-        if (onComplete) {
-            onComplete(-1);
-        }
-    }];
+
+            dispatch_semaphore_signal(self.syncBarrier);
+        } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+            if (onComplete) {
+                onComplete(-1);
+            }
+
+            dispatch_semaphore_signal(self.syncBarrier);
+        }];
+
+        dispatch_semaphore_wait(self.syncBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
+    });
 }
 
 -(void)persistInAppMessages:(NSArray<NSDictionary*>*)messages {
