@@ -491,16 +491,12 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         return;
     }
 
-    BOOL isActive = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
-
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSNumber* inAppPartId = notification.inAppDeepLink[@"data"][@"id"];
         @synchronized (self.pendingTickleIds) {
             [self.pendingTickleIds addObject:inAppPartId];
-            if (isActive) {
-                NSArray<KSInAppMessage*>* messages = [self getMessagesToPresent:@[]];
-                [self.presenter queueMessagesForPresentation:messages presentingTickles:self.pendingTickleIds];
-            }
+            NSArray<KSInAppMessage*>* messages = [self getMessagesToPresent:@[]];
+            [self.presenter queueMessagesForPresentation:messages presentingTickles:self.pendingTickleIds];
         }
     });
 }
