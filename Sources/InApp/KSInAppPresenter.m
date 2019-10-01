@@ -164,6 +164,12 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     self.window.windowLevel = UIWindowLevelAlert;
     [self.window setRootViewController:[UIViewController new]];
 
+#ifdef __IPHONE_13_0
+    if (@available(iOS 13, *)) {
+        self.window.windowScene = UIApplication.sharedApplication.connectedScenes.allObjects.firstObject;
+    }
+#endif
+
     self.frame = [[UIView alloc] initWithFrame:self.window.frame];
     self.frame.backgroundColor = UIColor.clearColor;
     [self.window.rootViewController setView:self.frame];
