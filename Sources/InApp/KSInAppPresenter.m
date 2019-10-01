@@ -121,6 +121,13 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) handleMessageClosed {
+    if (@available(iOS 10, *)) {
+        if (self.currentMessage) {
+            NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
+            [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+        }
+    }
+
     @synchronized (self.messageQueue) {
         [self.messageQueue removeObjectAtIndex:0];
         [self.pendingTickleIds removeObject:self.currentMessage.id];
@@ -132,11 +139,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         } else {
             [self presentFromQueue];
         }
-    }
-
-    if (@available(iOS 10, *)) {
-        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
-        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
     }
 }
 
