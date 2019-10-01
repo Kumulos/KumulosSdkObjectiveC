@@ -218,12 +218,9 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.translatesAutoresizingMaskIntoConstraints = NO;
     self.loadingSpinner.hidesWhenStopped = YES;
+    self.loadingSpinner.center = self.frame.center;
     [self.loadingSpinner startAnimating];
     [self.frame addSubview:self.loadingSpinner];
-
-    NSLayoutConstraint* horCon = [NSLayoutConstraint constraintWithItem:self.loadingSpinner attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.frame attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    NSLayoutConstraint* verCon = [NSLayoutConstraint constraintWithItem:self.loadingSpinner attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.frame attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self.frame addConstraints:@[horCon, verCon]];
 
     [self.frame bringSubviewToFront:self.loadingSpinner];
 }
