@@ -166,7 +166,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
 #ifdef __IPHONE_13_0
     if (@available(iOS 13, *)) {
-        self.window.windowScene = UIApplication.sharedApplication.connectedScenes.allObjects.firstObject;
+        self.window.windowScene = (UIWindowScene*)UIApplication.sharedApplication.connectedScenes.allObjects.firstObject;
     }
 #endif
 
