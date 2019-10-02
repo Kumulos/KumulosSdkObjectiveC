@@ -121,6 +121,13 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void) handleMessageClosed {
+    if (@available(iOS 10, *)) {
+        if (self.currentMessage) {
+            NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
+            [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+        }
+    }
+
     @synchronized (self.messageQueue) {
         [self.messageQueue removeObjectAtIndex:0];
         [self.pendingTickleIds removeObject:self.currentMessage.id];
@@ -132,11 +139,6 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         } else {
             [self presentFromQueue];
         }
-    }
-
-    if (@available(iOS 10, *)) {
-        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
-        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
     }
 }
 
@@ -161,6 +163,12 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     self.window.windowLevel = UIWindowLevelAlert;
     [self.window setRootViewController:[UIViewController new]];
+
+#ifdef __IPHONE_13_0
+    if (@available(iOS 13, *)) {
+        self.window.windowScene = (UIWindowScene*)UIApplication.sharedApplication.connectedScenes.allObjects.firstObject;
+    }
+#endif
 
     self.frame = [[UIView alloc] initWithFrame:self.window.frame];
     self.frame.backgroundColor = UIColor.clearColor;
@@ -216,12 +224,9 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     self.loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     self.loadingSpinner.translatesAutoresizingMaskIntoConstraints = NO;
     self.loadingSpinner.hidesWhenStopped = YES;
+    self.loadingSpinner.center = self.frame.center;
     [self.loadingSpinner startAnimating];
     [self.frame addSubview:self.loadingSpinner];
-
-    NSLayoutConstraint* horCon = [NSLayoutConstraint constraintWithItem:self.loadingSpinner attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.frame attribute:NSLayoutAttributeCenterX multiplier:1 constant:0];
-    NSLayoutConstraint* verCon = [NSLayoutConstraint constraintWithItem:self.loadingSpinner attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.frame attribute:NSLayoutAttributeCenterY multiplier:1 constant:0];
-    [self.frame addConstraints:@[horCon, verCon]];
 
     [self.frame bringSubviewToFront:self.loadingSpinner];
 }
