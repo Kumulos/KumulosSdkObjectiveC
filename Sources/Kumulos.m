@@ -50,6 +50,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_inAppDeepLinkHandler = nil;
         self->_pushOpenedHandler = nil;
         self->_pushReceivedInForegroundHandler = nil;
+        self->_foregroundPushPresentationOption = UNNotificationPresentationOptionAlert;
     }
     return self;
 }

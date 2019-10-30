@@ -26,7 +26,7 @@ typedef void (^ _Nullable KSPushOpenedHandlerBlock)(KSPushNotification* _Nonnull
 API_AVAILABLE(ios(10.0), macos(10.14))
 typedef void (^ _Nonnull KSPushReceivedInForegroundCompletionHandler)(UNNotificationPresentationOptions);
 API_AVAILABLE(ios(10.0), macos(10.14))
-typedef void (^ _Nullable KSPushReceivedInForegroundHandlerBlock)(KSPushNotification* _Nonnull notification, KSPushReceivedInForegroundCompletionHandler completionHandler);
+typedef void (^ _Nullable KSPushReceivedInForegroundHandlerBlock)(KSPushNotification* _Nonnull notification);
 
 /**
  * Config options for initializing a Kumulos instance
@@ -54,6 +54,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 @property (nonatomic,readonly) NSDictionary* _Nullable runtimeInfo;
 @property (nonatomic,readonly) NSDictionary* _Nullable sdkInfo;
 @property (nonatomic,readonly) KSTargetType targetType;
+@property (nonatomic,readonly) UNNotificationPresentationOptions foregroundPushPresentationOption API_AVAILABLE(ios(10.0), macos(10.14));;
 
 @property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
 @property (nonatomic,readonly) KSInAppDeepLinkHandlerBlock inAppDeepLinkHandler;

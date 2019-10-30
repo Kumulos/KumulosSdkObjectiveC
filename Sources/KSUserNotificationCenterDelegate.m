@@ -26,10 +26,10 @@
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
     if (self.kumulos.config.pushReceivedInForegroundHandler) {
         KSPushNotification* push = [KSPushNotification fromUserInfo:notification.request.content.userInfo];
-        self.kumulos.config.pushReceivedInForegroundHandler(push, completionHandler);
-    } else {
-        completionHandler(UNNotificationPresentationOptionAlert);
+        self.kumulos.config.pushReceivedInForegroundHandler(push);
     }
+    
+    completionHandler(self.kumulos.config.foregroundPushPresentationOption);
 }
 
 // iOS10+ handler for when a user taps a notification
