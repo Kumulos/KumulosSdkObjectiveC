@@ -54,7 +54,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 @property (nonatomic,readonly) NSDictionary* _Nullable runtimeInfo;
 @property (nonatomic,readonly) NSDictionary* _Nullable sdkInfo;
 @property (nonatomic,readonly) KSTargetType targetType;
-@property (nonatomic,readonly) UNNotificationPresentationOptions foregroundPushPresentationOption API_AVAILABLE(ios(10.0), macos(10.14));;
+@property (nonatomic,readonly) UNNotificationPresentationOptions foregroundPushPresentationOptions API_AVAILABLE(ios(10.0), macos(10.14));;
 
 @property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
 @property (nonatomic,readonly) KSInAppDeepLinkHandlerBlock inAppDeepLinkHandler;
@@ -71,6 +71,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (instancetype _Nonnull) setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler;
 - (instancetype _Nonnull) setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler;
 - (instancetype _Nonnull) setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler API_AVAILABLE(ios(10.0),macos(10.14));
+- (instancetype _Nonnull) setForegroundPushPresentationOptions:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14));
 #endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;

@@ -29,7 +29,7 @@
         self.kumulos.config.pushReceivedInForegroundHandler(push);
     }
     
-    completionHandler(self.kumulos.config.foregroundPushPresentationOption);
+    completionHandler(self.kumulos.config.foregroundPushPresentationOptions);
 }
 
 // iOS10+ handler for when a user taps a notification

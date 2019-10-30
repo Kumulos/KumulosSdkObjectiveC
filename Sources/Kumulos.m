@@ -50,7 +50,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_inAppDeepLinkHandler = nil;
         self->_pushOpenedHandler = nil;
         self->_pushReceivedInForegroundHandler = nil;
-        self->_foregroundPushPresentationOption = UNNotificationPresentationOptionAlert;
+        self->_foregroundPushPresentationOptions = UNNotificationPresentationOptionAlert;
     }
     return self;
 }
@@ -75,7 +75,12 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
     return self;
 }
 
-- (instancetype)setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler  API_AVAILABLE(macos(10.14)){
+- (instancetype)setForegroundPushPresentationOption:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14)) {
+    self->_foregroundPushPresentationOptions =notificationPresentationOptions;
+    return self;
+}
+
+- (instancetype)setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler API_AVAILABLE(macos(10.14)){
     self->_pushReceivedInForegroundHandler = receivedHandler;
     return self;
 }
