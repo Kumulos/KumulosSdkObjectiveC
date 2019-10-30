@@ -75,8 +75,8 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
     return self;
 }
 
-- (instancetype)setForegroundPushPresentationOption:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14)) {
-    self->_foregroundPushPresentationOptions =notificationPresentationOptions;
+- (instancetype)setForegroundPushPresentationOptions:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14)) {
+    self->_foregroundPushPresentationOptions = notificationPresentationOptions;
     return self;
 }
 
