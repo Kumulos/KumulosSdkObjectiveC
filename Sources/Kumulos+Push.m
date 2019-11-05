@@ -201,7 +201,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     NSDictionary *userInfo = request.content.userInfo;
     NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
-
+    
     if (pictureUrl == nil) {
         contentHandler(bestAttemptContent);
         return;
@@ -218,11 +218,12 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
                    }];
 }
 
-+ (NSString *) getPictureExtension:(NSString *) pictureUrl {
++ (NSString * _Nullable) getPictureExtension:(NSString *) pictureUrl {
     NSString *pictureExtension = [pictureUrl pathExtension];
     if ([pictureExtension isEqualToString:@""]){
-       pictureExtension = @"jpg";
+       return nil;
     }
+ 
     return [ @"." stringByAppendingString:pictureExtension];
 }
 
@@ -239,7 +240,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     return [NSURL URLWithString:completeString];
 }
 
-+ (void)loadAttachment:(NSURL *)url withExtension:(NSString *)pictureExtension completionHandler:(void(^)(UNNotificationAttachment *))completionHandler API_AVAILABLE(ios(10.0)){
++ (void)loadAttachment:(NSURL *)url withExtension:(NSString * _Nullable)pictureExtension completionHandler:(void(^)(UNNotificationAttachment *))completionHandler API_AVAILABLE(ios(10.0)){
     NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
 
     [[session downloadTaskWithURL:url
@@ -249,9 +250,18 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
                         completionHandler(nil);
                         return;
                     }
+        
+                    NSString * finalExt = pictureExtension;
+                    if (finalExt == nil){
+                        finalExt = [self getPictureExtension: [response suggestedFilename]];
+                        if (finalExt == nil){
+                            completionHandler(nil);
+                            return;
+                        }
+                    }
 
                     NSFileManager *fileManager = [NSFileManager defaultManager];
-                    NSURL *localURL = [NSURL fileURLWithPath:[temporaryFileLocation.path stringByAppendingString:pictureExtension]];
+                    NSURL *localURL = [NSURL fileURLWithPath:[temporaryFileLocation.path stringByAppendingString:finalExt]];
                     [fileManager moveItemAtURL:temporaryFileLocation toURL:localURL error:&error];
 
                     NSError *attachmentError = nil;
