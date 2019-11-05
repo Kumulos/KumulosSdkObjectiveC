@@ -192,7 +192,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     return [token copy];
 }
 
-// KUMULOS NOTIFICATION SERVICE EXTENSION
+#pragma mark - Notification service extension
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     
@@ -233,7 +233,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
         return [NSURL URLWithString:pictureUrl];
     }
 
-    CGFloat width = ([UIScreen mainScreen].bounds.size.width);
+    CGFloat width = UIScreen.mainScreen.bounds.size.width;
     NSInteger num = (NSInteger) (floor(width));
 
     NSString *completeString = [NSString stringWithFormat:@"%@%@%ld%@%@", KSMediaResizerBaseUrl, @"/", (long) num, @"x/", pictureUrl];
