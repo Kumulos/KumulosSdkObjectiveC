@@ -17,6 +17,7 @@
 @dynamic inboxFrom;
 @dynamic inboxTo;
 @dynamic dismissedAt;
+@dynamic expiresAt;
 
 @end
 
