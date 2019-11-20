@@ -35,13 +35,13 @@
 + (instancetype)fromEntity:(KSInAppMessageEntity *)entity {
     KSInAppMessage* message = [KSInAppMessage new];
 
-    message.id = entity.id;
-    message.updatedAt = entity.updatedAt;
-    message.content = entity.content;
-    message.data = entity.data;
-    message.badgeConfig = entity.badgeConfig;
-    message.inboxConfig = entity.inboxConfig;
-    message.dismissedAt = entity.dismissedAt;
+    message.id = [entity.id copy];
+    message.updatedAt = [entity.updatedAt copy];
+    message.content = [entity.content copy];
+    message.data = [entity.data copy];
+    message.badgeConfig = [entity.badgeConfig copy];
+    message.inboxConfig = [entity.inboxConfig copy];
+    message.dismissedAt = [entity.dismissedAt copy];
 
     return message;
 }
