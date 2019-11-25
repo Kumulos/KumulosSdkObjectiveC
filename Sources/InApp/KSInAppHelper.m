@@ -535,7 +535,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     messageEntity.name = @"Message";
     messageEntity.managedObjectClassName = NSStringFromClass(KSInAppMessageEntity.class);
 
-    NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:10];
+    NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:11];
 
     NSAttributeDescription* partId = [NSAttributeDescription new];
     partId.name = @"id";
