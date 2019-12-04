@@ -18,6 +18,7 @@
 @property (nonatomic,strong) NSDate* inboxFrom;
 @property (nonatomic,strong) NSDate* inboxTo;
 @property (nonatomic,strong) NSDate* dismissedAt;
+@property (nonatomic,strong) NSDate* expiresAt;
 
 @end
 
