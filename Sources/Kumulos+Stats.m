@@ -15,7 +15,7 @@
 #import "KumulosEvents.h"
 #endif
 
-static const NSString* KSSdkVersion = @"2.4.0";
+static const NSString* KSSdkVersion = @"3.0.0";
 
 @implementation Kumulos (Stats)
 

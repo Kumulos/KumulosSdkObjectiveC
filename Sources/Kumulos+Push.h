@@ -47,12 +47,4 @@
  * @param notification The remote notification model that was receieved by the device
  */
 - (void) pushTrackOpenFromNotification:(KSPushNotification* _Nullable)notification;
-
-/**
-* Implementation of Notification Service Extension. Handles display of pictures in notifications
-* @param request  from Notification Service Extension
-* @param contentHandler from Notification Service Extension
-*/
-+ (void) didReceiveNotificationRequest:(UNNotificationRequest * _Nonnull)request withContentHandler:(void (^_Nonnull)(UNNotificationContent * _Nonnull))contentHandler API_AVAILABLE(ios(10.0));
-
 @end
