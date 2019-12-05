@@ -5,11 +5,10 @@
 //  Created by Vladislav Voicehovics on 05/12/2019.
 //
 
-#ifndef KumulosNotificationService_h
-#define KumulosNotificationService_h
-#endif /* KumulosNotificationService_h */
+#import <Foundation/Foundation.h>
 
 @import UserNotifications;
+@import UIKit;
 
 @interface KumulosNotificationService : NSObject
 

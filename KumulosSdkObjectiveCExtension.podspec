@@ -9,7 +9,6 @@ Pod::Spec.new do |s|
   s.source = { :git => "https://github.com/Kumulos/KumulosSdkObjectiveC.git", :tag => "#{s.version}" }
 
   s.ios.deployment_target = "10.0"
-  s.osx.deployment_target = "10.12"
 
   s.source_files = "Sources/KumulosSDKExtension/**/*.{h,m}"
   s.exclude_files = "Carthage"
@@ -17,9 +16,7 @@ Pod::Spec.new do |s|
   s.header_dir = "KumulosSDK"
 
   s.ios.public_header_files = [
-    'Sources/KumulosSDKExtension/KumulosNotificationService.h',
-  ]
-  s.osx.public_header_files = [
+    'Sources/KumulosSDKExtension/KumulosSDKExtension.h',
     'Sources/KumulosSDKExtension/KumulosNotificationService.h',
   ]
 

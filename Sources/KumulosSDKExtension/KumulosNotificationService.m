@@ -3,13 +3,9 @@
 //  KumulosSDK iOS
 //
 //  Created by Vladislav Voicehovics on 05/12/2019.
-//
-@import UserNotifications;
 
-#import <Foundation/Foundation.h>
 #import "KumulosNotificationService.h"
 
-#import <UIKit/UIKit.h>
 
 @implementation KumulosNotificationService
 
