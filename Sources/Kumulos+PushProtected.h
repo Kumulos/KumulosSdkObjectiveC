@@ -9,6 +9,6 @@
 @interface Kumulos (PushProtected)
 
 - (void) pushInit;
-- (void) pushHandleOpenWithUserInfo:(NSDictionary* _Nullable)userInfo;
+- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary* _Nullable)userInfo;
 
 @end
