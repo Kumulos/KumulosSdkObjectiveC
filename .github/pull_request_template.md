@@ -17,6 +17,7 @@ Bump versions in:
 
 -   [ ] `Sources/Kumulos+Stats.m`
 -   [ ] `KumulosSdkObjectiveC.podspec`
+-   [ ] `KumulosSdkObjectiveCExtension.podspec`
 -   [ ] `Sources/Info-*.plist`
 -   [ ] `README.md`
 
