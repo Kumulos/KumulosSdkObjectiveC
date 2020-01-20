@@ -31,7 +31,6 @@ API_AVAILABLE(ios(10.0))
 
 // Called on iOS10+ when your app is in the foreground to allow customizing the display of the notification
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler {
-    
     NSDictionary* userInfo = notification.request.content.userInfo;
     KSPushNotification* push = [KSPushNotification fromUserInfo:userInfo];
 
@@ -44,7 +43,7 @@ API_AVAILABLE(ios(10.0))
         KSPushNotification* push = [KSPushNotification fromUserInfo:notification.request.content.userInfo];
         self.kumulos.config.pushReceivedInForegroundHandler(push);
     }
-    
+
     completionHandler(self.kumulos.config.foregroundPushPresentationOptions);
 }
 
