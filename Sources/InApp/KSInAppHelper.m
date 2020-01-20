@@ -306,6 +306,8 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
                 model.inboxFrom = ![inbox[@"from"] isEqual:NSNull.null] ? [dateParser dateFromString:inbox[@"from"]] : nil;
                 model.inboxTo = ![inbox[@"to"] isEqual:NSNull.null] ? [dateParser dateFromString:inbox[@"to"]] : nil;
             }
+            
+            model.expiresAt =  ![message[@"expiresAt"] isEqual:NSNull.null] ? [dateParser dateFromString:message[@"expiresAt"]] : nil;
 
             if ([model.updatedAt timeIntervalSince1970] > [lastSyncTime timeIntervalSince1970]) {
                 lastSyncTime = model.updatedAt;
@@ -333,10 +335,14 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 - (void) evictMessages:(NSManagedObjectContext* _Nonnull)context {
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     [fetchRequest setIncludesPendingChanges:YES];
-
+    
     NSPredicate* predicate = [NSPredicate
-                              predicateWithFormat:@"(dismissedAt != %@ AND inboxConfig = %@) OR (inboxTo != %@ AND inboxTo < %@)",
-                              nil, nil, nil, [NSDate date]];
+                              predicateWithFormat:@"(inboxConfig = nil AND dismissedAt != nil) \
+                              OR \
+                              (inboxConfig = nil AND (expiresAt != nil AND expiresAt <= %@)) \
+                              OR \
+                              (inboxTo != nil AND inboxTo < %@ AND (dismissedAt != nil OR (expiresAt != nil AND expiresAt <= %@)))",
+                              [NSDate date], [NSDate date], [NSDate date]];
     [fetchRequest setPredicate:predicate];
 
     NSError* err = nil;
@@ -363,11 +369,12 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
+        
         NSPredicate* predicate = [NSPredicate
-                                  predicateWithFormat:@"((presentedWhen IN %@) OR (id IN %@)) AND (dismissedAt = %@)",
+                                  predicateWithFormat:@"((presentedWhen IN %@) OR (id IN %@)) AND (dismissedAt = nil) AND (expiresAt = nil OR expiresAt > %@)",
                                   presentedWhenOptions,
                                   self.pendingTickleIds,
-                                  nil];
+                                  [NSDate date]];
 
         [fetchRequest setPredicate:predicate];
         NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt"
@@ -528,7 +535,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     messageEntity.name = @"Message";
     messageEntity.managedObjectClassName = NSStringFromClass(KSInAppMessageEntity.class);
 
-    NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:10];
+    NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:11];
 
     NSAttributeDescription* partId = [NSAttributeDescription new];
     partId.name = @"id";
@@ -593,6 +600,12 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     dismissedAt.attributeType = NSDateAttributeType;
     dismissedAt.optional = YES;
     [messageProps addObject:dismissedAt];
+    
+    NSAttributeDescription* expiresAt = [NSAttributeDescription new];
+    expiresAt.name = @"expiresAt";
+    expiresAt.attributeType = NSDateAttributeType;
+    expiresAt.optional = YES;
+    [messageProps addObject:expiresAt];
 
     [messageEntity setProperties:messageProps];
     [model setEntities:@[messageEntity]];

@@ -4,7 +4,7 @@
 //
 
 #import "KSUrlEncoding.h"
-#import "NSString+URLEncoding.m"
+#import "NSString+URLEncoding.h"
 
 // Based on recursive encoding from AFNetworking serializer
 NSArray* _Nonnull KSUrlEncodedStringFromObjectWithParent(NSString* _Nullable key, id obj) {

@@ -5,7 +5,6 @@
 //  Copyright © 2016 kumulos. All rights reserved.
 //
 
-@import UserNotifications;
 #import <objc/runtime.h>
 #import "Kumulos+Push.h"
 #import "Kumulos+Protected.h"
@@ -30,6 +29,10 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 @implementation KSPushNotification
 
 + (instancetype) fromUserInfo:(NSDictionary*)userInfo {
+    if  (!userInfo || !userInfo[@"aps"] || !userInfo[@"custom"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"][@"k.message"]) {
+        return nil;
+    }
+
     KSPushNotification* notification = [KSPushNotification new];
 
     NSDictionary* custom = userInfo[@"custom"];
@@ -137,12 +140,13 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     [self.analyticsHelper trackEvent:KumulosEventMessageOpened withProperties:params];
 }
 
-- (void) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
-    if (!userInfo) {
-        return;
+- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
+
+    if (!notification || !notification.id) {
+        return NO;
     }
 
-    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
     [self pushTrackOpenFromNotification:notification];
 
     // Handle URL pushes
@@ -165,6 +169,8 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
             self.config.pushOpenedHandler(notification);
         });
     }
+
+    return YES;
 }
 
 - (NSNumber*) pushGetTokenType {

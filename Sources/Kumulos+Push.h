@@ -10,7 +10,7 @@
 
 @interface KSPushNotification : NSObject
 
-+ (instancetype _Nonnull) fromUserInfo:(NSDictionary* _Nonnull)userInfo;
++ (instancetype _Nullable) fromUserInfo:(NSDictionary* _Nullable)userInfo;
 
 @property (nonatomic,readonly) NSNumber* _Nonnull id;
 @property (nonatomic,readonly) NSDictionary* _Nonnull aps;
@@ -24,7 +24,7 @@
 
 /**
  * Requests a push token from the user.
- * 
+ *
  * Will prompt for alert, sound, and badge permissions.
  *
  * After the permission is granted, you should call Kumulos#pushRegisterWithDeviceToken to complete the registration flow.
@@ -47,5 +47,4 @@
  * @param notification The remote notification model that was receieved by the device
  */
 - (void) pushTrackOpenFromNotification:(KSPushNotification* _Nullable)notification;
-
 @end

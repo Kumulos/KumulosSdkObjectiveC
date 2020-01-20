@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "2.2.1"
+  s.version = "3.1.0"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.12"
 
   s.source_files = "Sources/**/*.{h,m}"
-  s.exclude_files = "Carthage"
+  s.exclude_files = "Carthage", "Sources/KumulosSDKExtension"
   s.module_name = "KumulosSDK"
   s.header_dir = "KumulosSDK"
   s.preserve_path = 'upload_dsyms.sh'
