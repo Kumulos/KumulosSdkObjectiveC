@@ -5,10 +5,9 @@
 //  Created by Vladislav Voicehovics on 05/12/2019.
 //
 
-#import <Foundation/Foundation.h>
-
-@import UserNotifications;
-@import UIKit;
+#include <Foundation/Foundation.h>
+#include <UserNotifications/UserNotifications.h>
+#include <UIKit/UIKit.h>
 
 @interface KumulosNotificationService : NSObject
 
