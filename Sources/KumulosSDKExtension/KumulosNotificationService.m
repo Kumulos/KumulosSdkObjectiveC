@@ -17,14 +17,12 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
 
     NSDictionary *userInfo = request.content.userInfo;
     
-    NSDictionary *custom = userInfo[@"custom"];
-    NSDictionary *data = custom[@"a"];
+    if  (!userInfo || !userInfo[@"custom"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"][@"k.message"] || !userInfo[@"custom"][@"a"][@"k.buttons"]) {
+        return;
+    }
     
-    NSDictionary *msg = data[@"k.message"];
-    NSDictionary *msgData = msg[@"data"];
-    NSNumber* messageId = msgData[@"id"];
-    
-    NSArray *buttons = data[@"k.buttons"];
+    NSNumber* messageId = userInfo[@"custom"][@"a"][@"k.message"][@"id"];
+    NSArray *buttons = userInfo[@"custom"][@"a"][@"k.buttons"];
 
     if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
         [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
