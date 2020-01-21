@@ -28,7 +28,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
 @implementation KSPushNotification
 
-+ (instancetype) fromUserInfo:(NSDictionary*)userInfo {
++ (instancetype) fromUserInfo:(NSDictionary*)userInfo withNotificationResponse:(UNNotificationResponse _Nullable) response {
     if  (!userInfo || !userInfo[@"aps"] || !userInfo[@"custom"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"][@"k.message"]) {
         return nil;
     }
@@ -41,7 +41,11 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     notification->_aps = userInfo[@"aps"];
     notification->_data = custom[@"a"];
     notification->_url = custom[@"u"] ? [NSURL URLWithString:custom[@"u"]] : nil;
-
+    
+    if (response != nil && response != UNNotificationDefaultActionIdentifier) {
+        notification->_actionIdentifier = response.actionIdentifier;
+    }
+    
     return notification;
 }
 
