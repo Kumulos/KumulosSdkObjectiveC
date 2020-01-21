@@ -69,29 +69,31 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
    }
 }
 
-- (void)pruneCategoriesAndSave:(NSMutableSet<UNNotificationCategory*>*)categories currentCategories: (NSMutableArray<NSString*>*)currentCategories {
-    /*
-        if (dynamicCategories.count <= MAX_DYNAMIC_CATEGORIES) {
-            UNUserNotificationCenter.current().setNotificationCategories(categories)
-            UserDefaults.standard.set(dynamicCategories, forKey: DYNAMIC_CATEGORY_USER_DEFAULTS_KEY)
-            return
-        }
-        
-        let categoriesToRemove = dynamicCategories.prefix(dynamicCategories.count - MAX_DYNAMIC_CATEGORIES)
-        
-        let prunedCategories = categories.filter { (category) -> Bool in
-            return categoriesToRemove.firstIndex(of: category.identifier) == nil
-        }
-        
-        let prunedDynamicCategories = dynamicCategories.filter { (cat) -> Bool in
-            return categoriesToRemove.firstIndex(of: cat) == nil
-        }
-        
-        UNUserNotificationCenter.current().setNotificationCategories(prunedCategories)
-        UserDefaults.standard.set(prunedDynamicCategories, forKey: DYNAMIC_CATEGORY_USER_DEFAULTS_KEY)
-    }*/
+- (void)pruneCategoriesAndSave:(NSMutableSet<UNNotificationCategory*>*)categories withDynamicCategories: (NSMutableArray<NSString*>*)dynamicCategories {
+    if (dynamicCategories.count <= MAX_DYNAMIC_CATEGORIES) {
+        [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:categories];
+        [[NSUserDefaults standardUserDefaults] setObject:dynamicCategories forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+        return;
+    }
+    
+     NSMutableSet<NSString *> *categoriesToRemove = [NSMutableSet new];
+    
+    for (int i = (int)dynamicCategories.count - MAX_DYNAMIC_CATEGORIES; i >= 0; i--)
+        [categoriesToRemove addObject:dynamicCategories[i]];
+    
+    NSMutableSet<UNNotificationCategory*> *newCategories = [NSMutableSet new];
+    NSMutableArray<NSString*> *newDynamicCategories = [NSMutableArray init];
+    
+    for(UNNotificationCategory *category in categories)
+        if (![categoriesToRemove containsObject:category.identifier])
+            [newCategories addObject: category];
+    
+    for (NSString *dynamicCategory in dynamicCategories)
+        if (![categoriesToRemove containsObject:dynamicCategory])
+            [newDynamicCategories addObject:dynamicCategory];
+    
+    [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:newCategories];
+    [[NSUserDefaults standardUserDefaults] setObject:newDynamicCategories forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
 }
-
-
 
 @end
