@@ -28,7 +28,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
 @implementation KSPushNotification
 
-+ (instancetype) fromUserInfo:(NSDictionary*)userInfo withNotificationResponse:(UNNotificationResponse _Nullable) response {
++ (instancetype) fromUserInfo:(NSDictionary*)userInfo {
     if  (!userInfo || !userInfo[@"aps"] || !userInfo[@"custom"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"][@"k.message"]) {
         return nil;
     }
@@ -42,7 +42,14 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     notification->_data = custom[@"a"];
     notification->_url = custom[@"u"] ? [NSURL URLWithString:custom[@"u"]] : nil;
     
-    if (response != nil && response != UNNotificationDefaultActionIdentifier) {
+    return notification;
+}
+
++ (instancetype _Nullable) fromUserInfo:(NSDictionary* _Nonnull)userInfo withNotificationResponse:(UNNotificationResponse* _Nonnull) response {
+
+    KSPushNotification* notification = [KSPushNotification fromUserInfo: userInfo];
+    
+    if (response.actionIdentifier != UNNotificationDefaultActionIdentifier) {
         notification->_actionIdentifier = response.actionIdentifier;
     }
     
@@ -144,38 +151,51 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     [self.analyticsHelper trackEvent:KumulosEventMessageOpened withProperties:params];
 }
 
-- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo withNotificationResponse:(UNNotificationResponse* _Nullable) response {
+
+- (BOOL) pushHandleOpen:(KSPushNotification*) notification {
+    if (!notification || !notification.id) {
+           return NO;
+       }
+
+       [self pushTrackOpenFromNotification:notification];
+
+       // Handle URL pushes
+       if (notification.url) {
+           if (@available(iOS 10.0, *)) {
+               [UIApplication.sharedApplication openURL:notification.url options:@{} completionHandler:^(BOOL success) {
+                   /* noop */
+               }];
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [UIApplication.sharedApplication openURL:notification.url];
+               });
+           }
+       }
+
+       [self.inAppHelper handlePushOpen:notification];
+
+       if (self.config.pushOpenedHandler) {
+           dispatch_async(dispatch_get_main_queue(), ^{
+               self.config.pushOpenedHandler(notification);
+           });
+       }
+
+       return YES;
+}
+
+- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo  {
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
+
+    return [self pushHandleOpen:notification];
+}
+
+
+- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo withNotificationResponse: (UNNotificationResponse*)response {
     KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo withNotificationResponse:response];
 
-    if (!notification || !notification.id) {
-        return NO;
-    }
-
-    [self pushTrackOpenFromNotification:notification];
-
-    // Handle URL pushes
-    if (notification.url) {
-        if (@available(iOS 10.0, *)) {
-            [UIApplication.sharedApplication openURL:notification.url options:@{} completionHandler:^(BOOL success) {
-                /* noop */
-            }];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [UIApplication.sharedApplication openURL:notification.url];
-            });
-        }
-    }
-
-    [self.inAppHelper handlePushOpen:notification];
-
-    if (self.config.pushOpenedHandler) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            self.config.pushOpenedHandler(notification);
-        });
-    }
-
-    return YES;
+    return [self pushHandleOpen:notification];
 }
+
 
 - (NSNumber*) pushGetTokenType {
     UIApplicationReleaseMode releaseMode = [MobileProvision releaseMode];

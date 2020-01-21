@@ -11,13 +11,13 @@
 
 + (CategoryHelper *)sharedInstance;
 
-+  (NSString *)getCategoryIdForMessageId:(int)messageId;
++  (NSString *)getCategoryIdForMessageId:(NSNumber*)messageId;
 
 +  (void) registerCategory:(UNNotificationCategory*)category;
 
 - (NSMutableSet<UNNotificationCategory*>*)getExistingCategories;
 
-- (NSMutableArray<NSString *>)getExistingDynamicCategoriesList;
+- (NSMutableArray<NSString*>*)getExistingDynamicCategoriesList;
 
 - (void)pruneCategoriesAndSave:(NSMutableSet<UNNotificationCategory*>*)categories withDynamicCategories: (NSMutableArray<NSString*>*)dynamicCategories;
 

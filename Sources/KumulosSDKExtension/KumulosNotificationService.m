@@ -22,12 +22,12 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
     
     NSDictionary *msg = data[@"k.message"];
     NSDictionary *msgData = msg[@"data"];
-    int id = msgData[@"id"]; //  as! int ?
+    NSNumber* messageId = msgData[@"id"];
     
     NSArray *buttons = data[@"k.buttons"];
 
-    if (buttons != nil && bestAttemptContent.categoryIdentifier == @"") {
-        [self addButtons:id withContent:bestAttemptContent withButtons:buttons];
+    if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
+        [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
     }
     
     NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
@@ -49,7 +49,7 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
                    }];
 }
 
-+ (void)addButtons:(int)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {
++ (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {
     if (buttons.count == 0) {
         return;
     }

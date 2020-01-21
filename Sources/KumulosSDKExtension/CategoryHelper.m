@@ -20,8 +20,8 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
     return sharedInstance;
 }
 
-+ (NSString *)getCategoryIdForMessageId:(int)notificationId {
-    return [NSString stringWithFormat:DYNAMIC_CATEGORY_IDENTIFIER, notificationId];
++ (NSString *)getCategoryIdForMessageId:(NSNumber*)notificationId {
+    return [NSString stringWithFormat:DYNAMIC_CATEGORY_IDENTIFIER, notificationId.intValue];
 }
 
 + (void) registerCategory:(UNNotificationCategory*)category {
@@ -63,7 +63,6 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
        
        [[NSUserDefaults standardUserDefaults] setObject:newArray forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
        [[NSUserDefaults standardUserDefaults] synchronize];
-   
        
        return newArray;
    }
