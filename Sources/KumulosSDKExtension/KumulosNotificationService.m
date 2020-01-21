@@ -5,7 +5,7 @@
 //  Created by Vladislav Voicehovics on 05/12/2019.
 
 #import "KumulosNotificationService.h"
-
+#import "CategoryHelper.h"
 
 @implementation KumulosNotificationService
 
@@ -16,6 +16,20 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
 
     NSDictionary *userInfo = request.content.userInfo;
+    
+    NSDictionary *custom = userInfo[@"custom"];
+    NSDictionary *data = custom[@"a"];
+    
+    NSDictionary *msg = data[@"k.message"];
+    NSDictionary *msgData = msg[@"data"];
+    int id = msgData[@"id"]; //  as! int ?
+    
+    NSArray *buttons = data[@"k.buttons"];
+
+    if (buttons != nil && bestAttemptContent.categoryIdentifier == @"") {
+        [self addButtons:id withContent:bestAttemptContent withButtons:buttons];
+    }
+    
     NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     
@@ -33,6 +47,33 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
                        }
                        contentHandler(bestAttemptContent);
                    }];
+}
+
++ (void)addButtons:(int)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {
+    if (buttons.count == 0) {
+        return;
+    }
+        
+    NSMutableArray *actionArray = [NSMutableArray init];
+    
+    for (NSDictionary *button in buttons) {
+        UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]
+                                                                            title:button[@"text"]
+                                                                          options:UNNotificationActionOptionForeground];
+
+        [actionArray addObject: action];
+    }
+    
+    NSString *categoryIdentifier = [CategoryHelper getCategoryIdForMessageId:messageId];
+    
+    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
+                                                                              actions:actionArray
+                                                                    intentIdentifiers:@[]
+                                                                              options:UNNotificationCategoryOptionCustomDismissAction];
+    
+    [CategoryHelper registerCategory: category];
+    
+    content.categoryIdentifier = categoryIdentifier;
 }
 
 + (NSString * _Nullable) getPictureExtension:(NSString *) pictureUrl {

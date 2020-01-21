@@ -143,6 +143,9 @@
 		6F9C9E4F23D5C30600BBEFD5 /* KumulosNotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A4592C23992FF700FDECFC /* KumulosNotificationService.m */; };
 		6F9C9E5023D5C33600BBEFD5 /* KumulosNotificationService.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6A4592B23992FF700FDECFC /* KumulosNotificationService.h */; };
 		6F9C9E5123D5C33600BBEFD5 /* KumulosSDKExtension.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6A4592723992F1E00FDECFC /* KumulosSDKExtension.h */; };
+		6FDDA3A223D7060E003D74EF /* CategoryHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FDDA3A123D7060E003D74EF /* CategoryHelper.m */; };
+		6FDDA3A323D7060E003D74EF /* CategoryHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FDDA3A123D7060E003D74EF /* CategoryHelper.m */; };
+		6FDDA3A523D70624003D74EF /* CategoryHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FDDA3A423D70624003D74EF /* CategoryHelper.h */; };
 		B6A4592E23992FF700FDECFC /* KumulosNotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A4592C23992FF700FDECFC /* KumulosNotificationService.m */; };
 		B6A4592F2399307F00FDECFC /* KumulosSDKExtension.h in Headers */ = {isa = PBXBuildFile; fileRef = B6A4592723992F1E00FDECFC /* KumulosSDKExtension.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B6A45930239930E700FDECFC /* KumulosNotificationService.h in Sources */ = {isa = PBXBuildFile; fileRef = B6A4592B23992FF700FDECFC /* KumulosNotificationService.h */; };
@@ -248,6 +251,8 @@
 		12E861D92302C4EF009EF70B /* KSInAppPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSInAppPresenter.m; sourceTree = "<group>"; };
 		12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSInAppPresenter.h; sourceTree = "<group>"; };
 		6F9C9E4623D5C2DB00BBEFD5 /* libKumulosSDKExtensionStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libKumulosSDKExtensionStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		6FDDA3A123D7060E003D74EF /* CategoryHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CategoryHelper.m; sourceTree = "<group>"; };
+		6FDDA3A423D70624003D74EF /* CategoryHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CategoryHelper.h; sourceTree = "<group>"; };
 		B6A4591E23992E6E00FDECFC /* KumulosSDKExtension.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumulosSDKExtension.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6A4592723992F1E00FDECFC /* KumulosSDKExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KumulosSDKExtension.h; sourceTree = "<group>"; };
 		B6A4592823992F1E00FDECFC /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -425,6 +430,8 @@
 				B6A4592C23992FF700FDECFC /* KumulosNotificationService.m */,
 				B6A4592723992F1E00FDECFC /* KumulosSDKExtension.h */,
 				B6A4592823992F1E00FDECFC /* Info.plist */,
+				6FDDA3A123D7060E003D74EF /* CategoryHelper.m */,
+				6FDDA3A423D70624003D74EF /* CategoryHelper.h */,
 			);
 			path = KumulosSDKExtension;
 			sourceTree = "<group>";
@@ -485,6 +492,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FDDA3A523D70624003D74EF /* CategoryHelper.h in Headers */,
 				B6A4592F2399307F00FDECFC /* KumulosSDKExtension.h in Headers */,
 				B6A459322399477000FDECFC /* KumulosNotificationService.h in Headers */,
 			);
@@ -782,6 +790,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F9C9E4F23D5C30600BBEFD5 /* KumulosNotificationService.m in Sources */,
+				6FDDA3A323D7060E003D74EF /* CategoryHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -790,6 +799,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6A45930239930E700FDECFC /* KumulosNotificationService.h in Sources */,
+				6FDDA3A223D7060E003D74EF /* CategoryHelper.m in Sources */,
 				B6A4592E23992FF700FDECFC /* KumulosNotificationService.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
