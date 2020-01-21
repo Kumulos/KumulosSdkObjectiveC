@@ -3,19 +3,19 @@
 //  KumulosSDK
 //
 //
-#import "CategoryHelper.h"
+#import "KSCategoryHelper.h"
 
 static int const MAX_DYNAMIC_CATEGORIES = 128;
 static NSString * const DYNAMIC_CATEGORY_USER_DEFAULTS_KEY = @"__kumulos__dynamic__categories__";
 static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__";
 
-@implementation CategoryHelper
+@implementation KSCategoryHelper
 
-+ (CategoryHelper *)sharedInstance {
-    static CategoryHelper *sharedInstance = nil;
++ (KSCategoryHelper *)sharedInstance {
+    static KSCategoryHelper *sharedInstance = nil;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        sharedInstance = [CategoryHelper new];
+        sharedInstance = [KSCategoryHelper new];
     });
     return sharedInstance;
 }
@@ -25,16 +25,16 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 }
 
 + (void) registerCategory:(UNNotificationCategory*)category {
-    NSMutableSet<UNNotificationCategory*>* categorySet = [CategoryHelper.sharedInstance getExistingCategories];
-    NSMutableArray<NSString *>* storedDynamicCategories = [CategoryHelper.sharedInstance getExistingDynamicCategoriesList];
+    NSMutableSet<UNNotificationCategory*>* categorySet = [KSCategoryHelper.sharedInstance getExistingCategories];
+    NSMutableArray<NSString *>* storedDynamicCategories = [KSCategoryHelper.sharedInstance getExistingDynamicCategoriesList];
     
     [categorySet addObject:category];
     [storedDynamicCategories addObject:category.identifier];
     
-    [CategoryHelper.sharedInstance pruneCategoriesAndSave: categorySet withDynamicCategories: storedDynamicCategories];
+    [KSCategoryHelper.sharedInstance pruneCategoriesAndSave: categorySet withDynamicCategories: storedDynamicCategories];
     
     // Force a reload of the categories
-    [CategoryHelper.sharedInstance getExistingCategories];
+    [KSCategoryHelper.sharedInstance getExistingCategories];
 }
 
 

@@ -5,7 +5,7 @@
 //  Created by Vladislav Voicehovics on 05/12/2019.
 
 #import "KumulosNotificationService.h"
-#import "CategoryHelper.h"
+#import "KSCategoryHelper.h"
 
 @implementation KumulosNotificationService
 
@@ -62,14 +62,14 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
         [actionArray addObject: action];
     }
     
-    NSString *categoryIdentifier = [CategoryHelper getCategoryIdForMessageId:messageId];
+    NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
     
     UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
                                                                               actions:actionArray
                                                                     intentIdentifiers:@[]
                                                                               options:UNNotificationCategoryOptionCustomDismissAction];
     
-    [CategoryHelper registerCategory: category];
+    [KSCategoryHelper registerCategory: category];
     
     content.categoryIdentifier = categoryIdentifier;
 }

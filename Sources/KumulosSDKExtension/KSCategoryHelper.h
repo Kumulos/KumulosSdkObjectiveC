@@ -7,9 +7,9 @@
 #import <Foundation/Foundation.h>
 #import <UserNotifications/UserNotifications.h>
 
-@interface CategoryHelper : NSObject
+@interface KSCategoryHelper : NSObject
 
-+ (CategoryHelper *)sharedInstance;
++ (KSCategoryHelper *)sharedInstance;
 
 +  (NSString *)getCategoryIdForMessageId:(NSNumber*)messageId;
 
