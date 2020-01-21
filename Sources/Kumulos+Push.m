@@ -144,8 +144,8 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     [self.analyticsHelper trackEvent:KumulosEventMessageOpened withProperties:params];
 }
 
-- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo {
-    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
+- (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo withNotificationResponse:(UNNotificationResponse* _Nullable) response {
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo withNotificationResponse:response];
 
     if (!notification || !notification.id) {
         return NO;

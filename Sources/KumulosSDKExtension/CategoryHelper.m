@@ -20,21 +20,21 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
     return sharedInstance;
 }
 
-+ static (NSString *)getCategoryIdForMessageId:(int)notificationId {
++ (NSString *)getCategoryIdForMessageId:(int)notificationId {
     return [NSString stringWithFormat:DYNAMIC_CATEGORY_IDENTIFIER, notificationId];
 }
 
-+ static (void) registerCategory:(UNNotificationCategory*)category {
-    NSMutableSet<UNNotificationCategory*>* categorySet = [sharedInstance.getExistingCategories];
-    NSMutableArray<NSString *>* storedDynamicCategories = [sharedInstance.getExistingDynamicCategoriesList];
++ (void) registerCategory:(UNNotificationCategory*)category {
+    NSMutableSet<UNNotificationCategory*>* categorySet = [CategoryHelper.sharedInstance getExistingCategories];
+    NSMutableArray<NSString *>* storedDynamicCategories = [CategoryHelper.sharedInstance getExistingDynamicCategoriesList];
     
-    [categorySet addObject:category]
-    [storedDynamicCategories addObject:category.identifier]
+    [categorySet addObject:category];
+    [storedDynamicCategories addObject:category.identifier];
     
-    [sharedInstance.pruneCategoriesAndSave categories: categorySet, currentCategories: storedDynamicCategories]
+    [CategoryHelper.sharedInstance pruneCategoriesAndSave: categorySet withDynamicCategories: storedDynamicCategories];
     
     // Force a reload of the categories
-    [sharedInstance.getExistingCategories];
+    [CategoryHelper.sharedInstance getExistingCategories];
 }
 
 
@@ -53,7 +53,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 
 - (NSMutableArray<NSString *>*)getExistingDynamicCategoriesList {
     @synchronized (self) {
-       NSString* existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+       NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
        
         if (existingArray != nil) {
             return existingArray;
