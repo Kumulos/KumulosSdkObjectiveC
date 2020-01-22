@@ -26,7 +26,6 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
         }
     }
     
-    
     NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     
@@ -37,13 +36,14 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
 
     NSString *extension = [self getPictureExtension: pictureUrl];
     NSURL *url = [self getCompletePictureUrl: pictureUrl];
-    [self loadAttachment:url withExtension:extension
-                   completionHandler:^(UNNotificationAttachment *attachment) {
-                       if (attachment) {
-                           bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
-                       }
-                       contentHandler(bestAttemptContent);
-                   }];
+    [self loadAttachment:url
+           withExtension:extension
+       completionHandler:^(UNNotificationAttachment *attachment) {
+           if (attachment) {
+               bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
+           }
+           contentHandler(bestAttemptContent);
+       }];
 }
 
 + (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {

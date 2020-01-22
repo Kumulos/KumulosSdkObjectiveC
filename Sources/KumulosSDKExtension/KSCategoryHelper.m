@@ -56,7 +56,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
         NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
 
         if (existingArray != nil) {
-            return existingArray;
+            return [existingArray mutableCopy];
         }
 
         NSMutableArray<NSString*> *newArray = [NSMutableArray<NSString*> new];
@@ -72,16 +72,19 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
     if (dynamicCategories.count <= MAX_DYNAMIC_CATEGORIES) {
         [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:categories];
         [[NSUserDefaults standardUserDefaults] setObject:dynamicCategories forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         return;
     }
     
-     NSMutableSet<NSString *> *categoriesToRemove = [NSMutableSet new];
+    NSMutableSet<NSString*> *categoriesToRemove = [NSMutableSet new];
     
-    for (int i = (int)dynamicCategories.count - MAX_DYNAMIC_CATEGORIES; i >= 0; i--)
+    int numCategoriesToRemove = (int)dynamicCategories.count - MAX_DYNAMIC_CATEGORIES;
+    
+    for (int i = 0; i < numCategoriesToRemove; i++)
         [categoriesToRemove addObject:dynamicCategories[i]];
     
     NSMutableSet<UNNotificationCategory*> *newCategories = [NSMutableSet new];
-    NSMutableArray<NSString*> *newDynamicCategories = [NSMutableArray init];
+    NSMutableArray<NSString*> *newDynamicCategories = [NSMutableArray<NSString*> new];
     
     for(UNNotificationCategory *category in categories)
         if (![categoriesToRemove containsObject:category.identifier])
@@ -93,6 +96,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
     
     [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:newCategories];
     [[NSUserDefaults standardUserDefaults] setObject:newDynamicCategories forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
