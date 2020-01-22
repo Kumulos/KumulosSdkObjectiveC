@@ -154,33 +154,33 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
 - (BOOL) pushHandleOpen:(KSPushNotification*) notification {
     if (!notification || !notification.id) {
-           return NO;
-       }
+        return NO;
+    }
 
-       [self pushTrackOpenFromNotification:notification];
+    [self pushTrackOpenFromNotification:notification];
 
-       // Handle URL pushes
-       if (notification.url) {
-           if (@available(iOS 10.0, *)) {
-               [UIApplication.sharedApplication openURL:notification.url options:@{} completionHandler:^(BOOL success) {
-                   /* noop */
-               }];
-           } else {
-               dispatch_async(dispatch_get_main_queue(), ^{
-                   [UIApplication.sharedApplication openURL:notification.url];
-               });
-           }
-       }
-
-       [self.inAppHelper handlePushOpen:notification];
-
-       if (self.config.pushOpenedHandler) {
+    // Handle URL pushes
+    if (notification.url) {
+        if (@available(iOS 10.0, *)) {
+           [UIApplication.sharedApplication openURL:notification.url options:@{} completionHandler:^(BOOL success) {
+               /* noop */
+           }];
+        } else {
            dispatch_async(dispatch_get_main_queue(), ^{
-               self.config.pushOpenedHandler(notification);
+               [UIApplication.sharedApplication openURL:notification.url];
            });
-       }
+        }
+    }
 
-       return YES;
+    [self.inAppHelper handlePushOpen:notification];
+
+    if (self.config.pushOpenedHandler) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+           self.config.pushOpenedHandler(notification);
+        });
+    }
+
+    return YES;
 }
 
 - (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo  {
