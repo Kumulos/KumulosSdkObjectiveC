@@ -49,7 +49,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
     KSPushNotification* notification = [KSPushNotification fromUserInfo: userInfo];
     
-    if (response.actionIdentifier != UNNotificationDefaultActionIdentifier) {
+    if (![response.actionIdentifier isEqualToString:UNNotificationDefaultActionIdentifier]) {
         notification->_actionIdentifier = response.actionIdentifier;
     }
     
