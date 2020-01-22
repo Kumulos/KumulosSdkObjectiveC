@@ -17,16 +17,15 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
 
     NSDictionary *userInfo = request.content.userInfo;
     
-    if  (!userInfo || !userInfo[@"custom"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"] || !userInfo[@"custom"][@"a"][@"k.message"] || !userInfo[@"custom"][@"a"][@"k.buttons"]) {
-        return;
+    if  (userInfo && userInfo[@"custom"] && userInfo[@"custom"][@"a"] && userInfo[@"custom"][@"a"][@"k.message"] && userInfo[@"custom"][@"a"][@"k.buttons"]) {
+        NSNumber* messageId = userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
+        NSArray *buttons = userInfo[@"custom"][@"a"][@"k.buttons"];
+
+        if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
+            [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
+        }
     }
     
-    NSNumber* messageId = userInfo[@"custom"][@"a"][@"k.message"][@"id"];
-    NSArray *buttons = userInfo[@"custom"][@"a"][@"k.buttons"];
-
-    if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
-        [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
-    }
     
     NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
@@ -52,7 +51,7 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
         return;
     }
         
-    NSMutableArray *actionArray = [NSMutableArray init];
+    NSMutableArray *actionArray = [NSMutableArray new];
     
     for (NSDictionary *button in buttons) {
         UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]

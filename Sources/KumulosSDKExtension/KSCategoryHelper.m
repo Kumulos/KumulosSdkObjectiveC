@@ -26,7 +26,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 
 + (void) registerCategory:(UNNotificationCategory*)category {
     NSMutableSet<UNNotificationCategory*>* categorySet = [KSCategoryHelper.sharedInstance getExistingCategories];
-    NSMutableArray<NSString *>* storedDynamicCategories = [KSCategoryHelper.sharedInstance getExistingDynamicCategoriesList];
+    NSMutableArray<NSString*>* storedDynamicCategories = [KSCategoryHelper.sharedInstance getExistingDynamicCategoriesList];
     
     [categorySet addObject:category];
     [storedDynamicCategories addObject:category.identifier];
@@ -51,20 +51,20 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
     return allCategories;
 }
 
-- (NSMutableArray<NSString *>*)getExistingDynamicCategoriesList {
+- (NSMutableArray<NSString*>*)getExistingDynamicCategoriesList {
     @synchronized (self) {
-       NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
-       
+        NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+
         if (existingArray != nil) {
             return existingArray;
         }
-        
-       NSMutableArray *newArray = [NSMutableArray init];
-       
-       [[NSUserDefaults standardUserDefaults] setObject:newArray forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
-       [[NSUserDefaults standardUserDefaults] synchronize];
-       
-       return newArray;
+
+        NSMutableArray<NSString*> *newArray = [NSMutableArray<NSString*> new];
+
+        [[NSUserDefaults standardUserDefaults] setObject:newArray forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+
+        return newArray;
    }
 }
 
