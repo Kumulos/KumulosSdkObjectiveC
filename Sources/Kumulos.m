@@ -51,9 +51,11 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
         self->_pushOpenedHandler = nil;
         self->_pushReceivedInForegroundHandler = nil;
         
+        #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR || TARGET_OS_IOS
         if (@available(iOS 10, *)) {
             self->_foregroundPushPresentationOptions = UNNotificationPresentationOptionAlert;
         }
+        #endif
     }
     return self;
 }

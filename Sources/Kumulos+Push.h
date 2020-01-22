@@ -11,12 +11,14 @@
 @interface KSPushNotification : NSObject
 
 + (instancetype _Nullable) fromUserInfo:(NSDictionary* _Nullable)userInfo;
++ (instancetype _Nullable) fromUserInfo:(NSDictionary* _Nonnull)userInfo withNotificationResponse:(UNNotificationResponse* _Nonnull) response  API_AVAILABLE(ios(10.0));
 
 @property (nonatomic,readonly) NSNumber* _Nonnull id;
 @property (nonatomic,readonly) NSDictionary* _Nonnull aps;
 @property (nonatomic,readonly) NSDictionary* _Nonnull data;
 @property (nonatomic,readonly) NSURL* _Nullable url;
 @property (nonatomic,readonly) NSDictionary* _Nullable inAppDeepLink;
+@property (nonatomic,readonly) NSString* _Nullable actionIdentifier;
 
 @end
 

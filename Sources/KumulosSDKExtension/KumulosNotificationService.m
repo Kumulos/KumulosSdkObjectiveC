@@ -5,7 +5,7 @@
 //  Created by Vladislav Voicehovics on 05/12/2019.
 
 #import "KumulosNotificationService.h"
-
+#import "KSCategoryHelper.h"
 
 @implementation KumulosNotificationService
 
@@ -16,6 +16,16 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
 
     NSDictionary *userInfo = request.content.userInfo;
+    
+    if  (userInfo && userInfo[@"custom"] && userInfo[@"custom"][@"a"] && userInfo[@"custom"][@"a"][@"k.message"] && userInfo[@"custom"][@"a"][@"k.buttons"]) {
+        NSNumber* messageId = userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
+        NSArray *buttons = userInfo[@"custom"][@"a"][@"k.buttons"];
+
+        if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
+            [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
+        }
+    }
+    
     NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     
@@ -26,13 +36,41 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
 
     NSString *extension = [self getPictureExtension: pictureUrl];
     NSURL *url = [self getCompletePictureUrl: pictureUrl];
-    [self loadAttachment:url withExtension:extension
-                   completionHandler:^(UNNotificationAttachment *attachment) {
-                       if (attachment) {
-                           bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
-                       }
-                       contentHandler(bestAttemptContent);
-                   }];
+    [self loadAttachment:url
+           withExtension:extension
+       completionHandler:^(UNNotificationAttachment *attachment) {
+           if (attachment) {
+               bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
+           }
+           contentHandler(bestAttemptContent);
+       }];
+}
+
++ (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {
+    if (buttons.count == 0) {
+        return;
+    }
+        
+    NSMutableArray *actionArray = [NSMutableArray new];
+    
+    for (NSDictionary *button in buttons) {
+        UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]
+                                                                            title:button[@"text"]
+                                                                          options:UNNotificationActionOptionForeground];
+
+        [actionArray addObject: action];
+    }
+    
+    NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
+    
+    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
+                                                                              actions:actionArray
+                                                                    intentIdentifiers:@[]
+                                                                              options:UNNotificationCategoryOptionCustomDismissAction];
+    
+    [KSCategoryHelper registerCategory: category];
+    
+    content.categoryIdentifier = categoryIdentifier;
 }
 
 + (NSString * _Nullable) getPictureExtension:(NSString *) pictureUrl {
