@@ -679,7 +679,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
             if (result < 0) {
                 fetchResult = UIBackgroundFetchResultFailed;
-            } else if (result > 1) {
+            } else if (result > 0) {
                 fetchResult = UIBackgroundFetchResultNewData;
             }
             // No data case is default, allow override from other handler
