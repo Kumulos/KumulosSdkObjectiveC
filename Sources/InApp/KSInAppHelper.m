@@ -222,7 +222,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
             after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedStringForUrl]];
         }
-        
+
         NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", [Kumulos.currentUserIdentifier urlEncodedStringForUrl], after];
 
         [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
