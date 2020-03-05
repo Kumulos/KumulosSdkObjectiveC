@@ -220,10 +220,10 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             [formatter setTimeStyle:NSDateFormatterFullStyle];
             [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
             [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-            after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedString]];
+            after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedStringForUrl]];
         }
-
-        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", Kumulos.currentUserIdentifier, after];
+        
+        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", [Kumulos.currentUserIdentifier urlEncodedStringForUrl], after];
 
         [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
             NSArray<NSDictionary*>* messagesToPersist = decodedBody;
