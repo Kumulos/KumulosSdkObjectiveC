@@ -504,16 +504,16 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             [self.pendingTickleIds addObject:inAppPartId];
             NSArray<KSInAppMessage*>* messages = [self getMessagesToPresent:@[]];
             
-            BOOL tickleMessageFound = NO
+            BOOL tickleMessageFound = NO;
             for (KSInAppMessage* message in messages) {
                 if (message.id == inAppPartId){
                     tickleMessageFound = YES;
                     break;
                 }
             }
-            
+          
             if (!tickleMessageFound){
-                [self sync:onComplete];
+                [self sync:nil];
                 return;
             }
             

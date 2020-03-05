@@ -133,7 +133,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     NSString *bundleId = [[NSBundle mainBundle] bundleIdentifier];
     NSDictionary* info = @{@"token": token,
                            @"type": @(KSPushDeviceType),
-                           @"iosTokenType": [self pushGetTokenType]
+                           @"iosTokenType": [self pushGetTokenType],
                            @"bundleId" : bundleId};
     
     [self.analyticsHelper trackEvent:KumulosEventPushRegistered withProperties:info flushingImmediately:YES];
