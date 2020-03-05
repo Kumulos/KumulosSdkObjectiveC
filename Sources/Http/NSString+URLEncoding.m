@@ -9,7 +9,7 @@
 
 @implementation NSString (URLEncoding)
 
-- (nullable NSString *) urlEncodedString {
+- (nullable NSString *) urlEncodedStringForBody {
     NSString *unreserved = @"*-._ ";
     NSMutableCharacterSet *allowed = [NSMutableCharacterSet
                                       alphanumericCharacterSet];
@@ -19,6 +19,18 @@
     encoded = [encoded stringByReplacingOccurrencesOfString:@" "
                                                  withString:@"+"];
 
+    return encoded;
+}
+
+
+- (nullable NSString *) urlEncodedStringForUrl {
+    NSString *unreserved = @"-._~";
+    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
+                                      alphanumericCharacterSet];
+    [allowed addCharactersInString:unreserved];
+    
+    NSString *encoded = [self stringByAddingPercentEncodingWithAllowedCharacters:allowed];
+  
     return encoded;
 }
 

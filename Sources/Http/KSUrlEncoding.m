@@ -31,7 +31,7 @@ NSArray* _Nonnull KSUrlEncodedStringFromObjectWithParent(NSString* _Nullable key
     else if ([obj isKindOfClass:NSArray.class]) {
         NSArray* arr = (NSArray*) obj;
 
-        fullKey = [[NSString stringWithFormat:@"%@[]", key] urlEncodedString];
+        fullKey = [[NSString stringWithFormat:@"%@[]", key] urlEncodedStringForBody];
 
         for (id item in arr) {
             if (!item) {
@@ -45,8 +45,8 @@ NSArray* _Nonnull KSUrlEncodedStringFromObjectWithParent(NSString* _Nullable key
     }
 
     return @[[NSString stringWithFormat:@"%@=%@",
-              key.urlEncodedString,
-              [NSString stringWithFormat:@"%@", obj].urlEncodedString]];
+              key.urlEncodedStringForBody,
+              [NSString stringWithFormat:@"%@", obj].urlEncodedStringForBody]];
 }
 
 NSString* _Nonnull KSUrlEncodedStringFromDictionary(NSDictionary* _Nonnull obj) {

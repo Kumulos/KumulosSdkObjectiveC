@@ -220,10 +220,10 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             [formatter setTimeStyle:NSDateFormatterFullStyle];
             [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
             [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
-            after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedString]];
+            after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedStringForUrl]];
         }
 
-        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", Kumulos.currentUserIdentifier, after];
+        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", [Kumulos.currentUserIdentifier urlEncodedStringForUrl], after];
 
         [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
             NSArray<NSDictionary*>* messagesToPersist = decodedBody;
@@ -503,6 +503,20 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         @synchronized (self.pendingTickleIds) {
             [self.pendingTickleIds addObject:inAppPartId];
             NSArray<KSInAppMessage*>* messages = [self getMessagesToPresent:@[]];
+            
+            BOOL tickleMessageFound = NO;
+            for (KSInAppMessage* message in messages) {
+                if (message.id == inAppPartId){
+                    tickleMessageFound = YES;
+                    break;
+                }
+            }
+          
+            if (!tickleMessageFound){
+                [self sync:nil];
+                return;
+            }
+            
             [self.presenter queueMessagesForPresentation:messages presentingTickles:self.pendingTickleIds];
         }
     });
@@ -679,7 +693,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
             if (result < 0) {
                 fetchResult = UIBackgroundFetchResultFailed;
-            } else if (result > 1) {
+            } else if (result > 0) {
                 fetchResult = UIBackgroundFetchResultNewData;
             }
             // No data case is default, allow override from other handler

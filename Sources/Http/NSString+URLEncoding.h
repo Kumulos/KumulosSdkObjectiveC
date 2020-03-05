@@ -9,6 +9,7 @@
 
 @interface NSString (URLEncoding)
 
-- (nullable NSString *) urlEncodedString;
+- (nullable NSString *) urlEncodedStringForBody;
+- (nullable NSString *) urlEncodedStringForUrl;
 
 @end
