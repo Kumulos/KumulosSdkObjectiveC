@@ -28,5 +28,6 @@ extern NSString* _Nonnull const KSInAppPresentedFromInbox;
 - (void) handleAssociatedUserChange;
 - (void) handlePushOpen:(KSPushNotification* _Nonnull)notification;
 - (BOOL) presentMessageWithId:(NSNumber* _Nonnull)messageId;
-
+- (BOOL) deleteMessageFromInbox:(NSNumber* _Nonnull)messageId;
+    
 @end

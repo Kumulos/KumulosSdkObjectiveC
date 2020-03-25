@@ -97,5 +97,9 @@
     return result ? KSInAppMessagePresentationPresented : KSInAppMessagePresentationFailed;
 }
 
++ (BOOL)deleteMessageFromInbox:(KSInAppInboxItem *)item {
+    return [Kumulos.shared.inAppHelper deleteMessageFromInbox:item.id];
+}
+
 @end
 
