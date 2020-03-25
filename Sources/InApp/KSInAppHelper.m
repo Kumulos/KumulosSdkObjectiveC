@@ -294,7 +294,9 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
             model.id = partId;
             model.updatedAt = [dateParser dateFromString:message[@"updatedAt"]];
-            model.dismissedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
+            if (model.dismissedAt == nil){
+                model.dismissedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
+            }
             model.presentedWhen = message[@"presentedWhen"];
             model.content = message[@"content"];
             model.data = [message[@"data"] isEqual:NSNull.null] ? nil : message[@"data"];
@@ -305,6 +307,18 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
                 NSDictionary* inbox = model.inboxConfig;
                 model.inboxFrom = ![inbox[@"from"] isEqual:NSNull.null] ? [dateParser dateFromString:inbox[@"from"]] : nil;
                 model.inboxTo = ![inbox[@"to"] isEqual:NSNull.null] ? [dateParser dateFromString:inbox[@"to"]] : nil;
+            }
+            
+            NSString* inboxDeletedAt = message[@"inboxDeletedAt"];
+            if (![inboxDeletedAt isEqual:NSNull.null]){
+                model.inboxConfig = nil;
+                model.inboxFrom = nil;
+                model.inboxTo = nil;
+                if (model.dismissedAt == nil){
+                    model.dismissedAt = [dateParser dateFromString:inboxDeletedAt];
+                }
+                
+                [self removeNotificationTickle: model.id];
             }
             
             model.expiresAt =  ![message[@"expiresAt"] isEqual:NSNull.null] ? [dateParser dateFromString:message[@"expiresAt"]] : nil;
@@ -330,6 +344,17 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
         [self trackMessageDelivery:messages];
     }];
+}
+
+- (void) removeNotificationTickle:(NSNumber*)id {
+    if ([self.pendingTickleIds containsObject:id]) {
+        [self.pendingTickleIds removeObject:id];
+    }
+    
+    if (@available(iOS 10, *)) {
+        NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@",id];
+        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+    }
 }
 
 - (void) evictMessages:(NSManagedObjectContext* _Nonnull)context {
@@ -520,6 +545,45 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             [self.presenter queueMessagesForPresentation:messages presentingTickles:self.pendingTickleIds];
         }
     });
+}
+
+- (BOOL)deleteMessageFromInbox:(NSNumber*)withId {
+    [self.kumulos trackEvent:KumulosEventMessageDeletedFromInbox withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": withId}];
+    
+    [self removeNotificationTickle: withId];
+
+    BOOL __block result = YES;
+    [self.messagesContext performBlockAndWait:^{
+        NSManagedObjectContext* context = self.messagesContext;
+        NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
+        
+        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setIncludesPendingChanges:NO];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"id = %@", withId]];
+        
+        NSError* err = nil;
+        NSArray<KSInAppMessageEntity*>* messageEntities = [context executeFetchRequest:fetchRequest error:&err];
+       
+        if (err != nil || messageEntities.count != 1) {
+            result = NO;
+            NSLog(@"Failed to delete message with id: %@ %@", withId, err);
+            return;
+        }
+                    
+        messageEntities[0].inboxTo = nil;
+        messageEntities[0].inboxFrom = nil;
+        messageEntities[0].inboxConfig = nil;
+        messageEntities[0].dismissedAt = [NSDate date];
+                     
+        [context save:&err];
+        if (err != nil) {
+            result = NO;
+            NSLog(@"Failed to delete message with id: %@ %@", withId, err);
+        }
+    }];
+
+    return result;
 }
 
 #pragma mark - Data model

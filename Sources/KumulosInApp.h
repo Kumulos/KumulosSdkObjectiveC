@@ -37,4 +37,5 @@ typedef NS_ENUM(NSInteger, KSInAppMessagePresentationResult) {
 
 + (KSInAppMessagePresentationResult) presentInboxMessage:(KSInAppInboxItem* _Nonnull)item;
 
++ (BOOL) deleteMessageFromInbox:(KSInAppInboxItem* _Nonnull)item;
 @end
