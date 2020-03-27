@@ -7,24 +7,24 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString* const KumulosApiKey;
-extern NSString* const KumulosSecretKey;
-extern NSString* const KumulosInstallUUID;
-extern NSString* const KumulosUserID;
-extern NSString* const KumulosBadgeCount;
+extern NSString* _Nonnull const KumulosApiKey;
+extern NSString* _Nonnull const KumulosSecretKey;
+extern NSString* _Nonnull const KumulosInstallUUID;
+extern NSString* _Nonnull const KumulosUserID;
+extern NSString* _Nonnull const KumulosBadgeCount;
 
 //exist only in standard defaults for app
-extern NSString* const KumulosMigratedToGroups;
-extern NSString* const KumulosMessagesLastSyncTime;
-extern NSString* const KumulosInAppConsented;
+extern NSString* _Nonnull const KumulosMigratedToGroups;
+extern NSString* _Nonnull const KumulosMessagesLastSyncTime;
+extern NSString* _Nonnull const KumulosInAppConsented;
 
 //exist only in standard defaults for extension
-extern NSString* const KumulosDynamicCategory;
+extern NSString* _Nonnull const KumulosDynamicCategory;
 
 
 
 @interface KumulosUserDefaultsKeys : NSObject
 
-+ (NSArray*) getSharedKeys;
++ (NSArray* _Nonnull) getSharedKeys;
 
 @end

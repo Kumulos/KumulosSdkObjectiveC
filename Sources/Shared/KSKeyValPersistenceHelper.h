@@ -7,9 +7,9 @@
 
 @interface KSKeyValPersistenceHelper : NSObject
 
-+ (void)setObject:(id)value forKey:(NSString *)forKey;
-+ (id)objectForKey:(NSString *) forKey;
-+ (void)removeObjectForKey:(NSString *) forKey;
++ (void)setObject:(id)value forKey:(NSString*)forKey;
++ (id)objectForKey:(NSString*) forKey;
++ (void)removeObjectForKey:(NSString*) forKey;
 + (void)maybeMigrateUserDefaultsToAppGroups;
 
 @end
