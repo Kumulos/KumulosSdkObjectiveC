@@ -22,5 +22,9 @@ extern NSString* const KumulosInAppConsented;
 extern NSString* const KumulosDynamicCategory;
 
 
-extern NSString * const SharedDefaultsKeys[];
 
+@interface KumulosUserDefaultsKeys : NSObject
+
++ (NSArray*) getSharedKeys;
+
+@end

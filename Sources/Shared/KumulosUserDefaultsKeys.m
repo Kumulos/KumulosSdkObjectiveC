@@ -24,8 +24,13 @@ NSString* const KumulosInAppConsented = @"KumulosInAppConsented";
 //exist only in standard defaults for extension
 NSString* const KumulosDynamicCategory = @"__kumulos__dynamic__categories__";
 
+@implementation KumulosUserDefaultsKeys
 
-NSString * const SharedDefaultsKeys[] =  { KumulosApiKey, KumulosSecretKey, KumulosInstallUUID, KumulosUserID, KumulosBadgeCount };
++ (NSArray*) getSharedKeys{
+    return @[KumulosApiKey, KumulosSecretKey, KumulosInstallUUID, KumulosUserID, KumulosBadgeCount];
+}
+
+@end
 
 
 
