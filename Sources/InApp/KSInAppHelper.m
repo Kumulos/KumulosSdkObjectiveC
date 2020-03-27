@@ -10,9 +10,9 @@
 #import "../KumulosEvents.h"
 #import "../Shared/Http/NSString+URLEncoding.h"
 #import "KSInAppPresenter.h"
+#import "../Shared/KumulosUserDefaultsKeys.h"
+#import "../Shared/KumulosHelper.h"
 
-#define KUMULOS_MESSAGES_LAST_SYNC_TIME @"KumulosMessagesLastSyncTime"
-#define KUMULOS_IN_APP_CONSENTED_KEY @"KumulosInAppConsented"
 static NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
 
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
@@ -93,7 +93,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #if DEBUG
     [self sync:onComplete];
 #else
-    NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+    NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KumulosMessagesLastSyncTime];
     if (lastSyncTime && [lastSyncTime timeIntervalSinceNow] < -3600) {
         [self sync:onComplete];
     }
@@ -117,7 +117,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
-    return KUMULOS_IN_APP_CONSENTED_KEY;
+    return KumulosInAppConsented;
 }
 
 -(BOOL)inAppEnabled {
@@ -180,7 +180,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 -(void) resetMessagingState {
     [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
-    [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+    [NSUserDefaults.standardUserDefaults removeObjectForKey:KumulosMessagesLastSyncTime];
 
     [self.messagesContext performBlockAndWait:^{
         NSManagedObjectContext* context = self.messagesContext;
@@ -212,7 +212,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
 -(void)sync:(void (^_Nullable)(int result))onComplete {
     dispatch_async(self.syncQueue, ^{
-        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KumulosMessagesLastSyncTime];
         NSString* after = @"";
 
         if (lastSyncTime != nil) {
@@ -223,7 +223,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedStringForUrl]];
         }
 
-        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", [Kumulos.currentUserIdentifier urlEncodedStringForUrl], after];
+        NSString* path = [NSString stringWithFormat:@"/v1/users/%@/messages%@", [KumulosHelper.currentUserIdentifier urlEncodedStringForUrl], after];
 
         [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
             NSArray<NSDictionary*>* messagesToPersist = decodedBody;
@@ -340,7 +340,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             return;
         }
 
-        [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KUMULOS_MESSAGES_LAST_SYNC_TIME];
+        [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KumulosMessagesLastSyncTime];
 
         [self trackMessageDelivery:messages];
     }];
