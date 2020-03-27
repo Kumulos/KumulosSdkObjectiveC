@@ -8,7 +8,7 @@
 #import "../Kumulos+Analytics.h"
 #import "../Kumulos+Protected.h"
 #import "../KumulosEvents.h"
-#import "../Http/NSString+URLEncoding.h"
+#import "../Shared/Http/NSString+URLEncoding.h"
 #import "KSInAppPresenter.h"
 
 #define KUMULOS_MESSAGES_LAST_SYNC_TIME @"KumulosMessagesLastSyncTime"

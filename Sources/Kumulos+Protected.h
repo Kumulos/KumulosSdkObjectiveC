@@ -6,7 +6,7 @@
 //
 
 #import "Kumulos.h"
-#import "Http/KSHttpClient.h"
+#import "Shared/Http/KSHttpClient.h"
 
 #if TARGET_OS_IOS
 #import "AnalyticsHelper.h"
