@@ -10,9 +10,11 @@
 #import "KumulosUserDefaultsKeys.h"
 
 
-static NSString* _Nonnull const userIdLocker = @"";
+
 
 @implementation KumulosHelper
+
+static NSString* _Nonnull const userIdLocker = @"";
 
 + (NSString*) installId {
     @synchronized (self) {
@@ -38,6 +40,10 @@ static NSString* _Nonnull const userIdLocker = @"";
     }
 
     return KumulosHelper.installId;
+}
+
++ (NSString*) userIdLocker{
+    return userIdLocker;
 }
 
 

@@ -159,6 +159,19 @@
     [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES flushingImmediately:NO];
 }
 
+
+//FIXME: new uber signature for the method below
+- (void) trackEvent:(NSString *)eventType
+             atTime:(NSDate *)happenedAt
+     withProperties:(NSDictionary *)properties
+flushingImmediately:(BOOL)flushImmediately
+     onSyncComplete:(SyncCompletedBlock)onSyncComplete
+{
+    
+    
+    
+}
+
 - (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties asynchronously:(BOOL)asynchronously flushingImmediately:(BOOL)flushImmediately {
     if ([eventType isEqualToString:@""] || (properties && ![NSJSONSerialization isValidJSONObject:properties])) {
         NSLog(@"Ignoring invalid event with empty type or non-serializable properties");

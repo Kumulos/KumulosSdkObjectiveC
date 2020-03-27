@@ -6,13 +6,26 @@
 #import "KumulosEvents.h"
 #import "Kumulos+Analytics.h"
 #import "Kumulos+Protected.h"
-
-static NSString* _Nonnull const userIdLocker = @"";
+#import "Shared/KumulosHelper.h"
+#import "Shared/KumulosUserDefaultsKeys.h"
+#import "Shared/KSKeyValPersistenceHelper.h"
+#import "AnalyticsHelper.h"
 
 @implementation Kumulos (Analytics)
 
 - (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties {
     [self.analyticsHelper trackEvent:eventType withProperties:properties];
+}
+
+
+//FIXME: this method should be accessible from SessionHelper, but not be part of API
+- (void) trackEvent:(NSString *)eventType
+             atTime: (NSDate *)happenedAt
+     withProperties:(NSDictionary *)properties
+flushingImmediately:(BOOL)flushImmediately
+     onSyncComplete: (SyncCompletedBlock)onSyncComplete
+{
+    [self.analyticsHelper trackEvent:eventType atTime:happenedAt withProperties:properties flushingImmediately:flushImmediately onSyncComplete:onSyncComplete];
 }
 
 - (void) trackEventImmediately:(NSString *)eventType withProperties:(NSDictionary *)properties {
@@ -28,27 +41,20 @@ static NSString* _Nonnull const userIdLocker = @"";
 }
 
 + (NSString*) currentUserIdentifier {
-    @synchronized (userIdLocker) {
-        NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
-        if (userId) {
-            return userId;
-        }
-    }
-
-    return Kumulos.installId;
+    return KumulosHelper.currentUserIdentifier;
 }
 
 - (void) clearUserAssociation {
     NSString* currentUserId = nil;
-    @synchronized (userIdLocker) {
-        currentUserId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
+    @synchronized (KumulosHelper.userIdLocker) {
+        currentUserId = [KSKeyValPersistenceHelper objectForKey:KumulosUserID];
     }
 
     NSDictionary* props = @{@"oldUserIdentifier": currentUserId ?: NSNull.null};
     [self trackEvent:KumulosEventUserAssociationCleared withProperties:props];
 
-    @synchronized (userIdLocker) {
-        [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_USER_ID_KEY];
+    @synchronized (KumulosHelper.userIdLocker) {
+        [KSKeyValPersistenceHelper removeObjectForKey:KumulosUserID];
     }
 
 #if TARGET_OS_IOS
@@ -76,9 +82,9 @@ static NSString* _Nonnull const userIdLocker = @"";
     }
 
     NSString* currentUserIdentifier = nil;
-    @synchronized (userIdLocker) {
-        currentUserIdentifier = [NSUserDefaults.standardUserDefaults valueForKey:KUMULOS_USER_ID_KEY];
-        [NSUserDefaults.standardUserDefaults setObject:userIdentifier forKey:KUMULOS_USER_ID_KEY];
+    @synchronized (KumulosHelper.userIdLocker) {
+        currentUserIdentifier = [KSKeyValPersistenceHelper objectForKey:KumulosUserID];
+        [KSKeyValPersistenceHelper setObject:userIdentifier forKey:KumulosUserID];
     }
 
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];

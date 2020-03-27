@@ -15,7 +15,6 @@
 #endif
 
 #define KUMULOS_INSTALL_ID_KEY @"KumulosUUID"
-#define KUMULOS_USER_ID_KEY @"KumulosCurrentUserID"
 
 @interface Kumulos ()
 

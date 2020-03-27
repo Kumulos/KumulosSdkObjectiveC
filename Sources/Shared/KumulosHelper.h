@@ -9,6 +9,6 @@
 
 + (NSString* _Nonnull) installId;
 + (NSString* _Nonnull) currentUserIdentifier;
-
++ (NSString* _Nonnull) userIdLocker;
 
 @end
