@@ -4,9 +4,9 @@
 //
 //
 #import "KSCategoryHelper.h"
+#import "../Shared/KumulosUserDefaultsKeys.h"
 
 static int const MAX_DYNAMIC_CATEGORIES = 128;
-static NSString * const DYNAMIC_CATEGORY_USER_DEFAULTS_KEY = @"__kumulos__dynamic__categories__";
 static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__";
 
 @implementation KSCategoryHelper
@@ -53,7 +53,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 
 - (NSMutableArray<NSString*>*)getExistingDynamicCategoriesList {
     @synchronized (self) {
-        NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+        NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:KumulosDynamicCategory];
 
         if (existingArray != nil) {
             return [existingArray mutableCopy];
@@ -61,7 +61,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 
         NSMutableArray<NSString*> *newArray = [NSMutableArray<NSString*> new];
 
-        [NSUserDefaults.standardUserDefaults setObject:newArray forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+        [NSUserDefaults.standardUserDefaults setObject:newArray forKey:KumulosDynamicCategory];
         [NSUserDefaults.standardUserDefaults synchronize];
 
         return newArray;
@@ -71,7 +71,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 - (void)pruneCategoriesAndSave:(NSMutableSet<UNNotificationCategory*>*)categories withDynamicCategories: (NSMutableArray<NSString*>*)dynamicCategories {
     if (dynamicCategories.count <= MAX_DYNAMIC_CATEGORIES) {
         [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:categories];
-        [NSUserDefaults.standardUserDefaults setObject:dynamicCategories forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+        [NSUserDefaults.standardUserDefaults setObject:dynamicCategories forKey:KumulosDynamicCategory];
         [NSUserDefaults.standardUserDefaults synchronize];
         return;
     }
@@ -95,7 +95,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
             [newDynamicCategories addObject:dynamicCategory];
     
     [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:newCategories];
-    [NSUserDefaults.standardUserDefaults setObject:newDynamicCategories forKey:DYNAMIC_CATEGORY_USER_DEFAULTS_KEY];
+    [NSUserDefaults.standardUserDefaults setObject:newDynamicCategories forKey:KumulosDynamicCategory];
     [NSUserDefaults.standardUserDefaults synchronize];
 }
 

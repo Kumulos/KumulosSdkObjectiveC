@@ -158,6 +158,20 @@
 		B6E48F73242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */; };
 		B6E48F75242E2B5200E8B3B9 /* KumulosHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */; };
 		B6E48F77242E2B6300E8B3B9 /* KumulosHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */; };
+		B6E48F78242E42F600E8B3B9 /* KSAppGroupsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F68242D10DE00E8B3B9 /* KSAppGroupsHelper.m */; };
+		B6E48F79242E42FB00E8B3B9 /* KSAppGroupsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F6A242D117700E8B3B9 /* KSAppGroupsHelper.h */; };
+		B6E48F7A242E42FF00E8B3B9 /* KumulosUserDefaultsKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F6C242E0C0400E8B3B9 /* KumulosUserDefaultsKeys.m */; };
+		B6E48F7B242E430300E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F6E242E0C2000E8B3B9 /* KumulosUserDefaultsKeys.h */; };
+		B6E48F7C242E430700E8B3B9 /* KSKeyValPersistenceHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F70242E107A00E8B3B9 /* KSKeyValPersistenceHelper.h */; };
+		B6E48F7D242E430A00E8B3B9 /* KSKeyValPersistenceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */; };
+		B6E48F7E242E430D00E8B3B9 /* KumulosHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */; };
+		B6E48F7F242E431000E8B3B9 /* KumulosHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */; };
+		B6E48F80242E432100E8B3B9 /* KSHttpClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CB320E13A34005CFCED /* KSHttpClient.h */; };
+		B6E48F81242E432400E8B3B9 /* KSHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB020E13A01005CFCED /* KSHttpClient.m */; };
+		B6E48F82242E432800E8B3B9 /* NSString+URLEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CB720E23665005CFCED /* NSString+URLEncoding.h */; };
+		B6E48F83242E432B00E8B3B9 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
+		B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CF920E27807005CFCED /* KSUrlEncoding.h */; };
+		B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -528,9 +542,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E48F7C242E430700E8B3B9 /* KSKeyValPersistenceHelper.h in Headers */,
+				B6E48F80242E432100E8B3B9 /* KSHttpClient.h in Headers */,
+				B6E48F79242E42FB00E8B3B9 /* KSAppGroupsHelper.h in Headers */,
 				6FDDA3A523D70624003D74EF /* KSCategoryHelper.h in Headers */,
+				B6E48F7F242E431000E8B3B9 /* KumulosHelper.h in Headers */,
+				B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */,
+				B6E48F82242E432800E8B3B9 /* NSString+URLEncoding.h in Headers */,
 				B6A4592F2399307F00FDECFC /* KumulosSDKExtension.h in Headers */,
 				B6A459322399477000FDECFC /* KumulosNotificationService.h in Headers */,
+				B6E48F7B242E430300E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,9 +859,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */,
+				B6E48F83242E432B00E8B3B9 /* NSString+URLEncoding.m in Sources */,
 				B6A45930239930E700FDECFC /* KumulosNotificationService.h in Sources */,
+				B6E48F78242E42F600E8B3B9 /* KSAppGroupsHelper.m in Sources */,
 				6FDDA3A223D7060E003D74EF /* KSCategoryHelper.m in Sources */,
+				B6E48F7D242E430A00E8B3B9 /* KSKeyValPersistenceHelper.m in Sources */,
 				B6A4592E23992FF700FDECFC /* KumulosNotificationService.m in Sources */,
+				B6E48F7A242E42FF00E8B3B9 /* KumulosUserDefaultsKeys.m in Sources */,
+				B6E48F81242E432400E8B3B9 /* KSHttpClient.m in Sources */,
+				B6E48F7E242E430D00E8B3B9 /* KumulosHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
