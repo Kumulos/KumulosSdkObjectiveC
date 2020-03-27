@@ -40,7 +40,7 @@ typedef void (^ _Nonnull KSPushChannelSuccessBlock)(NSError* _Nullable error, KS
 /**
  * Subscribes the current installation to the channels specified by the given unique identifiers
  *
- * Channels must exist before subscription will succeed.
+ * Channels that don't exist will be created.
  *
  * Existing & duplicate subscriptions are ignored.
  *
@@ -51,7 +51,7 @@ typedef void (^ _Nonnull KSPushChannelSuccessBlock)(NSError* _Nullable error, KS
 /**
  * Subscribes the current installation to the channels specified by the given unique identifiers
  *
- * Channels must exist before subscription will succeed.
+ * Channels that don't exist will be created.
  *
  * Existing & duplicate subscriptions are ignored.
  *
