@@ -148,6 +148,7 @@ static Kumulos* _shared;
         [self initSessions];
         [self initInApp];
         [self pushInit];
+        [[UIApplication sharedApplication] addObserver:self forKeyPath:@"applicationIconBadgeNumber" options:NSKeyValueObservingOptionNew context:nil];
 #endif
         
         [self statsSendInstallInfo];
@@ -157,6 +158,16 @@ static Kumulos* _shared;
         }
     }
     return self;
+}
+
+- (void)observeValueForKeyPath:(NSString*)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary*)change
+                       context:(void*)context {
+    
+    if ([keyPath isEqualToString:@"applicationIconBadgeNumber"]) {
+        [KSKeyValPersistenceHelper setObject:change[@"new"] forKey: KumulosBadgeCount];
+    }
 }
 
 - (instancetype _Nullable) initWithAPIKey:(NSString *)APIKey andSecretKey:(NSString *)secretKey {
