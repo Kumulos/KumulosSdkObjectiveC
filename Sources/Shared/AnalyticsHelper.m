@@ -145,7 +145,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
     
     NSURL* storeUrl = [self getMainStoreUrl:appGroupExists];
     if (appGroupExists && appDbExists){
-        self.migrationAnalyticsContext = [self getManagedObjectContext:storeUrl];
+        self.migrationAnalyticsContext = [self getManagedObjectContext:appDbUrl];
     }
     
     self.analyticsContext = [self getManagedObjectContext:storeUrl];
