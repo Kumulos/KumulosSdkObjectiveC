@@ -229,7 +229,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
     
     NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notification.id};
-    [self.analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params];
+    [self.analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params flushingImmediately:YES];
 }
 
 @end

@@ -6,27 +6,40 @@
 
 #import "KumulosNotificationService.h"
 #import "KSCategoryHelper.h"
+#import "AnalyticsHelper.h"
+#import "KSKeyValPersistenceHelper.h"
+#import "KumulosUserDefaultsKeys.h"
+#import "KumulosHelper.h"
+#import "KumulosSharedEvents.h"
 
 @implementation KumulosNotificationService
 
 NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
+static AnalyticsHelper* _Nullable analyticsHelper;
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
 
     NSDictionary *userInfo = request.content.userInfo;
+    NSDictionary* custom = userInfo[@"custom"];
+    NSDictionary* data = custom[@"a"];
+    NSDictionary* msg = data[@"k.message"];
+    NSDictionary* msgData = msg[@"data"];
+    NSNumber* messageId = msgData[@"id"];
     
-    if  (userInfo && userInfo[@"custom"] && userInfo[@"custom"][@"a"] && userInfo[@"custom"][@"a"][@"k.message"] && userInfo[@"custom"][@"a"][@"k.buttons"]) {
-        NSNumber* messageId = userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
-        NSArray *buttons = userInfo[@"custom"][@"a"][@"k.buttons"];
+    [self maybeSetBadge:bestAttemptContent userInfo: userInfo];
+    [self trackDeliveredEvent:userInfo notificationId: messageId];
+    
+    if (data[@"k.buttons"]) {
+        NSArray *buttons = data[@"k.buttons"];
 
         if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
             [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
         }
     }
     
-    NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
+    NSDictionary *attachments = userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     
     if (pictureUrl == nil) {
@@ -44,6 +57,56 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
            }
            contentHandler(bestAttemptContent);
        }];
+}
+
+
++ (void)maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo{
+    NSDictionary* custom = userInfo[@"custom"];
+    NSDictionary* aps = custom[@"aps"];
+    
+    NSNumber* incrementBy = custom[@"badge_inc"];
+    NSNumber* badge = aps[@"badge"];
+    
+    if (badge == nil){
+        return;
+    }
+    
+    // Note in case of no cache, server sends the increment value in the badge field too, so works as badge = 0 + badge_inc
+    NSNumber* newBadge = badge;
+    NSNumber* currentBadgeCount = [KSKeyValPersistenceHelper objectForKey:KumulosBadgeCount];
+    if (incrementBy != nil && currentBadgeCount != nil){
+        newBadge = [NSNumber numberWithInt: currentBadgeCount.intValue + incrementBy.intValue];
+    }
+    
+    bestAttemptContent.badge = newBadge;
+    [KSKeyValPersistenceHelper setObject:newBadge forKey:KumulosBadgeCount];
+}
+
++ (void)trackDeliveredEvent:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
+    NSDictionary* aps = userInfo[@"aps"];
+    if (aps[@"content-available"] && [aps[@"content-available"] intValue] == 1){
+        return;
+    }
+    
+    [self initializeAnalyticsHelper];
+    if (analyticsHelper == nil){
+        return;
+    }
+    
+    NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notificationId};
+    [analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params flushingImmediately:YES];
+}
+
++ (void)initializeAnalyticsHelper{
+    NSString* apiKey = [KSKeyValPersistenceHelper objectForKey:KumulosApiKey];
+    NSString* secretKey = [KSKeyValPersistenceHelper objectForKey:KumulosSecretKey];
+    
+    if (apiKey == nil || secretKey == nil){
+        NSLog(@"Extension: authorization credentials not present");
+        return;
+    }
+    
+    analyticsHelper = [[AnalyticsHelper alloc] initWithApiKey:apiKey withSecretKey:secretKey];
 }
 
 + (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {
