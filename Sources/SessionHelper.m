@@ -32,15 +32,12 @@
         self.bgTask = UIBackgroundTaskInvalid;
         self.sessionIdleTimeout = timeout;
         self.analyticsHelper = analyticsHelper;
+        
+        [self registerListeners];
     }
     
     return self;
 }
-
-- (void) initialize {
-    [self registerListeners];
-}
-
 
 - (void) registerListeners {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];

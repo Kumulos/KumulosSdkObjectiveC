@@ -10,11 +10,13 @@
 
 #if TARGET_OS_IOS
 #import "Shared/AnalyticsHelper.h"
+#import "Shared/KumulosHelper.h"
+#import "Shared/KSKeyValPersistenceHelper.h"
+#import "Shared/KumulosUserDefaultsKeys.h"
+#import "SessionHelper.h"
 #import "InApp/KSInAppHelper.h"
 @import UserNotifications;
 #endif
-
-#define KUMULOS_INSTALL_ID_KEY @"KumulosUUID"
 
 @interface Kumulos ()
 
@@ -28,6 +30,7 @@
 
 #if TARGET_OS_IOS
 @property (nonatomic) AnalyticsHelper* _Nullable analyticsHelper;
+@property (nonatomic) SessionHelper* _Nullable sessionHelper;
 @property (nonatomic) KSInAppHelper* _Nullable inAppHelper;
 @property (nonatomic) NSObject<UNUserNotificationCenterDelegate>* _Nullable notificationCenterDelegate API_AVAILABLE(ios(10.0));
 #else

@@ -28,7 +28,7 @@ static NSString * const KSBackendBaseUrl = @"https://api.kumulos.com";
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
-static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
+
 
 @implementation KSConfig
 
@@ -117,17 +117,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 static Kumulos* _shared;
 
 + (NSString*) installId {
-    @synchronized (self) {
-        NSString* installId = [[NSUserDefaults standardUserDefaults] objectForKey:KUMULOS_INSTALL_ID_KEY];
-        
-        if (!installId) {
-            installId = [[[NSUUID UUID] UUIDString] lowercaseString];
-            [[NSUserDefaults standardUserDefaults] setObject:installId forKey:KUMULOS_INSTALL_ID_KEY];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
-        
-        return installId;
-    }
+    return KumulosHelper.installId;
 }
 
 + (instancetype _Nullable) initializeWithConfig:(KSConfig *)config {
@@ -145,12 +135,17 @@ static Kumulos* _shared;
         self.secretKey = config.secretKey;
         self.config = config;
         
+        [KSKeyValPersistenceHelper maybeMigrateUserDefaultsToAppGroups];
+        [KSKeyValPersistenceHelper setObject:config.apiKey forKey:KumulosApiKey];
+        [KSKeyValPersistenceHelper setObject:config.secretKey forKey:KumulosSecretKey];
+        
         self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
         
         [self initNetworkingHelpers];
         
 #if TARGET_OS_IOS
         [self initAnalytics];
+        [self initSessions];
         [self initInApp];
         [self pushInit];
 #endif
@@ -179,8 +174,7 @@ static Kumulos* _shared;
     [self.pushHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
     
 #if TARGET_OS_IOS
-    self.eventsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
-    [self.eventsHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
+
 #else
     self.statsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSStatsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
     [self.statsHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
@@ -188,8 +182,12 @@ static Kumulos* _shared;
 }
 
 #if TARGET_OS_IOS
+- (void) initSessions {
+    self.sessionHelper = [[SessionHelper alloc] initWithSessionIdleTimeout: self.config.sessionIdleTimeoutSeconds analyticsHelper:self.analyticsHelper];
+}
+
 - (void) initAnalytics {
-    self.analyticsHelper = [[AnalyticsHelper alloc] initWithKumulos:self];
+    self.analyticsHelper = [[AnalyticsHelper alloc] initWithApiKey:self.apiKey withSecretKey:self.secretKey];
 }
 - (void) initInApp {
     self.inAppHelper = [[KSInAppHelper alloc] initWithKumulos:self];
@@ -240,8 +238,6 @@ static Kumulos* _shared;
     self.rpcHttpClient = nil;
     
 #if TARGET_OS_IOS
-    [self.eventsHttpClient invalidateSessionCancelingTasks:NO];
-    self.eventsHttpClient = nil;
 #else
     [self.statsHttpClient invalidateSessionCancelingTasks:NO];
     self.statsHttpClient = nil;
