@@ -62,7 +62,7 @@ static AnalyticsHelper* _Nullable analyticsHelper;
 
 + (void)maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo{
     NSDictionary* custom = userInfo[@"custom"];
-    NSDictionary* aps = custom[@"aps"];
+    NSDictionary* aps = userInfo[@"aps"];
     
     NSNumber* incrementBy = custom[@"badge_inc"];
     NSNumber* badge = aps[@"badge"];
