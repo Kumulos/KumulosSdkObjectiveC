@@ -46,7 +46,7 @@ static NSString* _Nonnull const userIdLocker = @"";
 }
 
 
-+ (NSNumber*) updateBadge:(NSDictionary*)userInfo{
++ (NSNumber*) getBadgeFromUserInfo:(NSDictionary*)userInfo{
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* aps = userInfo[@"aps"];
     
@@ -63,8 +63,6 @@ static NSString* _Nonnull const userIdLocker = @"";
     if (incrementBy != nil && currentBadgeCount != nil){
         newBadge = [NSNumber numberWithInt: currentBadgeCount.intValue + incrementBy.intValue];
     }
-    
-    [KSKeyValPersistenceHelper setObject:newBadge forKey:KumulosBadgeCount];
     
     return newBadge;
 }

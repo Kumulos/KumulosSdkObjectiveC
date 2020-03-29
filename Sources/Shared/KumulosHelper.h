@@ -13,6 +13,6 @@
 + (NSString* _Nonnull) installId;
 + (NSString* _Nonnull) currentUserIdentifier;
 + (NSString* _Nonnull) userIdLocker;
-+ (NSNumber* _Nullable) updateBadge:(NSDictionary* _Nonnull)userInfo;
++ (NSNumber* _Nullable) getBadgeFromUserInfo:(NSDictionary* _Nonnull)userInfo;
 
 @end

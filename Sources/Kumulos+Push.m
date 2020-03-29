@@ -277,6 +277,11 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
     
     if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
+        NSNumber* newBadgeValue = [KumulosHelper getBadgeFromUserInfo:userInfo];
+        if (newBadgeValue != nil){
+            UIApplication.sharedApplication.applicationIconBadgeNumber = newBadgeValue.intValue;
+        }
+        
         [Kumulos.shared trackPushDelivery:userInfo];
         
         [Kumulos.shared.inAppHelper sync:^(int result) {

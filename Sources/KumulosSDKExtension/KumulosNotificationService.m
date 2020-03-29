@@ -27,7 +27,7 @@ static AnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
-    bestAttemptContent.badge = [KumulosHelper updateBadge:userInfo];
+    [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
     [self trackDeliveredEvent:userInfo notificationId: messageId];
     
     if (data[@"k.buttons"]) {
@@ -56,6 +56,21 @@ static AnalyticsHelper* _Nullable analyticsHelper;
            }
            contentHandler(bestAttemptContent);
        }];
+}
+
++ (void) maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo {
+    NSDictionary* aps = userInfo[@"aps"];
+    if (aps[@"content-available"] && [aps[@"content-available"] intValue] == 1){
+        return;
+    }
+    
+    NSNumber* newBadge = [KumulosHelper getBadgeFromUserInfo:userInfo];
+    if (newBadge == nil){
+        return;
+    }
+    
+    bestAttemptContent.badge = newBadge;
+    [KSKeyValPersistenceHelper setObject:newBadge forKey:KumulosBadgeCount];
 }
 
 + (void)trackDeliveredEvent:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
