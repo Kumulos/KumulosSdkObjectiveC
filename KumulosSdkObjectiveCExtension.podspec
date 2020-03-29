@@ -10,7 +10,7 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = "10.0"
 
-  s.source_files = "Sources/KumulosSDKExtension/**/*.{h,m}"
+  s.source_files = "Sources/KumulosSDKExtension/**/*.{h,m}",  "Sources/Shared/**/*.{h,m}"
   s.exclude_files = "Carthage"
   s.module_name = "KumulosSDKExtension"
   s.header_dir = "KumulosSDKExtension"
