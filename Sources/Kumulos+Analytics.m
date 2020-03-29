@@ -17,17 +17,6 @@
     [self.analyticsHelper trackEvent:eventType withProperties:properties];
 }
 
-
-//FIXME: this method should be accessible from SessionHelper, but not be part of API
-- (void) trackEvent:(NSString *)eventType
-             atTime: (NSDate *)happenedAt
-     withProperties:(NSDictionary *)properties
-flushingImmediately:(BOOL)flushImmediately
-     onSyncComplete: (SyncCompletedBlock)onSyncComplete
-{
-    [self.analyticsHelper trackEvent:eventType atTime:happenedAt withProperties:properties flushingImmediately:flushImmediately onSyncComplete:onSyncComplete];
-}
-
 - (void) trackEventImmediately:(NSString *)eventType withProperties:(NSDictionary *)properties {
     [self.analyticsHelper trackEvent:eventType withProperties:properties flushingImmediately:YES];
 }
