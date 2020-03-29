@@ -8,8 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "KumulosHelper.h"
 #import "KumulosUserDefaultsKeys.h"
-
-
+#import "KSKeyValPersistenceHelper.h"
 
 
 @implementation KumulosHelper
@@ -44,6 +43,30 @@ static NSString* _Nonnull const userIdLocker = @"";
 
 + (NSString*) userIdLocker{
     return userIdLocker;
+}
+
+
++ (NSNumber*) updateBadge:(NSDictionary*)userInfo{
+    NSDictionary* custom = userInfo[@"custom"];
+    NSDictionary* aps = userInfo[@"aps"];
+    
+    NSNumber* incrementBy = custom[@"badge_inc"];
+    NSNumber* badge = aps[@"badge"];
+    
+    if (badge == nil){
+        return nil;
+    }
+    
+    // Note in case of no cache, server sends the increment value in the badge field too, so works as badge = 0 + badge_inc
+    NSNumber* newBadge = badge;
+    NSNumber* currentBadgeCount = [KSKeyValPersistenceHelper objectForKey:KumulosBadgeCount];
+    if (incrementBy != nil && currentBadgeCount != nil){
+        newBadge = [NSNumber numberWithInt: currentBadgeCount.intValue + incrementBy.intValue];
+    }
+    
+    [KSKeyValPersistenceHelper setObject:newBadge forKey:KumulosBadgeCount];
+    
+    return newBadge;
 }
 
 

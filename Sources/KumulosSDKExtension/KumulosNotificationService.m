@@ -18,7 +18,6 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
 static AnalyticsHelper* _Nullable analyticsHelper;
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
-    
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
 
     NSDictionary *userInfo = request.content.userInfo;
@@ -28,7 +27,7 @@ static AnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
-    [self maybeSetBadge:bestAttemptContent userInfo: userInfo];
+    bestAttemptContent.badge = [KumulosHelper updateBadge:userInfo];
     [self trackDeliveredEvent:userInfo notificationId: messageId];
     
     if (data[@"k.buttons"]) {
@@ -57,29 +56,6 @@ static AnalyticsHelper* _Nullable analyticsHelper;
            }
            contentHandler(bestAttemptContent);
        }];
-}
-
-
-+ (void)maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo{
-    NSDictionary* custom = userInfo[@"custom"];
-    NSDictionary* aps = userInfo[@"aps"];
-    
-    NSNumber* incrementBy = custom[@"badge_inc"];
-    NSNumber* badge = aps[@"badge"];
-    
-    if (badge == nil){
-        return;
-    }
-    
-    // Note in case of no cache, server sends the increment value in the badge field too, so works as badge = 0 + badge_inc
-    NSNumber* newBadge = badge;
-    NSNumber* currentBadgeCount = [KSKeyValPersistenceHelper objectForKey:KumulosBadgeCount];
-    if (incrementBy != nil && currentBadgeCount != nil){
-        newBadge = [NSNumber numberWithInt: currentBadgeCount.intValue + incrementBy.intValue];
-    }
-    
-    bestAttemptContent.badge = newBadge;
-    [KSKeyValPersistenceHelper setObject:newBadge forKey:KumulosBadgeCount];
 }
 
 + (void)trackDeliveredEvent:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
