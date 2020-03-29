@@ -9,7 +9,7 @@
 #import "Shared/Http/KSHttpClient.h"
 
 #if TARGET_OS_IOS
-#import "AnalyticsHelper.h"
+#import "Shared/AnalyticsHelper.h"
 #import "InApp/KSInAppHelper.h"
 @import UserNotifications;
 #endif
@@ -28,7 +28,6 @@
 
 #if TARGET_OS_IOS
 @property (nonatomic) AnalyticsHelper* _Nullable analyticsHelper;
-@property (nonatomic) KSHttpClient* _Nullable eventsHttpClient;
 @property (nonatomic) KSInAppHelper* _Nullable inAppHelper;
 @property (nonatomic) NSObject<UNUserNotificationCenterDelegate>* _Nullable notificationCenterDelegate API_AVAILABLE(ios(10.0));
 #else

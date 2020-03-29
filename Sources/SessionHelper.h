@@ -5,7 +5,7 @@
 //  Created by Vladislav Voicehovics on 27/03/2020.
 //
 
-#import "AnalyticsHelper.h"
+#import "Shared/AnalyticsHelper.h"
 
 @interface SessionHelper : NSObject
 

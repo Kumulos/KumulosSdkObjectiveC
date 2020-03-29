@@ -120,7 +120,6 @@
 		12BBE99520E3CC9600DC9916 /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
 		12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
 		12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
-		12BBE99820E3CC9600DC9916 /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
 		12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
 		12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; };
 		12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B9B1E4CE35900ED4488 /* KSAPIResponse.h */; };
@@ -174,6 +173,8 @@
 		B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
 		B6E48F87242E5CBC00E8B3B9 /* SessionHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F86242E5CBC00E8B3B9 /* SessionHelper.h */; };
 		B6E48F89242E5CD700E8B3B9 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* SessionHelper.m */; };
+		B6E48F8A2430DFA800E8B3B9 /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
+		B6E48F8B2430F8FA00E8B3B9 /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -426,8 +427,6 @@
 				125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */,
 				12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */,
 				12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */,
-				12659F691FE13C3E003C31BF /* AnalyticsHelper.h */,
-				12659F671FE13C29003C31BF /* AnalyticsHelper.m */,
 				129BC4E22062AD3E005AE632 /* KumulosEvents.h */,
 				129BC4E52062AE61005AE632 /* KumulosEvents.m */,
 				12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */,
@@ -484,6 +483,8 @@
 				B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */,
 				B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */,
 				B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */,
+				12659F671FE13C29003C31BF /* AnalyticsHelper.m */,
+				12659F691FE13C3E003C31BF /* AnalyticsHelper.h */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -556,6 +557,7 @@
 				B6E48F7F242E431000E8B3B9 /* KumulosHelper.h in Headers */,
 				B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */,
 				B6E48F82242E432800E8B3B9 /* NSString+URLEncoding.h in Headers */,
+				B6E48F8B2430F8FA00E8B3B9 /* AnalyticsHelper.h in Headers */,
 				B6A4592F2399307F00FDECFC /* KumulosSDKExtension.h in Headers */,
 				B6A459322399477000FDECFC /* KumulosNotificationService.h in Headers */,
 				B6E48F7B242E430300E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
@@ -847,7 +849,6 @@
 				12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */,
 				120CD56E22DCA92000067A45 /* KSInAppHelper.m in Sources */,
 				12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */,
-				12BBE99820E3CC9600DC9916 /* AnalyticsHelper.m in Sources */,
 				12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */,
 				12BD21BD2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m in Sources */,
 				12E861DB2302C4EF009EF70B /* KSInAppPresenter.m in Sources */,
@@ -870,6 +871,7 @@
 				B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */,
 				B6E48F83242E432B00E8B3B9 /* NSString+URLEncoding.m in Sources */,
 				B6A45930239930E700FDECFC /* KumulosNotificationService.h in Sources */,
+				B6E48F8A2430DFA800E8B3B9 /* AnalyticsHelper.m in Sources */,
 				B6E48F78242E42F600E8B3B9 /* KSAppGroupsHelper.m in Sources */,
 				6FDDA3A223D7060E003D74EF /* KSCategoryHelper.m in Sources */,
 				B6E48F7D242E430A00E8B3B9 /* KSKeyValPersistenceHelper.m in Sources */,
