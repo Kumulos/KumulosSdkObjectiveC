@@ -175,6 +175,10 @@
 		B6E48F89242E5CD700E8B3B9 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* SessionHelper.m */; };
 		B6E48F8A2430DFA800E8B3B9 /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
 		B6E48F8B2430F8FA00E8B3B9 /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
+		B6E48F8D24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
+		B6E48F8E24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
+		B6E48F9024311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */; };
+		B6E48F9124311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -293,6 +297,8 @@
 		B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosHelper.h; sourceTree = "<group>"; };
 		B6E48F86242E5CBC00E8B3B9 /* SessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionHelper.h; sourceTree = "<group>"; };
 		B6E48F88242E5CD700E8B3B9 /* SessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionHelper.m; sourceTree = "<group>"; };
+		B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KumulosSharedEvents.m; sourceTree = "<group>"; };
+		B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosSharedEvents.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -485,6 +491,8 @@
 				B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */,
 				12659F671FE13C29003C31BF /* AnalyticsHelper.m */,
 				12659F691FE13C3E003C31BF /* AnalyticsHelper.h */,
+				B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */,
+				B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -519,6 +527,7 @@
 				12735BB61E4CE35900ED4488 /* Kumulos+Protected.h in Headers */,
 				12562CB420E161A9005CFCED /* KSHttpClient.h in Headers */,
 				12735BB21E4CE35900ED4488 /* KSessionTokenManager.h in Headers */,
+				B6E48F9024311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */,
 				12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */,
 				120CD57522DCCD4000067A45 /* KSInAppModels.h in Headers */,
 				B6E48F87242E5CBC00E8B3B9 /* SessionHelper.h in Headers */,
@@ -553,6 +562,7 @@
 				B6E48F7C242E430700E8B3B9 /* KSKeyValPersistenceHelper.h in Headers */,
 				B6E48F80242E432100E8B3B9 /* KSHttpClient.h in Headers */,
 				B6E48F79242E42FB00E8B3B9 /* KSAppGroupsHelper.h in Headers */,
+				B6E48F9124311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */,
 				6FDDA3A523D70624003D74EF /* KSCategoryHelper.h in Headers */,
 				B6E48F7F242E431000E8B3B9 /* KumulosHelper.h in Headers */,
 				B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */,
@@ -782,6 +792,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E48F8D24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */,
 				12735BFD1E4CE5CF00ED4488 /* KumulosPushSubscriptionManager.m in Sources */,
 				12735BB51E4CE35900ED4488 /* Kumulos.m in Sources */,
 				125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
@@ -868,6 +879,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E48F8E24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */,
 				B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */,
 				B6E48F83242E432B00E8B3B9 /* NSString+URLEncoding.m in Sources */,
 				B6A45930239930E700FDECFC /* KumulosNotificationService.h in Sources */,

@@ -11,11 +11,11 @@
 #import "MobileProvision.h"
 #import "KumulosEvents.h"
 #import "Kumulos+PushProtected.h"
+#import "Shared/KumulosSharedEvents.h"
 
 static NSInteger const KSPushTokenTypeProduction = 1;
 static NSInteger const KSPushDeviceType = 1;
 static NSInteger const KSDeepLinkTypeInApp = 1;
-static NSUInteger const KS_MESSAGE_TYPE_PUSH = 1;
 
 static IMP ks_existingPushRegisterDelegate = NULL;
 static IMP ks_existingPushRegisterFailDelegate = NULL;
@@ -222,6 +222,16 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     return [token copy];
 }
 
+- (void) trackPushDelivery:(NSDictionary*) userInfo{
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
+    if (nil == notification) {
+        return;
+    }
+    
+    NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notification.id};
+    [self.analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params];
+}
+
 @end
 
 #pragma mark - Swizzled behaviour hooks
@@ -247,7 +257,7 @@ void kumulos_applicationDidFailToRegisterForRemoteNotifications(id self, SEL _cm
 void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id self, SEL _cmd, UIApplication* application, NSDictionary* userInfo, KSCompletionHandler completionHandler) {
     UIBackgroundFetchResult __block fetchResult = UIBackgroundFetchResultNoData;
     dispatch_semaphore_t __block fetchBarrier = dispatch_semaphore_create(0);
-
+    
     if (ks_existingPushReceiveDelegate) {
         ((void(*)(id,SEL,UIApplication*,NSDictionary*,KSCompletionHandler))ks_existingPushReceiveDelegate)(self, _cmd, application, userInfo, ^(UIBackgroundFetchResult result) {
             fetchResult = result;
@@ -256,7 +266,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     } else {
         dispatch_semaphore_signal(fetchBarrier);
     }
-
+    
     // iOS9 open handler
     if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive) {
         if (@available(iOS 10, *)) {
@@ -265,21 +275,30 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
             [Kumulos.shared pushHandleOpenWithUserInfo:userInfo];
         }
     }
-
+    
     if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
+        [self trackPushDelivery:userInfo];
+        
         [Kumulos.shared.inAppHelper sync:^(int result) {
             dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
-
+            
             if (result < 0) {
                 fetchResult = UIBackgroundFetchResultFailed;
             } else if (result > 0) {
                 fetchResult = UIBackgroundFetchResultNewData;
             }
             // No data case is default, allow override from other handler
-
+            
             completionHandler(fetchResult);
         }];
-    } else {
-        completionHandler(fetchResult);
+        
+        return;
     }
+    
+
+    if (@available(iOS 10, *)) { }
+    else { [self trackPushDelivery:userInfo];}
+    
+    completionHandler(fetchResult);
+    
 }

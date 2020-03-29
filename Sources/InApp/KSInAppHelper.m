@@ -8,12 +8,11 @@
 #import "../Kumulos+Analytics.h"
 #import "../Kumulos+Protected.h"
 #import "../KumulosEvents.h"
+#import "../Shared/KumulosSharedEvents.h"
 #import "../Shared/Http/NSString+URLEncoding.h"
 #import "KSInAppPresenter.h"
 #import "../Shared/KumulosUserDefaultsKeys.h"
 #import "../Shared/KumulosHelper.h"
-
-static NSUInteger const KS_MESSAGE_TYPE_IN_APP = 2;
 
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
 NSString* _Nonnull const KSInAppPresentedNextOpen = @"next-open";

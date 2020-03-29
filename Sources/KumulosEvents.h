@@ -16,6 +16,5 @@ extern NSString* const KumulosEventLocationUpdated;
 extern NSString* const KumulosEventDeviceUnsubscribed;
 extern NSString* const KumulosEventInAppConsentChanged;
 extern NSString* const KumulosEventMessageOpened;
-extern NSString* const KumulosEventMessageDelivered;
 extern NSString* const KumulosEventMessageDismissed;
 extern NSString* const KumulosEventMessageDeletedFromInbox;
