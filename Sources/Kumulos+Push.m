@@ -277,7 +277,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
     
     if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
-        [self trackPushDelivery:userInfo];
+        [Kumulos.shared trackPushDelivery:userInfo];
         
         [Kumulos.shared.inAppHelper sync:^(int result) {
             dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
@@ -297,7 +297,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     
 
     if (@available(iOS 10, *)) { }
-    else { [self trackPushDelivery:userInfo];}
+    else { [Kumulos.shared trackPushDelivery:userInfo];}
     
     completionHandler(fetchResult);
     
