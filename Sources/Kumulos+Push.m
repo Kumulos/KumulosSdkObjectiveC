@@ -302,7 +302,14 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     
 
     if (@available(iOS 10, *)) { }
-    else { [Kumulos.shared trackPushDelivery:userInfo];}
+    else {
+        NSNumber* newBadgeValue = [KumulosHelper getBadgeFromUserInfo:userInfo];
+        if (newBadgeValue != nil){
+            UIApplication.sharedApplication.applicationIconBadgeNumber = newBadgeValue.intValue;
+        }
+        
+        [Kumulos.shared trackPushDelivery:userInfo];
+    }
     
     completionHandler(fetchResult);
     
