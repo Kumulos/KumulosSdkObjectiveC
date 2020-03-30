@@ -19,7 +19,16 @@ Pod::Spec.new do |s|
 
   s.prepare_command = 'chmod +x upload_dsyms.sh'
 
-  s.osx.exclude_files = ['Sources/*Push*', 'Sources/*Analytics*', 'Sources/*Location*', 'Sources/*InApp*', 'Sources/KSUserNotificationCenterDelegate.*', 'Sources/**/*InApp*', 'Sources/Shared/*Analytics*']
+  s.osx.exclude_files = [
+      'Sources/*Push*',
+      'Sources/*Analytics*',
+      'Sources/*Location*',
+      'Sources/*InApp*',
+      'Sources/KSUserNotificationCenterDelegate.*',
+      'Sources/**/*InApp*',
+      'Sources/Shared/*Analytics*',
+      'Sources/*Session*'
+  ]
 
   s.ios.public_header_files = [
       'Sources/KumulosSDK.h',

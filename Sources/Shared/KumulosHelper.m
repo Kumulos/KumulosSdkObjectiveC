@@ -45,7 +45,7 @@ static NSString* _Nonnull const userIdLocker = @"";
     return userIdLocker;
 }
 
-
+#if TARGET_OS_IOS
 + (NSNumber*) getBadgeFromUserInfo:(NSDictionary*)userInfo{
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* aps = userInfo[@"aps"];
@@ -66,6 +66,6 @@ static NSString* _Nonnull const userIdLocker = @"";
     
     return newBadge;
 }
-
+#endif
 
 @end

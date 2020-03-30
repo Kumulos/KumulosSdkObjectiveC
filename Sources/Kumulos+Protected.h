@@ -7,10 +7,10 @@
 
 #import "Kumulos.h"
 #import "Shared/Http/KSHttpClient.h"
+#import "Shared/KumulosHelper.h"
 
 #if TARGET_OS_IOS
 #import "Shared/AnalyticsHelper.h"
-#import "Shared/KumulosHelper.h"
 #import "Shared/KSKeyValPersistenceHelper.h"
 #import "Shared/KumulosUserDefaultsKeys.h"
 #import "SessionHelper.h"

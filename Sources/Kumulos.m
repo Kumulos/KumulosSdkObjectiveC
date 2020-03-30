@@ -135,21 +135,21 @@ static Kumulos* _shared;
         self.secretKey = config.secretKey;
         self.config = config;
         
+#if TARGET_OS_IOS
         [KSKeyValPersistenceHelper maybeMigrateUserDefaultsToAppGroups];
         [KSKeyValPersistenceHelper setObject:config.apiKey forKey:KumulosApiKey];
         [KSKeyValPersistenceHelper setObject:config.secretKey forKey:KumulosSecretKey];
         
-        self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
-        
-        [self initNetworkingHelpers];
-        
-#if TARGET_OS_IOS
         [self initAnalytics];
         [self initSessions];
         [self initInApp];
         [self pushInit];
         [[UIApplication sharedApplication] addObserver:self forKeyPath:@"applicationIconBadgeNumber" options:NSKeyValueObservingOptionNew context:nil];
 #endif
+        
+        self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];
+        
+        [self initNetworkingHelpers];
         
         [self statsSendInstallInfo];
         
@@ -160,6 +160,7 @@ static Kumulos* _shared;
     return self;
 }
 
+#if TARGET_OS_IOS
 - (void)observeValueForKeyPath:(NSString*)keyPath
                       ofObject:(id)object
                         change:(NSDictionary*)change
@@ -169,6 +170,7 @@ static Kumulos* _shared;
         [KSKeyValPersistenceHelper setObject:change[@"new"] forKey: KumulosBadgeCount];
     }
 }
+#endif
 
 - (instancetype _Nullable) initWithAPIKey:(NSString *)APIKey andSecretKey:(NSString *)secretKey {
     KSConfig* config = [KSConfig configWithAPIKey:APIKey andSecretKey:secretKey];

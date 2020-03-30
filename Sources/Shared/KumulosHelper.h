@@ -13,6 +13,9 @@
 + (NSString* _Nonnull) installId;
 + (NSString* _Nonnull) currentUserIdentifier;
 + (NSString* _Nonnull) userIdLocker;
+
+#if TARGET_OS_IOS
 + (NSNumber* _Nullable) getBadgeFromUserInfo:(NSDictionary* _Nonnull)userInfo;
+#endif
 
 @end

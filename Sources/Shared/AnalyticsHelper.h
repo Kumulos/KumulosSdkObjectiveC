@@ -5,7 +5,6 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "Kumulos.h"
 
 typedef void (^ _Nullable SyncCompletedBlock)(NSError* _Nullable error);
 
