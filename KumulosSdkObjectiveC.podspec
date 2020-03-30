@@ -27,7 +27,7 @@ Pod::Spec.new do |s|
       'Sources/KSUserNotificationCenterDelegate.*',
       'Sources/**/*InApp*',
       'Sources/Shared/*Analytics*',
-      'Sources/*Session*'
+      'Sources/*SessionHelper*'
   ]
 
   s.ios.public_header_files = [
