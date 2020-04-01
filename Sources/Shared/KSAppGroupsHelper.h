@@ -14,9 +14,3 @@
 +(NSString* _Nonnull) getKumulosGroupName;
 
 @end
-
-
-
-
-
-
