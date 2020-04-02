@@ -13,7 +13,7 @@
 #import "Shared/AnalyticsHelper.h"
 #import "Shared/KSKeyValPersistenceHelper.h"
 #import "Shared/KumulosUserDefaultsKeys.h"
-#import "SessionHelper.h"
+#import "KSSessionHelper.h"
 #import "InApp/KSInAppHelper.h"
 @import UserNotifications;
 #endif
@@ -30,7 +30,7 @@
 
 #if TARGET_OS_IOS
 @property (nonatomic) AnalyticsHelper* _Nullable analyticsHelper;
-@property (nonatomic) SessionHelper* _Nullable sessionHelper;
+@property (nonatomic) KSSessionHelper* _Nullable sessionHelper;
 @property (nonatomic) KSInAppHelper* _Nullable inAppHelper;
 @property (nonatomic) NSObject<UNUserNotificationCenterDelegate>* _Nullable notificationCenterDelegate API_AVAILABLE(ios(10.0));
 #else

@@ -196,7 +196,7 @@ static Kumulos* _shared;
 
 #if TARGET_OS_IOS
 - (void) initSessions {
-    self.sessionHelper = [[SessionHelper alloc] initWithSessionIdleTimeout: self.config.sessionIdleTimeoutSeconds analyticsHelper:self.analyticsHelper];
+    self.sessionHelper = [[KSSessionHelper alloc] initWithSessionIdleTimeout: self.config.sessionIdleTimeoutSeconds analyticsHelper:self.analyticsHelper];
 }
 
 - (void) initAnalytics {

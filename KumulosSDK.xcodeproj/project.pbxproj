@@ -171,8 +171,8 @@
 		B6E48F83242E432B00E8B3B9 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
 		B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 12562CF920E27807005CFCED /* KSUrlEncoding.h */; };
 		B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
-		B6E48F87242E5CBC00E8B3B9 /* SessionHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F86242E5CBC00E8B3B9 /* SessionHelper.h */; };
-		B6E48F89242E5CD700E8B3B9 /* SessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* SessionHelper.m */; };
+		B6E48F87242E5CBC00E8B3B9 /* KSSessionHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F86242E5CBC00E8B3B9 /* KSSessionHelper.h */; };
+		B6E48F89242E5CD700E8B3B9 /* KSSessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* KSSessionHelper.m */; };
 		B6E48F8A2430DFA800E8B3B9 /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
 		B6E48F8B2430F8FA00E8B3B9 /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
 		B6E48F8D24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
@@ -299,8 +299,8 @@
 		B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSKeyValPersistenceHelper.m; sourceTree = "<group>"; };
 		B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KumulosHelper.m; sourceTree = "<group>"; };
 		B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosHelper.h; sourceTree = "<group>"; };
-		B6E48F86242E5CBC00E8B3B9 /* SessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SessionHelper.h; sourceTree = "<group>"; };
-		B6E48F88242E5CD700E8B3B9 /* SessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SessionHelper.m; sourceTree = "<group>"; };
+		B6E48F86242E5CBC00E8B3B9 /* KSSessionHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSSessionHelper.h; sourceTree = "<group>"; };
+		B6E48F88242E5CD700E8B3B9 /* KSSessionHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSSessionHelper.m; sourceTree = "<group>"; };
 		B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KumulosSharedEvents.m; sourceTree = "<group>"; };
 		B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosSharedEvents.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -441,8 +441,8 @@
 				129BC4E52062AE61005AE632 /* KumulosEvents.m */,
 				12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */,
 				12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */,
-				B6E48F86242E5CBC00E8B3B9 /* SessionHelper.h */,
-				B6E48F88242E5CD700E8B3B9 /* SessionHelper.m */,
+				B6E48F86242E5CBC00E8B3B9 /* KSSessionHelper.h */,
+				B6E48F88242E5CD700E8B3B9 /* KSSessionHelper.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -534,7 +534,7 @@
 				B6E48F9024311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */,
 				12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */,
 				120CD57522DCCD4000067A45 /* KSInAppModels.h in Headers */,
-				B6E48F87242E5CBC00E8B3B9 /* SessionHelper.h in Headers */,
+				B6E48F87242E5CBC00E8B3B9 /* KSSessionHelper.h in Headers */,
 				12735BB71E4CE35900ED4488 /* Kumulos+Push.h in Headers */,
 				12659F6A1FE13C3E003C31BF /* AnalyticsHelper.h in Headers */,
 			);
@@ -811,7 +811,7 @@
 				12735BB11E4CE35900ED4488 /* KSAPIResponse.m in Sources */,
 				B6E48F75242E2B5200E8B3B9 /* KumulosHelper.m in Sources */,
 				12735BB81E4CE35900ED4488 /* Kumulos+Push.m in Sources */,
-				B6E48F89242E5CD700E8B3B9 /* SessionHelper.m in Sources */,
+				B6E48F89242E5CD700E8B3B9 /* KSSessionHelper.m in Sources */,
 				120CD57222DCCD3200067A45 /* KSInAppModels.m in Sources */,
 				12735BBA1E4CE35900ED4488 /* Kumulos+Stats.m in Sources */,
 				12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */,

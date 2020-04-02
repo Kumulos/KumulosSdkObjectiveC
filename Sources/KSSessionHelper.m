@@ -1,16 +1,16 @@
 //
-//  SessionHelper.m
+//  KSSessionHelper.m
 //  KumulosSDK iOS
 //
 //  Created by Vladislav Voicehovics on 27/03/2020.
 //
 
 #import <Foundation/Foundation.h>
-#import "SessionHelper.h"
+#import "KSSessionHelper.h"
 #import "Kumulos+Protected.h"
 #import "KumulosEvents.h"
 
-@interface SessionHelper ()
+@interface KSSessionHelper ()
 
 @property (atomic) BOOL startNewSession;
 @property (atomic) NSDate* becameInactiveAt;
@@ -22,7 +22,7 @@
 @end
 
 
-@implementation SessionHelper
+@implementation KSSessionHelper
 
 
 - (instancetype) initWithSessionIdleTimeout:(NSUInteger)timeout analyticsHelper:(AnalyticsHelper*) analyticsHelper {
