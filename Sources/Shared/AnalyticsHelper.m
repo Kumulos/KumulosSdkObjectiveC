@@ -87,10 +87,8 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 - (instancetype _Nullable) initWithApiKey:(NSString*)apiKey withSecretKey:(NSString*)secretKey {
     if (self = [super init]) {
-#if TARGET_OS_IOS
         self.eventsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
         [self.eventsHttpClient setBasicAuthWithUser:apiKey andPassword:secretKey];
-#endif
         
         [self initContext];
         
@@ -105,14 +103,10 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
     return self;
 }
 
-
 - (void) dealloc {
-#if TARGET_OS_IOS
     [self.eventsHttpClient invalidateSessionCancelingTasks:NO];
     self.eventsHttpClient = nil;
-#endif
 }
-
 
 - (NSURL*) getMainStoreUrl:(BOOL)appGroupExists {
     if (!appGroupExists){
