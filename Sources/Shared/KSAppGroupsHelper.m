@@ -36,7 +36,6 @@
         }
     }
     
-    //FIXME: test correct group in app/in extension
     return [NSString stringWithFormat:@"group.%@.kumulos", targetBundle.bundleIdentifier];
 }
 
