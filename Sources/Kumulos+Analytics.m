@@ -36,14 +36,14 @@
 - (void) clearUserAssociation {
     NSString* currentUserId = nil;
     @synchronized (KumulosHelper.userIdLocker) {
-        currentUserId = [KSKeyValPersistenceHelper objectForKey:KumulosUserID];
+        currentUserId = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyUserID];
     }
 
     NSDictionary* props = @{@"oldUserIdentifier": currentUserId ?: NSNull.null};
     [self trackEvent:KumulosEventUserAssociationCleared withProperties:props];
 
     @synchronized (KumulosHelper.userIdLocker) {
-        [KSKeyValPersistenceHelper removeObjectForKey:KumulosUserID];
+        [KSKeyValPersistenceHelper removeObjectForKey:KSPrefsKeyUserID];
     }
 
 #if TARGET_OS_IOS
@@ -72,8 +72,8 @@
 
     NSString* currentUserIdentifier = nil;
     @synchronized (KumulosHelper.userIdLocker) {
-        currentUserIdentifier = [KSKeyValPersistenceHelper objectForKey:KumulosUserID];
-        [KSKeyValPersistenceHelper setObject:userIdentifier forKey:KumulosUserID];
+        currentUserIdentifier = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyUserID];
+        [KSKeyValPersistenceHelper setObject:userIdentifier forKey:KSPrefsKeyUserID];
     }
 
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];

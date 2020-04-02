@@ -53,7 +53,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 
 - (NSMutableArray<NSString*>*)getExistingDynamicCategoriesList {
     @synchronized (self) {
-        NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:KumulosDynamicCategory];
+        NSMutableArray<NSString*> *existingArray = [[NSUserDefaults standardUserDefaults] objectForKey:KSPrefsKeyDynamicCategory];
 
         if (existingArray != nil) {
             return [existingArray mutableCopy];
@@ -61,7 +61,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 
         NSMutableArray<NSString*> *newArray = [NSMutableArray<NSString*> new];
 
-        [NSUserDefaults.standardUserDefaults setObject:newArray forKey:KumulosDynamicCategory];
+        [NSUserDefaults.standardUserDefaults setObject:newArray forKey:KSPrefsKeyDynamicCategory];
         [NSUserDefaults.standardUserDefaults synchronize];
 
         return newArray;
@@ -71,7 +71,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
 - (void)pruneCategoriesAndSave:(NSMutableSet<UNNotificationCategory*>*)categories withDynamicCategories: (NSMutableArray<NSString*>*)dynamicCategories {
     if (dynamicCategories.count <= MAX_DYNAMIC_CATEGORIES) {
         [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:categories];
-        [NSUserDefaults.standardUserDefaults setObject:dynamicCategories forKey:KumulosDynamicCategory];
+        [NSUserDefaults.standardUserDefaults setObject:dynamicCategories forKey:KSPrefsKeyDynamicCategory];
         [NSUserDefaults.standardUserDefaults synchronize];
         return;
     }
@@ -95,7 +95,7 @@ static NSString * const DYNAMIC_CATEGORY_IDENTIFIER = @"__kumulos_category_%d__"
             [newDynamicCategories addObject:dynamicCategory];
     
     [UNUserNotificationCenter.currentNotificationCenter setNotificationCategories:newCategories];
-    [NSUserDefaults.standardUserDefaults setObject:newDynamicCategories forKey:KumulosDynamicCategory];
+    [NSUserDefaults.standardUserDefaults setObject:newDynamicCategories forKey:KSPrefsKeyDynamicCategory];
     [NSUserDefaults.standardUserDefaults synchronize];
 }
 

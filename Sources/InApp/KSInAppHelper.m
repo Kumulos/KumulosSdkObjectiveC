@@ -92,7 +92,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #if DEBUG
     [self sync:onComplete];
 #else
-    NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KumulosMessagesLastSyncTime];
+    NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KSPrefsKeyMessagesLastSyncTime];
     if (lastSyncTime && [lastSyncTime timeIntervalSinceNow] < -3600) {
         [self sync:onComplete];
     }
@@ -116,7 +116,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 #pragma mark - State helpers
 
 -(NSString*) keyForUserConsent {
-    return KumulosInAppConsented;
+    return KSPrefsKeyInAppConsented;
 }
 
 -(BOOL)inAppEnabled {
@@ -179,7 +179,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 -(void) resetMessagingState {
     [NSNotificationCenter.defaultCenter removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
     [NSUserDefaults.standardUserDefaults removeObjectForKey:[self keyForUserConsent]];
-    [NSUserDefaults.standardUserDefaults removeObjectForKey:KumulosMessagesLastSyncTime];
+    [NSUserDefaults.standardUserDefaults removeObjectForKey:KSPrefsKeyMessagesLastSyncTime];
 
     [self.messagesContext performBlockAndWait:^{
         NSManagedObjectContext* context = self.messagesContext;
@@ -211,7 +211,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
 -(void)sync:(void (^_Nullable)(int result))onComplete {
     dispatch_async(self.syncQueue, ^{
-        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KumulosMessagesLastSyncTime];
+        NSDate* lastSyncTime = [NSUserDefaults.standardUserDefaults objectForKey:KSPrefsKeyMessagesLastSyncTime];
         NSString* after = @"";
 
         if (lastSyncTime != nil) {
@@ -339,7 +339,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             return;
         }
 
-        [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KumulosMessagesLastSyncTime];
+        [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KSPrefsKeyMessagesLastSyncTime];
 
         [self trackMessageDelivery:messages];
     }];

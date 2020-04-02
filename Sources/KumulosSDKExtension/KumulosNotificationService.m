@@ -70,7 +70,7 @@ static AnalyticsHelper* _Nullable analyticsHelper;
     }
     
     bestAttemptContent.badge = newBadge;
-    [KSKeyValPersistenceHelper setObject:newBadge forKey:KumulosBadgeCount];
+    [KSKeyValPersistenceHelper setObject:newBadge forKey:KSPrefsKeyBadgeCount];
 }
 
 + (void)trackDeliveredEvent:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
@@ -89,8 +89,8 @@ static AnalyticsHelper* _Nullable analyticsHelper;
 }
 
 + (void)initializeAnalyticsHelper{
-    NSString* apiKey = [KSKeyValPersistenceHelper objectForKey:KumulosApiKey];
-    NSString* secretKey = [KSKeyValPersistenceHelper objectForKey:KumulosSecretKey];
+    NSString* apiKey = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyApiKey];
+    NSString* secretKey = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeySecretKey];
     
     if (apiKey == nil || secretKey == nil){
         NSLog(@"Extension: authorization credentials not present");

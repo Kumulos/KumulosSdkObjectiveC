@@ -17,11 +17,11 @@ static NSString* _Nonnull const userIdLocker = @"";
 
 + (NSString*) installId {
     @synchronized (self) {
-        NSString* installId = [[NSUserDefaults standardUserDefaults] objectForKey:KumulosInstallUUID];
+        NSString* installId = [[NSUserDefaults standardUserDefaults] objectForKey:KSPrefsKeyInstallUUID];
         
         if (!installId) {
             installId = [[[NSUUID UUID] UUIDString] lowercaseString];
-            [[NSUserDefaults standardUserDefaults] setObject:installId forKey:KumulosInstallUUID];
+            [[NSUserDefaults standardUserDefaults] setObject:installId forKey:KSPrefsKeyInstallUUID];
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
         
@@ -32,7 +32,7 @@ static NSString* _Nonnull const userIdLocker = @"";
 
 + (NSString*) currentUserIdentifier {
     @synchronized (userIdLocker) {
-        NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KumulosUserID];
+        NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KSPrefsKeyUserID];
         if (userId) {
             return userId;
         }
@@ -59,7 +59,7 @@ static NSString* _Nonnull const userIdLocker = @"";
     
     // Note in case of no cache, server sends the increment value in the badge field too, so works as badge = 0 + badge_inc
     NSNumber* newBadge = badge;
-    NSNumber* currentBadgeCount = [KSKeyValPersistenceHelper objectForKey:KumulosBadgeCount];
+    NSNumber* currentBadgeCount = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyBadgeCount];
     if (incrementBy != nil && currentBadgeCount != nil){
         newBadge = [NSNumber numberWithInt: currentBadgeCount.intValue + incrementBy.intValue];
     }

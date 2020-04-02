@@ -10,24 +10,24 @@
 
 #import "KumulosUserDefaultsKeys.h"
 
-NSString* const KumulosApiKey = @"KumulosApiKey";
-NSString* const KumulosSecretKey = @"KumulosSecretKey";
-NSString* const KumulosInstallUUID = @"KumulosUUID";
-NSString* const KumulosUserID = @"KumulosCurrentUserID";
-NSString* const KumulosBadgeCount = @"KumulosBadgeCount";
+NSString* const KSPrefsKeyApiKey = @"KumulosApiKey";
+NSString* const KSPrefsKeySecretKey = @"KumulosSecretKey";
+NSString* const KSPrefsKeyInstallUUID = @"KumulosUUID";
+NSString* const KSPrefsKeyUserID = @"KumulosCurrentUserID";
+NSString* const KSPrefsKeyBadgeCount = @"KumulosBadgeCount";
 
 //exist only in standard defaults for app
-NSString* const KumulosMigratedToGroups = @"KumulosDidMigrateToAppGroups";
-NSString* const KumulosMessagesLastSyncTime = @"KumulosMessagesLastSyncTime";
-NSString* const KumulosInAppConsented = @"KumulosInAppConsented";
+NSString* const KSPrefsKeyMigratedToGroups = @"KumulosDidMigrateToAppGroups";
+NSString* const KSPrefsKeyMessagesLastSyncTime = @"KumulosMessagesLastSyncTime";
+NSString* const KSPrefsKeyInAppConsented = @"KumulosInAppConsented";
 
 //exist only in standard defaults for extension
-NSString* const KumulosDynamicCategory = @"__kumulos__dynamic__categories__";
+NSString* const KSPrefsKeyDynamicCategory = @"__kumulos__dynamic__categories__";
 
 @implementation KumulosUserDefaultsKeys
 
 + (NSArray*) getSharedKeys{
-    return @[KumulosApiKey, KumulosSecretKey, KumulosInstallUUID, KumulosUserID, KumulosBadgeCount];
+    return @[KSPrefsKeyApiKey, KSPrefsKeySecretKey, KSPrefsKeyInstallUUID, KSPrefsKeyUserID, KSPrefsKeyBadgeCount];
 }
 
 @end

@@ -27,7 +27,7 @@
 
 + (void)maybeMigrateUserDefaultsToAppGroups {
     NSUserDefaults* standardDefaults = NSUserDefaults.standardUserDefaults;
-    NSString* haveMigratedKey = KumulosMigratedToGroups;
+    NSString* haveMigratedKey = KSPrefsKeyMigratedToGroups;
     
     if (![KSAppGroupsHelper isKumulosAppGroupDefined]){
         [standardDefaults setObject:@(NO) forKey:haveMigratedKey];

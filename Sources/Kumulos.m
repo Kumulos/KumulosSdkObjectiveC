@@ -137,8 +137,8 @@ static Kumulos* _shared;
         
 #if TARGET_OS_IOS
         [KSKeyValPersistenceHelper maybeMigrateUserDefaultsToAppGroups];
-        [KSKeyValPersistenceHelper setObject:config.apiKey forKey:KumulosApiKey];
-        [KSKeyValPersistenceHelper setObject:config.secretKey forKey:KumulosSecretKey];
+        [KSKeyValPersistenceHelper setObject:config.apiKey forKey:KSPrefsKeyApiKey];
+        [KSKeyValPersistenceHelper setObject:config.secretKey forKey:KSPrefsKeySecretKey];
         
         [self initAnalytics];
         [self initSessions];
@@ -167,7 +167,7 @@ static Kumulos* _shared;
                        context:(void*)context {
     
     if ([keyPath isEqualToString:@"applicationIconBadgeNumber"]) {
-        [KSKeyValPersistenceHelper setObject:change[@"new"] forKey: KumulosBadgeCount];
+        [KSKeyValPersistenceHelper setObject:change[@"new"] forKey: KSPrefsKeyBadgeCount];
     }
 }
 #endif
