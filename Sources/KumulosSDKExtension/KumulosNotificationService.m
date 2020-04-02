@@ -19,8 +19,12 @@ static AnalyticsHelper* _Nullable analyticsHelper;
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
-
     NSDictionary *userInfo = request.content.userInfo;
+    
+    if (![self validateUserInfo:userInfo]){
+        return;
+    }
+   
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* data = custom[@"a"];
     NSDictionary* msg = data[@"k.message"];
@@ -56,6 +60,15 @@ static AnalyticsHelper* _Nullable analyticsHelper;
            }
            contentHandler(bestAttemptContent);
        }];
+}
+
++ (BOOL) validateUserInfo:(NSDictionary*)userInfo{
+    return userInfo &&
+            userInfo[@"custom"] &&
+            userInfo[@"custom"][@"a"] &&
+            userInfo[@"custom"][@"a"][@"k.message"] &&
+            userInfo[@"custom"][@"a"][@"k.message"][@"data"] &&
+            userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
 }
 
 + (void) maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo {
