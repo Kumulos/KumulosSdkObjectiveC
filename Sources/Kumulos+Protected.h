@@ -10,7 +10,7 @@
 #import "Shared/KumulosHelper.h"
 
 #if TARGET_OS_IOS
-#import "Shared/AnalyticsHelper.h"
+#import "Shared/KSAnalyticsHelper.h"
 #import "Shared/KSKeyValPersistenceHelper.h"
 #import "Shared/KumulosUserDefaultsKeys.h"
 #import "KSSessionHelper.h"
@@ -29,7 +29,7 @@
 @property (nonatomic) KSHttpClient* _Nullable pushHttpClient;
 
 #if TARGET_OS_IOS
-@property (nonatomic) AnalyticsHelper* _Nullable analyticsHelper;
+@property (nonatomic) KSAnalyticsHelper* _Nullable analyticsHelper;
 @property (nonatomic) KSSessionHelper* _Nullable sessionHelper;
 @property (nonatomic) KSInAppHelper* _Nullable inAppHelper;
 @property (nonatomic) NSObject<UNUserNotificationCenterDelegate>* _Nullable notificationCenterDelegate API_AVAILABLE(ios(10.0));

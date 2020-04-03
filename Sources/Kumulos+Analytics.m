@@ -9,7 +9,7 @@
 #import "Shared/KumulosHelper.h"
 #import "Shared/KumulosUserDefaultsKeys.h"
 #import "Shared/KSKeyValPersistenceHelper.h"
-#import "Shared/AnalyticsHelper.h"
+#import "Shared/KSAnalyticsHelper.h"
 
 @implementation Kumulos (Analytics)
 

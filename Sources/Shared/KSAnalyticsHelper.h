@@ -1,5 +1,5 @@
 //
-//  AnalyticsHelper.h
+//  KSAnalyticsHelper.h
 //  KumulosSDK iOS
 //
 
@@ -8,7 +8,7 @@
 
 typedef void (^ _Nullable SyncCompletedBlock)(NSError* _Nullable error);
 
-@interface AnalyticsHelper : NSObject
+@interface KSAnalyticsHelper : NSObject
 
 - (instancetype _Nullable) initWithApiKey:(NSString* _Nonnull)apiKey withSecretKey:(NSString* _Nonnull)secretKey;
 - (void) trackEvent:(NSString* _Nonnull) eventType withProperties:(NSDictionary* _Nullable) properties;

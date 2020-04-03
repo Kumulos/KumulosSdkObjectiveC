@@ -6,7 +6,7 @@
 
 #import "KumulosNotificationService.h"
 #import "KSCategoryHelper.h"
-#import "AnalyticsHelper.h"
+#import "KSAnalyticsHelper.h"
 #import "KSKeyValPersistenceHelper.h"
 #import "KumulosUserDefaultsKeys.h"
 #import "KumulosHelper.h"
@@ -15,7 +15,7 @@
 @implementation KumulosNotificationService
 
 NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
-static AnalyticsHelper* _Nullable analyticsHelper;
+static KSAnalyticsHelper* _Nullable analyticsHelper;
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
@@ -110,7 +110,7 @@ static AnalyticsHelper* _Nullable analyticsHelper;
         return;
     }
     
-    analyticsHelper = [[AnalyticsHelper alloc] initWithApiKey:apiKey withSecretKey:secretKey];
+    analyticsHelper = [[KSAnalyticsHelper alloc] initWithApiKey:apiKey withSecretKey:secretKey];
 }
 
 + (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {

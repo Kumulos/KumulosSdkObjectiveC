@@ -63,8 +63,8 @@
 		125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA7791F8BD7D00008CAA4 /* libc++.tbd */; };
 		125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */; };
 		125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77D1F8BD8640008CAA4 /* KSCrash.framework */; };
-		12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
-		12659F6A1FE13C3E003C31BF /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
+		12659F681FE13C29003C31BF /* KSAnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */; };
+		12659F6A1FE13C3E003C31BF /* KSAnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */; };
 		126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */; };
 		126AD08C2314160D00A211B8 /* KSUserNotificationCenterDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */; };
 		126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */; };
@@ -173,8 +173,8 @@
 		B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
 		B6E48F87242E5CBC00E8B3B9 /* KSSessionHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F86242E5CBC00E8B3B9 /* KSSessionHelper.h */; };
 		B6E48F89242E5CD700E8B3B9 /* KSSessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* KSSessionHelper.m */; };
-		B6E48F8A2430DFA800E8B3B9 /* AnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* AnalyticsHelper.m */; };
-		B6E48F8B2430F8FA00E8B3B9 /* AnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* AnalyticsHelper.h */; };
+		B6E48F8A2430DFA800E8B3B9 /* KSAnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */; };
+		B6E48F8B2430F8FA00E8B3B9 /* KSAnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */; };
 		B6E48F8D24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
 		B6E48F8E24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
 		B6E48F9024311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */; };
@@ -240,8 +240,8 @@
 		125CA7791F8BD7D00008CAA4 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		125CA77D1F8BD8640008CAA4 /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "../../Library/Developer/Xcode/DerivedData/KumulosSDK-brqrezsayxilfmgstvywbeekkicf/Build/Products/Debug/KSCrash.framework"; sourceTree = "<group>"; };
-		12659F671FE13C29003C31BF /* AnalyticsHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnalyticsHelper.m; sourceTree = "<group>"; };
-		12659F691FE13C3E003C31BF /* AnalyticsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnalyticsHelper.h; sourceTree = "<group>"; };
+		12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSAnalyticsHelper.m; sourceTree = "<group>"; };
+		12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSAnalyticsHelper.h; sourceTree = "<group>"; };
 		12735B4A1E4CDD3100ED4488 /* KumulosSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumulosSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12735B811E4CDDB500ED4488 /* KumulosSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumulosSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12735B8E1E4CDEAF00ED4488 /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
@@ -493,8 +493,8 @@
 				B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */,
 				B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */,
 				B6E48F76242E2B6300E8B3B9 /* KumulosHelper.h */,
-				12659F671FE13C29003C31BF /* AnalyticsHelper.m */,
-				12659F691FE13C3E003C31BF /* AnalyticsHelper.h */,
+				12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */,
+				12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */,
 				B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */,
 				B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */,
 			);
@@ -536,7 +536,7 @@
 				120CD57522DCCD4000067A45 /* KSInAppModels.h in Headers */,
 				B6E48F87242E5CBC00E8B3B9 /* KSSessionHelper.h in Headers */,
 				12735BB71E4CE35900ED4488 /* Kumulos+Push.h in Headers */,
-				12659F6A1FE13C3E003C31BF /* AnalyticsHelper.h in Headers */,
+				12659F6A1FE13C3E003C31BF /* KSAnalyticsHelper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,7 +573,7 @@
 				B6E48F7F242E431000E8B3B9 /* KumulosHelper.h in Headers */,
 				B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */,
 				B6E48F82242E432800E8B3B9 /* NSString+URLEncoding.h in Headers */,
-				B6E48F8B2430F8FA00E8B3B9 /* AnalyticsHelper.h in Headers */,
+				B6E48F8B2430F8FA00E8B3B9 /* KSAnalyticsHelper.h in Headers */,
 				B6A4592F2399307F00FDECFC /* KumulosSDKExtension.h in Headers */,
 				B6A459322399477000FDECFC /* KumulosNotificationService.h in Headers */,
 				B6E48F7B242E430300E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
@@ -814,7 +814,7 @@
 				B6E48F89242E5CD700E8B3B9 /* KSSessionHelper.m in Sources */,
 				120CD57222DCCD3200067A45 /* KSInAppModels.m in Sources */,
 				12735BBA1E4CE35900ED4488 /* Kumulos+Stats.m in Sources */,
-				12659F681FE13C29003C31BF /* AnalyticsHelper.m in Sources */,
+				12659F681FE13C29003C31BF /* KSAnalyticsHelper.m in Sources */,
 				129BC4E62062AE61005AE632 /* KumulosEvents.m in Sources */,
 				120CD56D22DCA92000067A45 /* KSInAppHelper.m in Sources */,
 				12562CBB20E23665005CFCED /* NSString+URLEncoding.m in Sources */,
@@ -891,7 +891,7 @@
 				B6E48F85242E433100E8B3B9 /* KSUrlEncoding.m in Sources */,
 				B6E48F83242E432B00E8B3B9 /* NSString+URLEncoding.m in Sources */,
 				B6A45930239930E700FDECFC /* KumulosNotificationService.h in Sources */,
-				B6E48F8A2430DFA800E8B3B9 /* AnalyticsHelper.m in Sources */,
+				B6E48F8A2430DFA800E8B3B9 /* KSAnalyticsHelper.m in Sources */,
 				B6E48F78242E42F600E8B3B9 /* KSAppGroupsHelper.m in Sources */,
 				6FDDA3A223D7060E003D74EF /* KSCategoryHelper.m in Sources */,
 				B6E48F7D242E430A00E8B3B9 /* KSKeyValPersistenceHelper.m in Sources */,

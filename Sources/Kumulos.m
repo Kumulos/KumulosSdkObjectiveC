@@ -200,7 +200,7 @@ static Kumulos* _shared;
 }
 
 - (void) initAnalytics {
-    self.analyticsHelper = [[AnalyticsHelper alloc] initWithApiKey:self.apiKey withSecretKey:self.secretKey];
+    self.analyticsHelper = [[KSAnalyticsHelper alloc] initWithApiKey:self.apiKey withSecretKey:self.secretKey];
 }
 - (void) initInApp {
     self.inAppHelper = [[KSInAppHelper alloc] initWithKumulos:self];

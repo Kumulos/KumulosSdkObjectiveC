@@ -5,10 +5,10 @@
 //  Created by Vladislav Voicehovics on 27/03/2020.
 //
 
-#import "Shared/AnalyticsHelper.h"
+#import "Shared/KSAnalyticsHelper.h"
 
 @interface KSSessionHelper : NSObject
 
-- (instancetype) initWithSessionIdleTimeout:(NSUInteger)timeout analyticsHelper:(AnalyticsHelper*) analyticsHelper;
+- (instancetype) initWithSessionIdleTimeout:(NSUInteger)timeout analyticsHelper:(KSAnalyticsHelper*) analyticsHelper;
 
 @end

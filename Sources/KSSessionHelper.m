@@ -17,7 +17,7 @@
 @property (atomic) NSTimer* sessionIdleTimer;
 @property (atomic) UIBackgroundTaskIdentifier bgTask;
 @property (atomic) NSUInteger sessionIdleTimeout;
-@property (nonatomic) AnalyticsHelper* _Nonnull analyticsHelper;
+@property (nonatomic) KSAnalyticsHelper* _Nonnull analyticsHelper;
 
 @end
 
@@ -25,7 +25,7 @@
 @implementation KSSessionHelper
 
 
-- (instancetype) initWithSessionIdleTimeout:(NSUInteger)timeout analyticsHelper:(AnalyticsHelper*) analyticsHelper {
+- (instancetype) initWithSessionIdleTimeout:(NSUInteger)timeout analyticsHelper:(KSAnalyticsHelper*) analyticsHelper {
     if (self = [super init]) {
         self.startNewSession = YES;
         self.sessionIdleTimer = nil;

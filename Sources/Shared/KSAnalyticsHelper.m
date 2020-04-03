@@ -1,16 +1,16 @@
 //
-//  AnalyticsHelper.m
+//  KSAnalyticsHelper.m
 //  KumulosSDK iOS
 //
 
-#import "AnalyticsHelper.h"
+#import "KSAnalyticsHelper.h"
 #import "../Kumulos+Protected.h"
 #import "../Kumulos+Analytics.h"
 #import "../KumulosEvents.h"
 #import "KumulosHelper.h"
 #import "KSAppGroupsHelper.h"
 
-@interface AnalyticsHelper ()
+@interface KSAnalyticsHelper ()
 
 @property NSManagedObjectContext* analyticsContext;
 @property NSManagedObjectContext* migrationAnalyticsContext;
@@ -81,7 +81,7 @@ static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 @end
 
-@implementation AnalyticsHelper
+@implementation KSAnalyticsHelper
 
 #pragma mark - Initialization
 
