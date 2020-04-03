@@ -62,6 +62,10 @@ static NSString* _Nonnull const userIdLocker = @"";
     NSNumber* currentBadgeCount = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyBadgeCount];
     if (incrementBy != nil && currentBadgeCount != nil){
         newBadge = [NSNumber numberWithInt: currentBadgeCount.intValue + incrementBy.intValue];
+
+        if (newBadge.intValue < 0) {
+            newBadge = @0;
+        }
     }
     
     return newBadge;
