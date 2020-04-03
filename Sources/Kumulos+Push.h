@@ -8,6 +8,9 @@
 #import <Foundation/Foundation.h>
 #import "Kumulos.h"
 
+API_AVAILABLE(ios(10.0))
+typedef void (^ _Nullable KSUNAuthorizationCheckedHandler)(UNAuthorizationStatus status, NSError* _Nullable error);
+
 @interface KSPushNotification : NSObject
 
 + (instancetype _Nullable) fromUserInfo:(NSDictionary* _Nullable)userInfo;
@@ -33,6 +36,17 @@
  */
 - (void) pushRequestDeviceToken;
 
+
+/**
+ * Requests a push token from the user.
+ *
+ * Will prompt for alert, sound, and badge permissions.
+ *
+ * After the permission is granted, you should call Kumulos#pushRegisterWithDeviceToken to complete the registration flow.
+*/
+
+- (void) pushRequestDeviceToken:(KSUNAuthorizationCheckedHandler)onAuthorizationStatus API_AVAILABLE(ios(10.0));
+    
 /**
  * Registers the given device token with Kumulos for the current unique installation
  * @param deviceToken The device's push token

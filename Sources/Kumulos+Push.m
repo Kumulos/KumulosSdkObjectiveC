@@ -99,20 +99,82 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     });
 }
 
+- (void) pushRequestDeviceToken:(KSUNAuthorizationCheckedHandler)onAuthorizationStatus API_AVAILABLE(ios(10.0)) {
+    [self requestToken:onAuthorizationStatus];
+}
+
 - (void) pushRequestDeviceToken {
     if (@available(iOS 10.0, *)) {
-        UNUserNotificationCenter* notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
-        UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
-        [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* error) {
-            if (!granted || error != nil) {
-                return;
-            }
-
-            [UIApplication.sharedApplication performSelectorOnMainThread:@selector(registerForRemoteNotifications) withObject:nil waitUntilDone:YES];
-        }];
+        [self requestToken:nil];
     } else {
         [self performSelectorOnMainThread:@selector(legacyRegisterForToken) withObject:nil waitUntilDone:YES];
     }
+}
+
+- (void) requestToken:(KSUNAuthorizationCheckedHandler)onAuthorizationStatus API_AVAILABLE(ios(10.0)) {
+    UNUserNotificationCenter* notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
+    
+    
+    void (^ requestToken)(void)  = ^() {
+        [UIApplication.sharedApplication performSelectorOnMainThread:@selector(registerForRemoteNotifications) withObject:nil waitUntilDone:YES];
+    };
+    
+    void (^ askPermission)(void)  = ^() {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground){
+                NSError* error = [NSError errorWithDomain:@"" code:0 userInfo:@{NSLocalizedDescriptionKey: @"Application not active, aborting push permission request"}];
+                
+                onAuthorizationStatus(UNAuthorizationStatusNotDetermined, error);
+                return;
+            }
+            
+            UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
+            [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* error) {
+                if (error != nil){
+                    if (onAuthorizationStatus){
+                        onAuthorizationStatus(UNAuthorizationStatusNotDetermined, error);
+                    }
+                    return;
+                }
+                
+                if (!granted){
+                    if (onAuthorizationStatus){
+                        onAuthorizationStatus(UNAuthorizationStatusDenied, nil);
+                    }
+                    return;
+                }
+                
+                if (onAuthorizationStatus){
+                    onAuthorizationStatus(UNAuthorizationStatusAuthorized, nil);
+                }
+                
+                requestToken();
+            }];
+        });
+    };
+    
+    [notificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings* _Nonnull settings) {
+        switch(settings.authorizationStatus){
+            case UNAuthorizationStatusDenied:
+                if (onAuthorizationStatus){
+                    onAuthorizationStatus(settings.authorizationStatus, nil);
+                }
+                
+                return;
+            case UNAuthorizationStatusAuthorized:
+                if (onAuthorizationStatus){
+                    onAuthorizationStatus(settings.authorizationStatus, nil);
+                }
+                requestToken();
+                
+                return;
+            default:
+                
+                askPermission();
+                return;
+        }
+    }];
 }
 
 - (void) legacyRegisterForToken {
