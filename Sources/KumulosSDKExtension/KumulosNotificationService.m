@@ -11,6 +11,7 @@
 #import "KumulosUserDefaultsKeys.h"
 #import "KumulosHelper.h"
 #import "KumulosSharedEvents.h"
+#import "KSAppGroupsHelper.h"
 
 @implementation KumulosNotificationService
 
@@ -31,9 +32,11 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
-    [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
-    [self trackDeliveredEvent:userInfo notificationId: messageId];
-    
+    if ([KSAppGroupsHelper isKumulosAppGroupDefined]){
+        [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
+        [self trackDeliveredEvent:userInfo notificationId: messageId];
+    }
+
     if (data[@"k.buttons"]) {
         NSArray *buttons = data[@"k.buttons"];
 
