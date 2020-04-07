@@ -17,12 +17,11 @@ static NSString* _Nonnull const userIdLocker = @"";
 
 + (NSString*) installId {
     @synchronized (self) {
-        NSString* installId = [[NSUserDefaults standardUserDefaults] objectForKey:KSPrefsKeyInstallUUID];
+        NSString* installId = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyInstallUUID];
         
         if (!installId) {
             installId = [[[NSUUID UUID] UUIDString] lowercaseString];
-            [[NSUserDefaults standardUserDefaults] setObject:installId forKey:KSPrefsKeyInstallUUID];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [KSKeyValPersistenceHelper setObject:installId forKey:KSPrefsKeyInstallUUID];
         }
         
         return installId;
@@ -32,7 +31,7 @@ static NSString* _Nonnull const userIdLocker = @"";
 
 + (NSString*) currentUserIdentifier {
     @synchronized (userIdLocker) {
-        NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KSPrefsKeyUserID];
+        NSString* userId = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyUserID];
         if (userId) {
             return userId;
         }
