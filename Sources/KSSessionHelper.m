@@ -61,11 +61,8 @@
         [self.sessionIdleTimer invalidate];
         self.sessionIdleTimer = nil;
     }
-    
-    if (self.bgTask != UIBackgroundTaskInvalid) {
-        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-        self.bgTask = UIBackgroundTaskInvalid;
-    }
+
+    [self maybeEndBgTask];
 }
 
 - (void) appBecameInactive {
@@ -76,8 +73,7 @@
 
 - (void) appBecameBackground {
     self.bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"sync" expirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-        self.bgTask = UIBackgroundTaskInvalid;
+        [self maybeEndBgTask];
     }];
 }
 
@@ -95,13 +91,19 @@
     [self.analyticsHelper trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil flushingImmediately:YES onSyncComplete:^(NSError * _Nullable error){
         self.becameInactiveAt = nil;
         
-        if (self.bgTask != UIBackgroundTaskInvalid) {
-            [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-            self.bgTask = UIBackgroundTaskInvalid;
-        }
-        
+        [self maybeEndBgTask];
     }];
     
+}
+
+- (void) maybeEndBgTask {
+    if (self.bgTask == UIBackgroundTaskInvalid) {
+        return;
+    }
+
+    UIBackgroundTaskIdentifier taskId = self.bgTask;
+    self.bgTask = UIBackgroundTaskInvalid;
+    [UIApplication.sharedApplication endBackgroundTask:taskId];
 }
 
 @end

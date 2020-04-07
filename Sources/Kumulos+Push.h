@@ -31,8 +31,6 @@ typedef void (^ _Nullable KSUNAuthorizationCheckedHandler)(UNAuthorizationStatus
  * Requests a push token from the user.
  *
  * Will prompt for alert, sound, and badge permissions.
- *
- * After the permission is granted, you should call Kumulos#pushRegisterWithDeviceToken to complete the registration flow.
  */
 - (void) pushRequestDeviceToken;
 
@@ -41,8 +39,6 @@ typedef void (^ _Nullable KSUNAuthorizationCheckedHandler)(UNAuthorizationStatus
  * Requests a push token from the user.
  *
  * Will prompt for alert, sound, and badge permissions.
- *
- * After the permission is granted, you should call Kumulos#pushRegisterWithDeviceToken to complete the registration flow.
 */
 
 - (void) pushRequestDeviceToken:(KSUNAuthorizationCheckedHandler)onAuthorizationStatus API_AVAILABLE(ios(10.0));
