@@ -8,6 +8,7 @@
 #import "Kumulos.h"
 #import "Shared/Http/KSHttpClient.h"
 #import "Shared/KumulosHelper.h"
+#import "Shared/KumulosErrors.h"
 
 #if TARGET_OS_IOS
 #import "Shared/KSAnalyticsHelper.h"
