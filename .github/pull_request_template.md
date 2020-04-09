@@ -12,6 +12,8 @@ Prepare:
 
 -   [ ] Detail any breaking changes. Breaking changes require a new major version number
 -   [ ] Check `pod lib lint` passes
+-   [ ] Check all targets (iOS, extension, macOS, statics) build
+-   [ ] Install branch via Cocoapods into empty project & verify can import SDK (only needed if adding/removing files)
 
 Bump versions in:
 
