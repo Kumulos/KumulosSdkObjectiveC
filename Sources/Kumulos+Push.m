@@ -11,11 +11,11 @@
 #import "MobileProvision.h"
 #import "KumulosEvents.h"
 #import "Kumulos+PushProtected.h"
+#import "Shared/KumulosSharedEvents.h"
 
 static NSInteger const KSPushTokenTypeProduction = 1;
 static NSInteger const KSPushDeviceType = 1;
 static NSInteger const KSDeepLinkTypeInApp = 1;
-static NSUInteger const KS_MESSAGE_TYPE_PUSH = 1;
 
 static IMP ks_existingPushRegisterDelegate = NULL;
 static IMP ks_existingPushRegisterFailDelegate = NULL;
@@ -99,20 +99,82 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     });
 }
 
+- (void) pushRequestDeviceToken:(KSUNAuthorizationCheckedHandler)onAuthorizationStatus API_AVAILABLE(ios(10.0)) {
+    [self requestToken:onAuthorizationStatus];
+}
+
 - (void) pushRequestDeviceToken {
     if (@available(iOS 10.0, *)) {
-        UNUserNotificationCenter* notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
-        UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
-        [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* error) {
-            if (!granted || error != nil) {
-                return;
-            }
-
-            [UIApplication.sharedApplication performSelectorOnMainThread:@selector(registerForRemoteNotifications) withObject:nil waitUntilDone:YES];
-        }];
+        [self requestToken:nil];
     } else {
         [self performSelectorOnMainThread:@selector(legacyRegisterForToken) withObject:nil waitUntilDone:YES];
     }
+}
+
+- (void) requestToken:(KSUNAuthorizationCheckedHandler)onAuthorizationStatus API_AVAILABLE(ios(10.0)) {
+    UNUserNotificationCenter* notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
+    
+    
+    void (^ requestToken)(void)  = ^() {
+        [UIApplication.sharedApplication performSelectorOnMainThread:@selector(registerForRemoteNotifications) withObject:nil waitUntilDone:YES];
+    };
+    
+    void (^ askPermission)(void)  = ^() {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground){
+                NSError* error = [NSError errorWithDomain:@"" code:0 userInfo:@{NSLocalizedDescriptionKey: @"Application not active, aborting push permission request"}];
+                
+                onAuthorizationStatus(UNAuthorizationStatusNotDetermined, error);
+                return;
+            }
+            
+            UNAuthorizationOptions options = (UNAuthorizationOptionAlert | UNAuthorizationOptionSound | UNAuthorizationOptionBadge);
+            [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError* error) {
+                if (error != nil){
+                    if (onAuthorizationStatus){
+                        onAuthorizationStatus(UNAuthorizationStatusNotDetermined, error);
+                    }
+                    return;
+                }
+                
+                if (!granted){
+                    if (onAuthorizationStatus){
+                        onAuthorizationStatus(UNAuthorizationStatusDenied, nil);
+                    }
+                    return;
+                }
+                
+                if (onAuthorizationStatus){
+                    onAuthorizationStatus(UNAuthorizationStatusAuthorized, nil);
+                }
+                
+                requestToken();
+            }];
+        });
+    };
+    
+    [notificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings* _Nonnull settings) {
+        switch(settings.authorizationStatus){
+            case UNAuthorizationStatusDenied:
+                if (onAuthorizationStatus){
+                    onAuthorizationStatus(settings.authorizationStatus, nil);
+                }
+                
+                return;
+            case UNAuthorizationStatusAuthorized:
+                if (onAuthorizationStatus){
+                    onAuthorizationStatus(settings.authorizationStatus, nil);
+                }
+                requestToken();
+                
+                return;
+            default:
+                
+                askPermission();
+                return;
+        }
+    }];
 }
 
 - (void) legacyRegisterForToken {
@@ -222,6 +284,16 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     return [token copy];
 }
 
+- (void) trackPushDelivery:(NSDictionary*) userInfo{
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
+    if (nil == notification) {
+        return;
+    }
+    
+    NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notification.id};
+    [self.analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params flushingImmediately:YES];
+}
+
 @end
 
 #pragma mark - Swizzled behaviour hooks
@@ -247,7 +319,7 @@ void kumulos_applicationDidFailToRegisterForRemoteNotifications(id self, SEL _cm
 void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id self, SEL _cmd, UIApplication* application, NSDictionary* userInfo, KSCompletionHandler completionHandler) {
     UIBackgroundFetchResult __block fetchResult = UIBackgroundFetchResultNoData;
     dispatch_semaphore_t __block fetchBarrier = dispatch_semaphore_create(0);
-
+    
     if (ks_existingPushReceiveDelegate) {
         ((void(*)(id,SEL,UIApplication*,NSDictionary*,KSCompletionHandler))ks_existingPushReceiveDelegate)(self, _cmd, application, userInfo, ^(UIBackgroundFetchResult result) {
             fetchResult = result;
@@ -256,7 +328,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     } else {
         dispatch_semaphore_signal(fetchBarrier);
     }
-
+    
     // iOS9 open handler
     if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive) {
         if (@available(iOS 10, *)) {
@@ -265,21 +337,42 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
             [Kumulos.shared pushHandleOpenWithUserInfo:userInfo];
         }
     }
-
+    
     if ([userInfo[@"aps"][@"content-available"] intValue] == 1) {
+        NSNumber* newBadgeValue = [KumulosHelper getBadgeFromUserInfo:userInfo];
+        if (newBadgeValue != nil){
+            UIApplication.sharedApplication.applicationIconBadgeNumber = newBadgeValue.intValue;
+        }
+        
+        [Kumulos.shared trackPushDelivery:userInfo];
+        
         [Kumulos.shared.inAppHelper sync:^(int result) {
             dispatch_semaphore_wait(fetchBarrier, dispatch_time(DISPATCH_TIME_NOW, 20 * NSEC_PER_SEC));
-
+            
             if (result < 0) {
                 fetchResult = UIBackgroundFetchResultFailed;
             } else if (result > 0) {
                 fetchResult = UIBackgroundFetchResultNewData;
             }
             // No data case is default, allow override from other handler
-
+            
             completionHandler(fetchResult);
         }];
-    } else {
-        completionHandler(fetchResult);
+        
+        return;
     }
+    
+
+    if (@available(iOS 10, *)) { }
+    else {
+        NSNumber* newBadgeValue = [KumulosHelper getBadgeFromUserInfo:userInfo];
+        if (newBadgeValue != nil){
+            UIApplication.sharedApplication.applicationIconBadgeNumber = newBadgeValue.intValue;
+        }
+        
+        [Kumulos.shared trackPushDelivery:userInfo];
+    }
+    
+    completionHandler(fetchResult);
+    
 }

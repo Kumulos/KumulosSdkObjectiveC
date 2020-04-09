@@ -6,27 +6,46 @@
 
 #import "KumulosNotificationService.h"
 #import "KSCategoryHelper.h"
+#import "KSAnalyticsHelper.h"
+#import "KSKeyValPersistenceHelper.h"
+#import "KumulosUserDefaultsKeys.h"
+#import "KumulosHelper.h"
+#import "KumulosSharedEvents.h"
+#import "KSAppGroupsHelper.h"
 
 @implementation KumulosNotificationService
 
 NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
+static KSAnalyticsHelper* _Nullable analyticsHelper;
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
-    
     UNMutableNotificationContent *bestAttemptContent = [request.content mutableCopy];
-
     NSDictionary *userInfo = request.content.userInfo;
     
-    if  (userInfo && userInfo[@"custom"] && userInfo[@"custom"][@"a"] && userInfo[@"custom"][@"a"][@"k.message"] && userInfo[@"custom"][@"a"][@"k.buttons"]) {
-        NSNumber* messageId = userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
-        NSArray *buttons = userInfo[@"custom"][@"a"][@"k.buttons"];
+    if (![self validateUserInfo:userInfo]){
+        return;
+    }
+   
+    NSDictionary* custom = userInfo[@"custom"];
+    NSDictionary* data = custom[@"a"];
+    NSDictionary* msg = data[@"k.message"];
+    NSDictionary* msgData = msg[@"data"];
+    NSNumber* messageId = msgData[@"id"];
+    
+    if ([KSAppGroupsHelper isKumulosAppGroupDefined]){
+        [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
+        [self trackDeliveredEvent:userInfo notificationId: messageId];
+    }
+
+    if (data[@"k.buttons"]) {
+        NSArray *buttons = data[@"k.buttons"];
 
         if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
             [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
         }
     }
     
-    NSDictionary *attachments = userInfo == nil ? nil : userInfo[@"attachments"];
+    NSDictionary *attachments = userInfo[@"attachments"];
     NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     
     if (pictureUrl == nil) {
@@ -44,6 +63,57 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
            }
            contentHandler(bestAttemptContent);
        }];
+}
+
++ (BOOL) validateUserInfo:(NSDictionary*)userInfo{
+    return userInfo &&
+            userInfo[@"custom"] &&
+            userInfo[@"custom"][@"a"] &&
+            userInfo[@"custom"][@"a"][@"k.message"] &&
+            userInfo[@"custom"][@"a"][@"k.message"][@"data"] &&
+            userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
+}
+
++ (void) maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo {
+    NSDictionary* aps = userInfo[@"aps"];
+    if (aps[@"content-available"] && [aps[@"content-available"] intValue] == 1){
+        return;
+    }
+    
+    NSNumber* newBadge = [KumulosHelper getBadgeFromUserInfo:userInfo];
+    if (newBadge == nil){
+        return;
+    }
+    
+    bestAttemptContent.badge = newBadge;
+    [KSKeyValPersistenceHelper setObject:newBadge forKey:KSPrefsKeyBadgeCount];
+}
+
++ (void)trackDeliveredEvent:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
+    NSDictionary* aps = userInfo[@"aps"];
+    if (aps[@"content-available"] && [aps[@"content-available"] intValue] == 1){
+        return;
+    }
+    
+    [self initializeAnalyticsHelper];
+    if (analyticsHelper == nil){
+        return;
+    }
+    
+    NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notificationId};
+    [analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params flushingImmediately:YES];
+}
+
++ (void)initializeAnalyticsHelper{
+    NSString* apiKey = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyApiKey];
+    NSString* secretKey = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeySecretKey];
+    
+    if (apiKey == nil || secretKey == nil){
+        NSLog(@"Extension: authorization credentials not present");
+        return;
+    }
+    
+    analyticsHelper = [[KSAnalyticsHelper alloc] initWithApiKey:apiKey withSecretKey:secretKey];
 }
 
 + (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {

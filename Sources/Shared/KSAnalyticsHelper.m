@@ -1,23 +1,24 @@
 //
-//  AnalyticsHelper.m
+//  KSAnalyticsHelper.m
 //  KumulosSDK iOS
 //
 
-#import "AnalyticsHelper.h"
-#import "Kumulos+Protected.h"
-#import "Kumulos+Analytics.h"
-#import "KumulosEvents.h"
+#import "KSAnalyticsHelper.h"
+#import "../Kumulos+Protected.h"
+#import "../Kumulos+Analytics.h"
+#import "../KumulosEvents.h"
+#import "KumulosHelper.h"
+#import "KSAppGroupsHelper.h"
 
-@interface AnalyticsHelper ()
+@interface KSAnalyticsHelper ()
 
-@property (nonatomic) Kumulos* _Nonnull kumulos;
 @property NSManagedObjectContext* analyticsContext;
-@property (atomic) BOOL startNewSession;
-@property (atomic) NSTimer* sessionIdleTimer;
-@property (atomic) NSDate* becameInactiveAt;
-@property (atomic) UIBackgroundTaskIdentifier bgTask;
+@property NSManagedObjectContext* migrationAnalyticsContext;
+@property (nonatomic) KSHttpClient* _Nullable eventsHttpClient;
 
 @end
+
+static NSString * const KSEventsBaseUrl = @"https://events.kumulos.com";
 
 @implementation KSEventModel : NSManagedObject
 
@@ -29,11 +30,11 @@
 
 + (instancetype _Nullable) eventWithType:(NSString* _Nonnull) eventType happenedAt:(NSDate* _Nonnull) happenedAt andProperties:(NSDictionary* _Nullable) properties forEntity:(NSEntityDescription*) entity {
     KSEventModel* event = [[KSEventModel alloc] initWithEntity:entity insertIntoManagedObjectContext:nil];
-
+    
     if (!event) {
         return nil;
     }
-
+    
     NSNumber* happenedAtMillis = [NSNumber numberWithDouble:[happenedAt timeIntervalSince1970] * 1000];
     NSString* uuid = [[[NSUUID UUID] UUIDString] lowercaseString];
     NSData* propsJson = nil;
@@ -53,8 +54,8 @@
     event.eventType = eventType;
     event.happenedAt = happenedAtMillis;
     event.properties = propsJson;
-    event.userIdentifier = Kumulos.currentUserIdentifier;
-
+    event.userIdentifier = KumulosHelper.currentUserIdentifier;
+    
     return event;
 }
 
@@ -70,96 +71,121 @@
     }
     
     return @{
-             @"type": self.eventType,
-             @"uuid": self.uuid,
-             @"timestamp": self.happenedAt,
-             @"data": (propsObject) ? propsObject : NSNull.null,
-             @"userId": (self.userIdentifier) ? self.userIdentifier : NSNull.null
-             };
+        @"type": self.eventType,
+        @"uuid": self.uuid,
+        @"timestamp": self.happenedAt,
+        @"data": (propsObject) ? propsObject : NSNull.null,
+        @"userId": (self.userIdentifier) ? self.userIdentifier : NSNull.null
+    };
 }
 
 @end
 
-@implementation AnalyticsHelper
+@implementation KSAnalyticsHelper
 
 #pragma mark - Initialization
 
-- (instancetype _Nullable) initWithKumulos:(Kumulos *)kumulos {
+- (instancetype _Nullable) initWithApiKey:(NSString*)apiKey withSecretKey:(NSString*)secretKey {
     if (self = [super init]) {
-        self.kumulos = kumulos;
-        self.startNewSession = YES;
-        self.sessionIdleTimer = nil;
-        self.bgTask = UIBackgroundTaskInvalid;
+        self.eventsHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSEventsBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
+        [self.eventsHttpClient setBasicAuthWithUser:apiKey andPassword:secretKey];
         
         [self initContext];
-        [self registerListeners];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [self syncEvents];
+            if (self.migrationAnalyticsContext != nil){
+                [self syncEvents:self.migrationAnalyticsContext onSyncComplete: nil];
+            }
+            [self syncEvents:self.analyticsContext onSyncComplete:nil];
         });
     }
     
     return self;
 }
 
-- (void) initContext {
-    NSManagedObjectModel* objectModel = [self getDataModel];
+- (void) dealloc {
+    [self.eventsHttpClient invalidateSessionCancelingTasks:NO];
+    self.eventsHttpClient = nil;
+}
+
+- (NSURL*) getMainStoreUrl:(BOOL)appGroupExists {
+    if (!appGroupExists){
+        return [self getAppDbUrl];
+    }
     
+    return [self getSharedDbUrl];
+}
+
+- (NSURL*) getAppDbUrl {
+    NSURL* docsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+    NSURL* appDbUrl = [NSURL URLWithString:@"KAnalyticsDb.sqlite" relativeToURL:docsUrl];
+    
+    return appDbUrl;
+}
+
+- (NSURL*) getSharedDbUrl {
+    NSURL* sharedContainerPath = [KSAppGroupsHelper getSharedContainerPath];
+    if (sharedContainerPath == nil){
+        return nil;
+    }
+    
+    return [NSURL URLWithString:@"KAnalyticsDbShared.sqlite" relativeToURL:sharedContainerPath];
+}
+
+- (void) initContext {
+    NSURL* appDbUrl = [self getAppDbUrl];
+    BOOL appDbExists = appDbUrl == nil ? NO : [[NSFileManager defaultManager] fileExistsAtPath:appDbUrl.path];
+    BOOL appGroupExists = [KSAppGroupsHelper isKumulosAppGroupDefined];
+    
+    NSURL* storeUrl = [self getMainStoreUrl:appGroupExists];
+    if (appGroupExists && appDbExists){
+        self.migrationAnalyticsContext = [self getManagedObjectContext:appDbUrl];
+    }
+    
+    self.analyticsContext = [self getManagedObjectContext:storeUrl];
+}
+
+- (NSManagedObjectContext*) getManagedObjectContext:(NSURL*) storeUrl {
+    NSManagedObjectModel* objectModel = [self getDataModel];
     if (!objectModel) {
         NSLog(@"Failed to create object model");
-        return;
+        return nil;
     }
     
     NSPersistentStoreCoordinator* storeCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:objectModel];
-    
-    NSURL* docsUrl = [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL* storeUrl = [NSURL URLWithString:@"KAnalyticsDb.sqlite" relativeToURL:docsUrl];
-    
     NSDictionary* options = @{NSMigratePersistentStoresAutomaticallyOption: @YES, NSInferMappingModelAutomaticallyOption: @YES};
-
     NSError* err = nil;
     [storeCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeUrl options:options error:&err];
     
     if (err) {
         NSLog(@"Failed to set up persistent store: %@", err);
-        return;
+        return nil;
     }
     
-    self.analyticsContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-    [self.analyticsContext performBlockAndWait:^{
-        self.analyticsContext.persistentStoreCoordinator = storeCoordinator;
+    NSManagedObjectContext* context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    [context performBlockAndWait:^{
+        context.persistentStoreCoordinator = storeCoordinator;
     }];
-}
-
-- (void) registerListeners {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameActive) name:UIApplicationDidBecomeActiveNotification object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameInactive) name:UIApplicationWillResignActiveNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appBecameBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillTerminate) name:UIApplicationWillTerminateNotification object:nil];
+    return context;
 }
 
 # pragma mark - Event tracking
 
 - (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties {
-    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties];
+    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties flushingImmediately:NO onSyncComplete:nil];
 }
 
 - (void) trackEvent:(NSString *)eventType withProperties:(NSDictionary *)properties flushingImmediately:(BOOL)flushImmediately {
-    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties asynchronously:YES flushingImmediately:flushImmediately];
+    [self trackEvent:eventType atTime:[NSDate date] withProperties:properties flushingImmediately:flushImmediately onSyncComplete: nil];
 }
 
-- (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties {
-    [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES];
-}
-
-- (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties asynchronously:(BOOL)asynchronously {
-    [self trackEvent:eventType atTime:happenedAt withProperties:properties asynchronously:YES flushingImmediately:NO];
-}
-
-- (void) trackEvent:(NSString *)eventType atTime:(NSDate *)happenedAt withProperties:(NSDictionary *)properties asynchronously:(BOOL)asynchronously flushingImmediately:(BOOL)flushImmediately {
+- (void) trackEvent:(NSString *)eventType
+             atTime:(NSDate *)happenedAt
+     withProperties:(NSDictionary *)properties
+flushingImmediately:(BOOL)flushImmediately
+     onSyncComplete:(SyncCompletedBlock)onSyncComplete
+{
     if ([eventType isEqualToString:@""] || (properties && ![NSJSONSerialization isValidJSONObject:properties])) {
         NSLog(@"Ignoring invalid event with empty type or non-serializable properties");
         return;
@@ -179,7 +205,7 @@
                                happenedAt:happenedAt
                                andProperties:properties
                                forEntity:entity];
-
+        
         if (!event) {
             return;
         }
@@ -196,34 +222,62 @@
         
         if (flushImmediately) {
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                [self syncEvents];
+                [self syncEvents:self.analyticsContext onSyncComplete: onSyncComplete];
             });
         }
     };
     
-    if (asynchronously) {
-        [self.analyticsContext performBlock:workItem];
-    }
-    else {
-        [self.analyticsContext performBlockAndWait:workItem];
-    }
+    [self.analyticsContext performBlock:workItem];
 }
 
-- (void) syncEvents {
-    [self.analyticsContext performBlockAndWait:^{
-        NSArray<KSEventModel*>* results = [self fetchEventsBatch];
-
-        if (results.count) {
-            [self syncEventsBatch:results];
+- (void) syncEvents:(NSManagedObjectContext*)context onSyncComplete:(SyncCompletedBlock)onSyncComplete {
+    [context performBlockAndWait:^{
+        NSArray<KSEventModel*>* results = [self fetchEventsBatch:context];
+        
+        if (results.count == 0){
+            if (onSyncComplete){
+                onSyncComplete(nil);
+            }
+            
+            if (context == self.migrationAnalyticsContext){
+                [self removeAppDatabase];
+            }
+            
         }
-        else if (self.bgTask != UIBackgroundTaskInvalid) {
-            [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-            self.bgTask = UIBackgroundTaskInvalid;
+        else if (results.count > 0){
+            [self syncEventsBatch:context events:results onSyncComplete: onSyncComplete];
         }
     }];
 }
 
-- (void) syncEventsBatch:(NSArray<KSEventModel*>*) events {
+- (void) removeAppDatabase {
+    if (self.migrationAnalyticsContext == nil){
+        return;
+    }
+    
+    NSPersistentStoreCoordinator* persStoreCoord = self.migrationAnalyticsContext.persistentStoreCoordinator;
+    if (persStoreCoord == nil){
+        return;
+    }
+    
+    NSPersistentStore* store = persStoreCoord.persistentStores.lastObject;
+    if (store == nil){
+        return;
+    }
+    
+    NSURL* storeUrl = [persStoreCoord URLForPersistentStore:store];
+    [self.migrationAnalyticsContext performBlockAndWait:^{
+        [self.migrationAnalyticsContext reset];
+        
+        NSError* err = nil;
+        [persStoreCoord removePersistentStore:store error:&err];
+        [[NSFileManager defaultManager] removeItemAtURL:storeUrl error:&err];
+    }];
+    
+    self.migrationAnalyticsContext = nil;
+}
+
+- (void) syncEventsBatch:(NSManagedObjectContext*)context events:(NSArray<KSEventModel*>*)events onSyncComplete:(SyncCompletedBlock)onSyncComplete {
     NSMutableArray* data = [NSMutableArray arrayWithCapacity:events.count];
     NSMutableArray<NSManagedObjectID*>* eventIds = [NSMutableArray arrayWithCapacity:events.count];
     
@@ -232,42 +286,41 @@
         [eventIds addObject:event.objectID];
     }
     
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [Kumulos installId]];
-
-    [self.kumulos.eventsHttpClient post:path data:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
-        NSError* err = [self pruneEventsBatch:eventIds];
+    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/events", [KumulosHelper installId]];
+    
+    [self.eventsHttpClient post:path data:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+        NSError* err = [self pruneEventsBatch:context eventIds:eventIds];
         
         if (err) {
             NSLog(@"Failed to prune events: %@", err);
             return;
         }
         
-        [self syncEvents];
+        [self syncEvents:context onSyncComplete:onSyncComplete];
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
-        // Failed so assume will be retried some other time
-        if (self.bgTask != UIBackgroundTaskInvalid) {
-            [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-            self.bgTask = UIBackgroundTaskInvalid;
+        NSLog(@"Failed to send events");
+        if (onSyncComplete){
+            onSyncComplete(error);
         }
     }];
 }
 
-- (NSError*) pruneEventsBatch:(NSArray<NSManagedObjectID*>*) eventIds {
+- (NSError*) pruneEventsBatch:(NSManagedObjectContext*)context eventIds:(NSArray<NSManagedObjectID*>*) eventIds {
     __block NSError* err = nil;
-
-    [self.analyticsContext performBlockAndWait:^{
+    
+    [context performBlockAndWait:^{
         for (NSManagedObjectID* eventId in eventIds) {
-            KSEventModel* event = [self.analyticsContext objectWithID:eventId];
-            [self.analyticsContext deleteObject:event];
+            KSEventModel* event = [context objectWithID:eventId];
+            [context deleteObject:event];
         }
-
-        [self.analyticsContext save:&err];
+        
+        [context save:&err];
     }];
-
+    
     return err;
 }
 
-- (NSArray<KSEventModel*>* _Nonnull) fetchEventsBatch {
+- (NSArray<KSEventModel*>* _Nonnull) fetchEventsBatch:(NSManagedObjectContext*)context {
     NSFetchRequest* request = [NSFetchRequest fetchRequestWithEntityName:@"Event"];
     request.returnsObjectsAsFaults = NO;
     request.sortDescriptors = @[ [NSSortDescriptor sortDescriptorWithKey:@"happenedAt" ascending:YES] ];
@@ -276,7 +329,7 @@
     
     NSError* err = nil;
     
-    NSArray<KSEventModel*>* results = [self.analyticsContext executeFetchRequest:request error:&err];
+    NSArray<KSEventModel*>* results = [context executeFetchRequest:request error:&err];
     
     if (err) {
         NSLog(@"Failed to fetch events batch: %@", err);
@@ -286,54 +339,6 @@
     return results;
 }
 
-#pragma mark - App lifecycle delegates
-
-- (void) appBecameActive {
-    if (self.startNewSession) {
-        [self trackEvent:KumulosEventForeground withProperties:nil];
-        self.startNewSession = NO;
-        return;
-    }
-    
-    if (self.sessionIdleTimer) {
-        [self.sessionIdleTimer invalidate];
-        self.sessionIdleTimer = nil;
-    }
-    
-    if (self.bgTask != UIBackgroundTaskInvalid) {
-        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-        self.bgTask = UIBackgroundTaskInvalid;
-    }
-}
-
-- (void) appBecameInactive {
-    self.becameInactiveAt = [NSDate date];
-    
-    NSUInteger timeout = self.kumulos.config.sessionIdleTimeoutSeconds;
-    self.sessionIdleTimer = [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(sessionDidEnd) userInfo:nil repeats:NO];
-}
-
-- (void) appBecameBackground {
-    self.bgTask = [[UIApplication sharedApplication] beginBackgroundTaskWithName:@"sync" expirationHandler:^{
-        [[UIApplication sharedApplication] endBackgroundTask:self.bgTask];
-        self.bgTask = UIBackgroundTaskInvalid;
-    }];
-}
-
-- (void) appWillTerminate {
-    if (self.sessionIdleTimer) {
-        [self.sessionIdleTimer invalidate];
-        [self sessionDidEnd];
-    }
-}
-
-- (void) sessionDidEnd {
-    self.startNewSession = YES;
-    self.sessionIdleTimer = nil;
-
-    [self trackEvent:KumulosEventBackground atTime:self.becameInactiveAt withProperties:nil asynchronously:NO flushingImmediately:YES];
-    self.becameInactiveAt = nil;
-}
 
 #pragma mark - CoreData model definition
 
@@ -374,7 +379,7 @@
     uuidProp.attributeType = NSStringAttributeType;
     uuidProp.optional = NO;
     [eventProps addObject:uuidProp];
-
+    
     NSAttributeDescription* userIdProp = [NSAttributeDescription new];
     userIdProp.name = @"userIdentifier";
     userIdProp.attributeType = NSStringAttributeType;

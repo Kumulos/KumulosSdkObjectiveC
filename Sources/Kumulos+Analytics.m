@@ -6,8 +6,10 @@
 #import "KumulosEvents.h"
 #import "Kumulos+Analytics.h"
 #import "Kumulos+Protected.h"
-
-static NSString* _Nonnull const userIdLocker = @"";
+#import "Shared/KumulosHelper.h"
+#import "Shared/KumulosUserDefaultsKeys.h"
+#import "Shared/KSKeyValPersistenceHelper.h"
+#import "Shared/KSAnalyticsHelper.h"
 
 @implementation Kumulos (Analytics)
 
@@ -28,27 +30,20 @@ static NSString* _Nonnull const userIdLocker = @"";
 }
 
 + (NSString*) currentUserIdentifier {
-    @synchronized (userIdLocker) {
-        NSString* userId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
-        if (userId) {
-            return userId;
-        }
-    }
-
-    return Kumulos.installId;
+    return KumulosHelper.currentUserIdentifier;
 }
 
 - (void) clearUserAssociation {
     NSString* currentUserId = nil;
-    @synchronized (userIdLocker) {
-        currentUserId = [NSUserDefaults.standardUserDefaults objectForKey:KUMULOS_USER_ID_KEY];
+    @synchronized (KumulosHelper.userIdLocker) {
+        currentUserId = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyUserID];
     }
 
     NSDictionary* props = @{@"oldUserIdentifier": currentUserId ?: NSNull.null};
     [self trackEvent:KumulosEventUserAssociationCleared withProperties:props];
 
-    @synchronized (userIdLocker) {
-        [NSUserDefaults.standardUserDefaults removeObjectForKey:KUMULOS_USER_ID_KEY];
+    @synchronized (KumulosHelper.userIdLocker) {
+        [KSKeyValPersistenceHelper removeObjectForKey:KSPrefsKeyUserID];
     }
 
 #if TARGET_OS_IOS
@@ -76,9 +71,9 @@ static NSString* _Nonnull const userIdLocker = @"";
     }
 
     NSString* currentUserIdentifier = nil;
-    @synchronized (userIdLocker) {
-        currentUserIdentifier = [NSUserDefaults.standardUserDefaults valueForKey:KUMULOS_USER_ID_KEY];
-        [NSUserDefaults.standardUserDefaults setObject:userIdentifier forKey:KUMULOS_USER_ID_KEY];
+    @synchronized (KumulosHelper.userIdLocker) {
+        currentUserIdentifier = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyUserID];
+        [KSKeyValPersistenceHelper setObject:userIdentifier forKey:KSPrefsKeyUserID];
     }
 
     [self.analyticsHelper trackEvent:KumulosEventUserAssociated withProperties:params];
