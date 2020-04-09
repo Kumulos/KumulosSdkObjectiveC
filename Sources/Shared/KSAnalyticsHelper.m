@@ -4,9 +4,7 @@
 //
 
 #import "KSAnalyticsHelper.h"
-#import "../Kumulos+Protected.h"
-#import "../Kumulos+Analytics.h"
-#import "../KumulosEvents.h"
+#import "Http/KSHttpClient.h"
 #import "KumulosHelper.h"
 #import "KSAppGroupsHelper.h"
 

@@ -6,12 +6,12 @@
 
 #import "KumulosNotificationService.h"
 #import "KSCategoryHelper.h"
-#import "KSAnalyticsHelper.h"
-#import "KSKeyValPersistenceHelper.h"
-#import "KumulosUserDefaultsKeys.h"
-#import "KumulosHelper.h"
-#import "KumulosSharedEvents.h"
-#import "KSAppGroupsHelper.h"
+#import "../Shared/KSAnalyticsHelper.h"
+#import "../Shared/KSKeyValPersistenceHelper.h"
+#import "../Shared/KumulosUserDefaultsKeys.h"
+#import "../Shared/KumulosHelper.h"
+#import "../Shared/KumulosSharedEvents.h"
+#import "../Shared/KSAppGroupsHelper.h"
 
 @implementation KumulosNotificationService
 

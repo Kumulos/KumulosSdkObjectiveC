@@ -6,7 +6,7 @@
 //  Created by cgwyllie on 25/06/2018.
 //
 
-#import "../../Kumulos.h"
+#import "../KumulosErrors.h"
 #import "KSHttpClient.h"
 #import "KSUrlEncoding.h"
 

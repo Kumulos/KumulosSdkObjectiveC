@@ -13,6 +13,8 @@
 #import <UIKit/UIKit.h>
 #endif
 
+#import "Shared/KumulosErrors.h"
+
 @class KSAPIOperation;
 @class KSAPIResponse;
 @class KSPushNotification;
@@ -162,15 +164,3 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (KSAPIOperation* _Nonnull) callMethod:(NSString* _Nonnull)method withParams:(NSDictionary* _Nullable)params andDelegate:(id <KSAPIOperationDelegate> _Nullable)delegate;
 
 @end
-
-/// The error domain used by the Kumulos SDK
-static NSString* _Nonnull const KSErrorDomain = @"com.kumulos.errors";
-
-/// Error codes the SDK can produce within the KSErrorDomain
-typedef NS_ENUM(NSInteger, KSErrorCode) {
-    KSErrorCodeNetworkError,
-    KSErrorCodeRpcError,
-    KSErrorCodeUnknownError,
-    KSErrorCodeValidationError,
-    KSErrorCodeHttpBadStatus
-};
