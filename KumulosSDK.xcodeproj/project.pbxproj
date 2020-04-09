@@ -139,6 +139,25 @@
 		12CA553B243F4F3300398168 /* KumulosErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 12CA553A243F4F3300398168 /* KumulosErrors.h */; };
 		12CA553C243F4F3300398168 /* KumulosErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 12CA553A243F4F3300398168 /* KumulosErrors.h */; };
 		12CA553D243F4F3300398168 /* KumulosErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 12CA553A243F4F3300398168 /* KumulosErrors.h */; };
+		12CA55B4243F79EC00398168 /* KSKeyValPersistenceHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F70242E107A00E8B3B9 /* KSKeyValPersistenceHelper.h */; };
+		12CA55B5243F79F000398168 /* KSKeyValPersistenceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */; };
+		12CA55B6243F7A3A00398168 /* KSAppGroupsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = B6E48F6A242D117700E8B3B9 /* KSAppGroupsHelper.h */; };
+		12CA55B7243F7A3E00398168 /* KSAppGroupsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F68242D10DE00E8B3B9 /* KSAppGroupsHelper.m */; };
+		12CA55B8243F7ACD00398168 /* KSHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB020E13A01005CFCED /* KSHttpClient.m */; };
+		12CA55B9243F7AD400398168 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
+		12CA55BA243F7AFD00398168 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
+		12CA55BB243F7B0600398168 /* KSAppGroupsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F68242D10DE00E8B3B9 /* KSAppGroupsHelper.m */; };
+		12CA55BC243F7B0600398168 /* KSAppGroupsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F68242D10DE00E8B3B9 /* KSAppGroupsHelper.m */; };
+		12CA55BD243F7B0A00398168 /* KumulosUserDefaultsKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F6C242E0C0400E8B3B9 /* KumulosUserDefaultsKeys.m */; };
+		12CA55BE243F7B0B00398168 /* KumulosUserDefaultsKeys.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F6C242E0C0400E8B3B9 /* KumulosUserDefaultsKeys.m */; };
+		12CA55BF243F7B0F00398168 /* KSKeyValPersistenceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */; };
+		12CA55C0243F7B1000398168 /* KSKeyValPersistenceHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F72242E108A00E8B3B9 /* KSKeyValPersistenceHelper.m */; };
+		12CA55C1243F7B1400398168 /* KumulosHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */; };
+		12CA55C2243F7B1500398168 /* KumulosHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F74242E2B5200E8B3B9 /* KumulosHelper.m */; };
+		12CA55C3243F7B1800398168 /* KSAnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */; };
+		12CA55C4243F7B1A00398168 /* KSAnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */; };
+		12CA55C5243F7B2C00398168 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
+		12CA55C6243F7B2D00398168 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
 		12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6872019DC5700A390CD /* KSCrash.framework */; };
 		12E861DA2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
 		12E861DB2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
@@ -550,6 +569,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12CA55B4243F79EC00398168 /* KSKeyValPersistenceHelper.h in Headers */,
 				12735BFE1E4CE5D300ED4488 /* MobileProvision.h in Headers */,
 				12735BF11E4CE5C000ED4488 /* Kumulos+Stats.h in Headers */,
 				12735BD61E4CE59700ED4488 /* KSAPIResponse.h in Headers */,
@@ -561,6 +581,7 @@
 				12735BE81E4CE5B400ED4488 /* Kumulos+Protected.h in Headers */,
 				12562CFB20E27807005CFCED /* KSUrlEncoding.h in Headers */,
 				12735BDC1E4CE5A200ED4488 /* KSessionTokenManager.h in Headers */,
+				12CA55B6243F7A3A00398168 /* KSAppGroupsHelper.h in Headers */,
 				125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */,
 				B6E48F9D243575FB00E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
@@ -843,10 +864,12 @@
 				12562CBC20E23665005CFCED /* NSString+URLEncoding.m in Sources */,
 				12735BE51E4CE5AF00ED4488 /* Kumulos.m in Sources */,
 				12735BDF1E4CE5A700ED4488 /* KSessionTokenManager.m in Sources */,
+				12CA55B7243F7A3E00398168 /* KSAppGroupsHelper.m in Sources */,
 				B6E48F9C243575F800E8B3B9 /* KumulosUserDefaultsKeys.m in Sources */,
 				B6E48F9A243575A700E8B3B9 /* KumulosHelper.m in Sources */,
 				12562CB220E13A01005CFCED /* KSHttpClient.m in Sources */,
 				125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
+				12CA55B5243F79F000398168 /* KSKeyValPersistenceHelper.m in Sources */,
 				12735BD41E4CE59300ED4488 /* KSAPIOperation.m in Sources */,
 				12735C011E4CE5D700ED4488 /* MobileProvision.m in Sources */,
 				12735BD91E4CE59C00ED4488 /* KSAPIResponse.m in Sources */,
@@ -862,17 +885,23 @@
 				12BBE98A20E3CC9600DC9916 /* KSHttpClient.m in Sources */,
 				12BBE98B20E3CC9600DC9916 /* NSString+URLEncoding.m in Sources */,
 				12BBE98C20E3CC9600DC9916 /* KSUrlEncoding.m in Sources */,
+				12CA55BB243F7B0600398168 /* KSAppGroupsHelper.m in Sources */,
 				12BBE98D20E3CC9600DC9916 /* KSAPIOperation.m in Sources */,
 				12BBE98E20E3CC9600DC9916 /* KSAPIResponse.m in Sources */,
+				12CA55C6243F7B2D00398168 /* KumulosSharedEvents.m in Sources */,
 				12BBE98F20E3CC9600DC9916 /* KSessionTokenManager.m in Sources */,
+				12CA55BE243F7B0B00398168 /* KumulosUserDefaultsKeys.m in Sources */,
 				12BD21CC230D8FB200BE0D18 /* KumulosInApp.m in Sources */,
 				12BBE99020E3CC9600DC9916 /* Kumulos.m in Sources */,
+				12CA55C2243F7B1500398168 /* KumulosHelper.m in Sources */,
+				12CA55BF243F7B0F00398168 /* KSKeyValPersistenceHelper.m in Sources */,
 				12BBE99120E3CC9600DC9916 /* Kumulos+Push.m in Sources */,
 				12BBE99220E3CC9600DC9916 /* Kumulos+Stats.m in Sources */,
 				12BBE99320E3CC9600DC9916 /* KumulosPushSubscriptionManager.m in Sources */,
 				120CD57322DCCD3200067A45 /* KSInAppModels.m in Sources */,
 				12BBE99420E3CC9600DC9916 /* MobileProvision.m in Sources */,
 				12BBE99520E3CC9600DC9916 /* Kumulos+Location.m in Sources */,
+				12CA55C4243F7B1A00398168 /* KSAnalyticsHelper.m in Sources */,
 				12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */,
 				120CD56E22DCA92000067A45 /* KSInAppHelper.m in Sources */,
 				12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */,
@@ -886,8 +915,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12CA55BA243F7AFD00398168 /* KSUrlEncoding.m in Sources */,
+				12CA55C1243F7B1400398168 /* KumulosHelper.m in Sources */,
 				6F9C9E4F23D5C30600BBEFD5 /* KumulosNotificationService.m in Sources */,
+				12CA55B8243F7ACD00398168 /* KSHttpClient.m in Sources */,
+				12CA55BC243F7B0600398168 /* KSAppGroupsHelper.m in Sources */,
+				12CA55B9243F7AD400398168 /* NSString+URLEncoding.m in Sources */,
+				12CA55C0243F7B1000398168 /* KSKeyValPersistenceHelper.m in Sources */,
 				6FDDA3A323D7060E003D74EF /* KSCategoryHelper.m in Sources */,
+				12CA55C3243F7B1800398168 /* KSAnalyticsHelper.m in Sources */,
+				12CA55C5243F7B2C00398168 /* KumulosSharedEvents.m in Sources */,
+				12CA55BD243F7B0A00398168 /* KumulosUserDefaultsKeys.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1032,7 +1070,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.2.1;
+				MARKETING_VERSION = 4.2.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-iOS";
@@ -1088,7 +1126,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.2.1;
+				MARKETING_VERSION = 4.2.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-iOS";
 				PRODUCT_NAME = KumulosSDK;
@@ -1151,7 +1189,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 4.2.1;
+				MARKETING_VERSION = 4.2.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-macOS";
@@ -1207,7 +1245,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 4.2.1;
+				MARKETING_VERSION = 4.2.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-macOS";
 				PRODUCT_NAME = KumulosSDK;
@@ -1438,7 +1476,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.2.1;
+				MARKETING_VERSION = 4.2.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kumulos.dev.KumulosSDKExtension;
@@ -1484,7 +1522,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.2.1;
+				MARKETING_VERSION = 4.2.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kumulos.dev.KumulosSDKExtension;

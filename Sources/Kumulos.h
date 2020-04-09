@@ -13,8 +13,6 @@
 #import <UIKit/UIKit.h>
 #endif
 
-#import "Shared/KumulosErrors.h"
-
 @class KSAPIOperation;
 @class KSAPIResponse;
 @class KSPushNotification;
