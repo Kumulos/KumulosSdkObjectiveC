@@ -706,7 +706,7 @@
 		12735B3F1E4CDCA700ED4488 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1130;
 				TargetAttributes = {
 					12735B491E4CDD3100ED4488 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -743,11 +743,11 @@
 			};
 			buildConfigurationList = 12735B421E4CDCA700ED4488 /* Build configuration list for PBXProject "KumulosSDK" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
+				Base,
 			);
 			mainGroup = 12735B3E1E4CDCA700ED4488;
 			productRefGroup = 12735B4B1E4CDD3100ED4488 /* Products */;
@@ -1425,6 +1425,7 @@
 		6F9C9E5423D5C3A400BBEFD5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -1433,6 +1434,7 @@
 		6F9C9E5523D5C3A400BBEFD5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
