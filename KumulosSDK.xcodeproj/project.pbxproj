@@ -136,6 +136,9 @@
 		12BD21CB230D8FB200BE0D18 /* KumulosInApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21C9230D8FB200BE0D18 /* KumulosInApp.m */; };
 		12BD21CC230D8FB200BE0D18 /* KumulosInApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21C9230D8FB200BE0D18 /* KumulosInApp.m */; };
 		12BD21CD230D8FB200BE0D18 /* KumulosInApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		12CA553B243F4F3300398168 /* KumulosErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 12CA553A243F4F3300398168 /* KumulosErrors.h */; };
+		12CA553C243F4F3300398168 /* KumulosErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 12CA553A243F4F3300398168 /* KumulosErrors.h */; };
+		12CA553D243F4F3300398168 /* KumulosErrors.h in Headers */ = {isa = PBXBuildFile; fileRef = 12CA553A243F4F3300398168 /* KumulosErrors.h */; };
 		12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6872019DC5700A390CD /* KSCrash.framework */; };
 		12E861DA2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
 		12E861DB2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
@@ -280,6 +283,7 @@
 		12BD21C02306EE8300BE0D18 /* Kumulos+PushProtected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+PushProtected.h"; sourceTree = "<group>"; };
 		12BD21C9230D8FB200BE0D18 /* KumulosInApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KumulosInApp.m; sourceTree = "<group>"; };
 		12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KumulosInApp.h; sourceTree = "<group>"; };
+		12CA553A243F4F3300398168 /* KumulosErrors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosErrors.h; sourceTree = "<group>"; };
 		12D7C6872019DC5700A390CD /* KSCrash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KSCrash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12E861D92302C4EF009EF70B /* KSInAppPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSInAppPresenter.m; sourceTree = "<group>"; };
 		12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSInAppPresenter.h; sourceTree = "<group>"; };
@@ -497,6 +501,7 @@
 				12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */,
 				B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */,
 				B6E48F8F24311D9500E8B3B9 /* KumulosSharedEvents.h */,
+				12CA553A243F4F3300398168 /* KumulosErrors.h */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -526,6 +531,7 @@
 				B6E48F6F242E0C2000E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
 				12562CFA20E27807005CFCED /* KSUrlEncoding.h in Headers */,
 				125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
+				12CA553B243F4F3300398168 /* KumulosErrors.h in Headers */,
 				126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */,
 				B6E48F71242E107A00E8B3B9 /* KSKeyValPersistenceHelper.h in Headers */,
 				12735BB61E4CE35900ED4488 /* Kumulos+Protected.h in Headers */,
@@ -547,6 +553,7 @@
 				12735BFE1E4CE5D300ED4488 /* MobileProvision.h in Headers */,
 				12735BF11E4CE5C000ED4488 /* Kumulos+Stats.h in Headers */,
 				12735BD61E4CE59700ED4488 /* KSAPIResponse.h in Headers */,
+				12CA553C243F4F3300398168 /* KumulosErrors.h in Headers */,
 				12735BE21E4CE5AB00ED4488 /* Kumulos.h in Headers */,
 				B6E48F9B243575AA00E8B3B9 /* KumulosHelper.h in Headers */,
 				12735BD21E4CE58E00ED4488 /* KSAPIOperation.h in Headers */,
@@ -570,6 +577,7 @@
 				B6E48F79242E42FB00E8B3B9 /* KSAppGroupsHelper.h in Headers */,
 				B6E48F9124311D9500E8B3B9 /* KumulosSharedEvents.h in Headers */,
 				6FDDA3A523D70624003D74EF /* KSCategoryHelper.h in Headers */,
+				12CA553D243F4F3300398168 /* KumulosErrors.h in Headers */,
 				B6E48F7F242E431000E8B3B9 /* KumulosHelper.h in Headers */,
 				B6E48F84242E432E00E8B3B9 /* KSUrlEncoding.h in Headers */,
 				B6E48F82242E432800E8B3B9 /* NSString+URLEncoding.h in Headers */,
