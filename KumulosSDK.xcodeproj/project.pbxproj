@@ -161,6 +161,7 @@
 		12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6872019DC5700A390CD /* KSCrash.framework */; };
 		12E861DA2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
 		12E861DB2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
+		6F571748244491D100F2A8CB /* KSSessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* KSSessionHelper.m */; };
 		6F9C9E4F23D5C30600BBEFD5 /* KumulosNotificationService.m in Sources */ = {isa = PBXBuildFile; fileRef = B6A4592C23992FF700FDECFC /* KumulosNotificationService.m */; };
 		6F9C9E5023D5C33600BBEFD5 /* KumulosNotificationService.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6A4592B23992FF700FDECFC /* KumulosNotificationService.h */; };
 		6F9C9E5123D5C33600BBEFD5 /* KumulosSDKExtension.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6A4592723992F1E00FDECFC /* KumulosSDKExtension.h */; };
@@ -887,6 +888,7 @@
 				12BBE98C20E3CC9600DC9916 /* KSUrlEncoding.m in Sources */,
 				12CA55BB243F7B0600398168 /* KSAppGroupsHelper.m in Sources */,
 				12BBE98D20E3CC9600DC9916 /* KSAPIOperation.m in Sources */,
+				6F571748244491D100F2A8CB /* KSSessionHelper.m in Sources */,
 				12BBE98E20E3CC9600DC9916 /* KSAPIResponse.m in Sources */,
 				12CA55C6243F7B2D00398168 /* KumulosSharedEvents.m in Sources */,
 				12BBE98F20E3CC9600DC9916 /* KSessionTokenManager.m in Sources */,
