@@ -51,5 +51,5 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Crash.h'
   ]
 
-  s.dependency "KSCrash", "~> 1.15"
+  s.dependency "KumulosKSCrash", "1.15.21-kumulos1"
 end
