@@ -68,4 +68,4 @@ This project is licensed under the MIT license with portions licensed under the 
 
 ## Requirements
 
-- iOS8+
+- iOS9+
