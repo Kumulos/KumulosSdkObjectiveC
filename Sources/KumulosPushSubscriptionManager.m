@@ -113,7 +113,7 @@
     
     NSString* path = @"/v1/channels";
     
-    [self.kumulos.coreHttpClient post:path data:params onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.kumulos.crmHttpClient post:path data:params onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         if (nil == decodedBody) {
             complete([NSError
                       errorWithDomain:KSErrorDomain
@@ -133,7 +133,7 @@
 - (void) listChannels:(KSPushChannelsSuccessBlock)complete {
     NSString* path = [NSString stringWithFormat:@"%@/channels", [self getSubscriptionRequestBaseUrl]];
     
-    [self.kumulos.coreHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.kumulos.crmHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         if (nil == decodedBody) {
             complete([NSError
                       errorWithDomain:KSErrorDomain
@@ -157,7 +157,7 @@
 }
 
 - (void) makeRequest:(NSString*) method to:(NSString*) path withData:(id)data andCompletion:(KSPushSubscriptionCompletionBlock) complete {
-    [self.kumulos.coreHttpClient sendRequest:method toPath:path withData:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.kumulos.crmHttpClient sendRequest:method toPath:path withData:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         if (complete) {
             complete(nil);
         }

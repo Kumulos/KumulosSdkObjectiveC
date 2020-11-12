@@ -186,8 +186,8 @@ static Kumulos* _shared;
     self.pushHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSPushBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
     [self.pushHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
     
-    self.coreHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSCrmCoreBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
-    [self.coreHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
+    self.crmHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSCrmCoreBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
+    [self.crmHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
     
 #if TARGET_OS_IOS
 
@@ -262,8 +262,8 @@ static Kumulos* _shared;
     [self.pushHttpClient invalidateSessionCancelingTasks:YES];
     self.pushHttpClient = nil;
     
-    [self.coreHttpClient invalidateSessionCancelingTasks:YES];
-    self.coreHttpClient = nil;
+    [self.crmHttpClient invalidateSessionCancelingTasks:YES];
+    self.crmHttpClient = nil;
 }
 
 @end

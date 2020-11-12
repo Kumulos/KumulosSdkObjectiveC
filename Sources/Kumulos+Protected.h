@@ -28,7 +28,7 @@
 
 @property (nonatomic) KSHttpClient* _Nullable rpcHttpClient;
 @property (nonatomic) KSHttpClient* _Nullable pushHttpClient;
-@property (nonatomic) KSHttpClient* _Nullable coreHttpClient;
+@property (nonatomic) KSHttpClient* _Nullable crmHttpClient;
 
 #if TARGET_OS_IOS
 @property (nonatomic) KSAnalyticsHelper* _Nullable analyticsHelper;
