@@ -28,7 +28,7 @@ static NSString * const KSBackendBaseUrl = @"https://api.kumulos.com";
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
 static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
-
+static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
 
 @implementation KSConfig
 
@@ -186,6 +186,9 @@ static Kumulos* _shared;
     self.pushHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSPushBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
     [self.pushHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
     
+    self.crmHttpClient = [[KSHttpClient alloc] initWithBaseUrl:KSCrmCoreBaseUrl requestBodyFormat:KSHttpDataFormatJson responseBodyFormat:KSHttpDataFormatJson];
+    [self.crmHttpClient setBasicAuthWithUser:self.config.apiKey andPassword:self.config.secretKey];
+    
 #if TARGET_OS_IOS
 
 #else
@@ -258,6 +261,9 @@ static Kumulos* _shared;
     
     [self.pushHttpClient invalidateSessionCancelingTasks:YES];
     self.pushHttpClient = nil;
+    
+    [self.crmHttpClient invalidateSessionCancelingTasks:YES];
+    self.crmHttpClient = nil;
 }
 
 @end

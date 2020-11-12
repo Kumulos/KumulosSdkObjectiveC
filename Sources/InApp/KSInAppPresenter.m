@@ -186,11 +186,9 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     if (@available(iOS 10.0, *)) {
         config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
     } else {
-        if (@available(iOS 9.0, *)) {
-            config.requiresUserActionForMediaPlayback = NO;
-        } else {
-            config.mediaPlaybackRequiresUserAction = NO;
-        }
+
+        config.requiresUserActionForMediaPlayback = NO;
+        
     }
 
 #ifdef DEBUG
@@ -206,10 +204,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     self.webView.scrollView.bounces = NO;
     self.webView.scrollView.scrollEnabled = NO;
     self.webView.allowsBackForwardNavigationGestures = NO;
-    if (@available(iOS 9.0, *)) {
-        self.webView.allowsLinkPreview = NO;
-    }
-
+    self.webView.allowsLinkPreview = NO;
+    
     if (@available(iOS 11.0.0, *)) {
         // Allow content to pass under the notch / home button
         [self.webView.scrollView setContentInsetAdjustmentBehavior:UIScrollViewContentInsetAdjustmentNever];
