@@ -7,6 +7,8 @@
 
 #import "KumulosPushSubscriptionManager.h"
 #import "Kumulos+Protected.h"
+#import "KumulosHelper.h"
+#import "Shared/Http/NSString+URLEncoding.h"
 
 @interface KumulosPushSubscriptionManager ()
 
@@ -45,7 +47,7 @@
 
 - (void) subscribeToChannels:(NSArray<NSString *> *)uuids onComplete:(KSPushSubscriptionCompletionBlock)complete {
     NSDictionary* params = @{@"uuids": uuids};
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels/subscriptions", [Kumulos installId]];
+    NSString* path = [NSString stringWithFormat:@"%@/channels/subscriptions", [self getSubscriptionRequestBaseUrl]];
     
     [self makeRequest:KSHttpMethodPost to:path withData:params andCompletion:complete];
 }
@@ -56,7 +58,7 @@
 
 - (void) unsubscribeFromChannels:(NSArray<NSString *> *)uuids onComplete:(KSPushSubscriptionCompletionBlock)complete {
     NSDictionary* params = @{@"uuids": uuids};
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels/subscriptions", [Kumulos installId]];
+    NSString* path = [NSString stringWithFormat:@"%@/channels/subscriptions", [self getSubscriptionRequestBaseUrl]];
     
     [self makeRequest:KSHttpMethodDelete to:path withData:params andCompletion:complete];
 }
@@ -67,7 +69,7 @@
 
 - (void) setSubscriptions:(NSArray<NSString *> *)uuids onComplete:(KSPushSubscriptionCompletionBlock)complete {
     NSDictionary* params = @{@"uuids": uuids};
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels/subscriptions", [Kumulos installId]];
+    NSString* path = [NSString stringWithFormat:@"%@/channels/subscriptions", [self getSubscriptionRequestBaseUrl]];
     
     [self makeRequest:KSHttpMethodPut to:path withData:params andCompletion:complete];
 }
@@ -102,7 +104,7 @@
     }
     
     if (subscribe) {
-        params[@"installId"] = [Kumulos installId];
+        params[@"userIdentifier"] = [KumulosHelper currentUserIdentifier];
     }
     
     if (meta) {
@@ -111,7 +113,7 @@
     
     NSString* path = @"/v1/channels";
     
-    [self.kumulos.pushHttpClient post:path data:params onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.kumulos.coreHttpClient post:path data:params onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         if (nil == decodedBody) {
             complete([NSError
                       errorWithDomain:KSErrorDomain
@@ -129,9 +131,9 @@
 }
 
 - (void) listChannels:(KSPushChannelsSuccessBlock)complete {
-    NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@/channels", [Kumulos installId]];
+    NSString* path = [NSString stringWithFormat:@"%@/channels", [self getSubscriptionRequestBaseUrl]];
     
-    [self.kumulos.pushHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.kumulos.coreHttpClient get:path onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         if (nil == decodedBody) {
             complete([NSError
                       errorWithDomain:KSErrorDomain
@@ -155,7 +157,7 @@
 }
 
 - (void) makeRequest:(NSString*) method to:(NSString*) path withData:(id)data andCompletion:(KSPushSubscriptionCompletionBlock) complete {
-    [self.kumulos.pushHttpClient sendRequest:method toPath:path withData:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.kumulos.coreHttpClient sendRequest:method toPath:path withData:data onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         if (complete) {
             complete(nil);
         }
@@ -164,6 +166,11 @@
             complete(error);
         }
     }];
+}
+
+- (NSString*) getSubscriptionRequestBaseUrl {
+    NSString* encodedIdentifier = [KumulosHelper.currentUserIdentifier urlEncodedStringForUrl];
+    return [NSString stringWithFormat:@"/v1/users/%@", encodedIdentifier];
 }
 
 @end
