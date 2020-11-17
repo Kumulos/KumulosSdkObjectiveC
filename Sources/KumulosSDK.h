@@ -20,12 +20,15 @@ FOUNDATION_EXPORT const unsigned char KumulosSDKVersionString[];
 
 #import "Kumulos.h"
 
+
 #if TARGET_OS_IOS
+#import "Kumulos+DeepLinking.h"
 #import "Kumulos+Push.h"
 #import "KumulosPushSubscriptionManager.h"
 #import "Kumulos+Location.h"
 #import "Kumulos+Analytics.h"
 #import "KumulosInApp.h"
+
 #endif
 
 #import "KSAPIOperation.h"

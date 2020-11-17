@@ -11,5 +11,7 @@
 + (id)objectForKey:(NSString*) forKey;
 + (void)removeObjectForKey:(NSString*) forKey;
 + (void)maybeMigrateUserDefaultsToAppGroups;
++ (BOOL)boolForKey:(NSString*) forKey;
++ (void)setBool:(BOOL)value forKey:(NSString*)forKey;
 
 @end

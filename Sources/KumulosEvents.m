@@ -18,3 +18,4 @@ NSString* const KumulosEventInAppConsentChanged = @"k.inApp.statusUpdated";
 NSString* const KumulosEventMessageOpened = @"k.message.opened";
 NSString* const KumulosEventMessageDismissed = @"k.message.dismissed";
 NSString* const KumulosEventMessageDeletedFromInbox = @"k.message.inbox.deleted";
+NSString* const KumulosEventDeepLinkMatched = @"k.deepLink.matched";

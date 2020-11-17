@@ -16,12 +16,23 @@
 @class KSAPIOperation;
 @class KSAPIResponse;
 @class KSPushNotification;
+@class KSDeepLink;
 @protocol KSAPIOperationDelegate;
 
 typedef void (^ _Nullable KSAPIOperationSuccessBlock)(KSAPIResponse* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSInAppDeepLinkHandlerBlock)(NSDictionary* _Nonnull data);
 typedef void (^ _Nullable KSPushOpenedHandlerBlock)(KSPushNotification* _Nonnull notification);
+
+typedef NS_ENUM(NSInteger, KSDeepLinkResolution) {
+    KSDeepLinkResolutionLookupFailed,
+    KSDeepLinkResolutionLinkNotFound,
+    KSDeepLinkResolutionLinkExpired,
+    KSDeepLinkResolutionLinkLimitExceeded,
+    KSDeepLinkResolutionLinkMatched,
+};
+typedef void (^ _Nullable KSDeepLinkHandlerBlock)(KSDeepLinkResolution resolution, NSURL* _Nonnull url, KSDeepLink* _Nullable link);
+
 
 API_AVAILABLE(ios(10.0), macos(10.14))
 typedef void (^ _Nonnull KSPushReceivedInForegroundCompletionHandler)(UNNotificationPresentationOptions);
@@ -61,6 +72,10 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 @property (nonatomic,readonly) KSPushOpenedHandlerBlock pushOpenedHandler;
 @property (nonatomic,readonly) KSPushReceivedInForegroundHandlerBlock pushReceivedInForegroundHandler API_AVAILABLE(ios(10.0), macos(10.14));
 
+@property (nonatomic,readonly) KSDeepLinkHandlerBlock _Nullable deepLinkHandler;
+@property (nonatomic,readonly) NSURL* _Nullable deepLinkCname;
+
+
 + (instancetype _Nullable) configWithAPIKey:(NSString* _Nonnull)APIKey andSecretKey:(NSString* _Nonnull)secretKey;
 
 - (instancetype _Nullable) init NS_UNAVAILABLE;
@@ -72,6 +87,7 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (instancetype _Nonnull) setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler;
 - (instancetype _Nonnull) setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler API_AVAILABLE(ios(10.0),macos(10.14));
 - (instancetype _Nonnull) setForegroundPushPresentationOptions:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14));
+- (instancetype _Nonnull) enableDeepLinking:(KSDeepLinkHandlerBlock)deepLinkHandler cname:(NSString* _Nullable)cname;
 #endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;
