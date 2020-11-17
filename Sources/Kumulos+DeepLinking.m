@@ -15,6 +15,7 @@
 @end
 
 @implementation KSDeepLinkContent
+@synthesize description;
 - (instancetype _Nonnull) init:(NSString* _Nullable)title from:(NSString* _Nullable) description {
     self.title = title;
     self.description = description;
@@ -25,27 +26,21 @@
 
 
 @implementation KSDeepLink
-- (instancetype _Nullable) init:(NSURL*)url from:(NSData*) data {
-    NSError* error;
-    NSDictionary* json = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-    if (error){
-        return nil;
-    }
-    
-    NSDictionary* linkData = json[@"linkData"];
-    NSDictionary* content = json[@"content"];
+- (instancetype _Nullable) init:(NSURL*)url from:(NSDictionary*) data {
+    NSDictionary* linkData = data[@"linkData"];
+    NSDictionary* content = data[@"content"];
     if (linkData == nil || content == nil){
         return nil;
     }
-    
+   
     self.url = url;
+   
     self.content = [[KSDeepLinkContent alloc] init:content[@"title"] from:content[@"description"]];
     self.data = linkData;
-    
+  
     return self;
 }
 @end
-
 
 
 @implementation Kumulos (DeepLinking)
