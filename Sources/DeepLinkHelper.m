@@ -18,7 +18,6 @@
 static NSString* _Nonnull const KSDeepLinksBaseUrl = @"https://links.kumulos.com";
 static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED";
 
-
 @interface KSDeepLinkHelper ()
 @property (nonatomic) KSConfig* _Nonnull config;
 @property (nonatomic) KSHttpClient* _Nullable httpClient;
@@ -47,8 +46,7 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
     
     UIPasteboard* pasteboard = [UIPasteboard generalPasteboard];
     if (@available(iOS 10, *)) {
-        BOOL shouldCheck = [pasteboard hasURLs];
-        if (shouldCheck == NO){
+        if (![pasteboard hasURLs]){
             return;
         }
     }
@@ -58,11 +56,9 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
         return;
     }
     
-    BOOL shouldHandle = [self urlShouldBeHandled:url];
-    if (shouldHandle == NO){
+    if (![self urlShouldBeHandled:url]){
         return;
     }
-    
     
     NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
         NSURL *nextUrl = (NSURL *)evaluatedObject;
@@ -71,7 +67,7 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
     
     
     pasteboard.URLs = [pasteboard.URLs filteredArrayUsingPredicate:predicate];
-    [self handleDeepLinkUrl:url wasDeferred:NO];
+    [self handleDeepLinkUrl:url wasDeferred:YES];
 }
 
 - (BOOL) urlShouldBeHandled:(NSURL* _Nonnull)url {
