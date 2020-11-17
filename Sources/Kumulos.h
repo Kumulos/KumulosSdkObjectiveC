@@ -87,7 +87,8 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (instancetype _Nonnull) setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler;
 - (instancetype _Nonnull) setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler API_AVAILABLE(ios(10.0),macos(10.14));
 - (instancetype _Nonnull) setForegroundPushPresentationOptions:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14));
-- (instancetype _Nonnull) enableDeepLinking:(KSDeepLinkHandlerBlock)deepLinkHandler cname:(NSString* _Nullable)cname;
+- (instancetype _Nonnull) enableDeepLinking:(NSString* _Nonnull)cname deepLinkHandler:(KSDeepLinkHandlerBlock)deepLinkHandler;
+- (instancetype _Nonnull) enableDeepLinking:(KSDeepLinkHandlerBlock)deepLinkHandler;
 #endif
 
 - (instancetype _Nonnull) setSessionIdleTimeout:(NSUInteger)timeoutSeconds;

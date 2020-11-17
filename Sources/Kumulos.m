@@ -67,9 +67,16 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
     return self;
 }
 
-- (instancetype _Nonnull) enableDeepLinking:(KSDeepLinkHandlerBlock)handler cname:(NSString* _Nullable)cname {
-    self->_deepLinkHandler = handler;
+- (instancetype _Nonnull) enableDeepLinking:(NSString* _Nonnull)cname deepLinkHandler:(KSDeepLinkHandlerBlock)deepLinkHandler {
+    self->_deepLinkHandler = deepLinkHandler;
     self->_deepLinkCname = [NSURL URLWithString:cname];
+    
+    return self;
+}
+
+- (instancetype _Nonnull) enableDeepLinking:(KSDeepLinkHandlerBlock)deepLinkHandler {
+    self->_deepLinkHandler = deepLinkHandler;
+    self->_deepLinkCname = nil;
     
     return self;
 }
