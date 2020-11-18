@@ -48,6 +48,9 @@ static NSString* _Nonnull const userIdLocker = @"";
 + (NSNumber*) getBadgeFromUserInfo:(NSDictionary*)userInfo{
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* aps = userInfo[@"aps"];
+    if (custom == nil || aps == nil) {
+        return nil;
+    }
     
     NSNumber* incrementBy = custom[@"badge_inc"];
     NSNumber* badge = aps[@"badge"];
