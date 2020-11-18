@@ -154,6 +154,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }];
     
     dispatch_semaphore_wait(syncBarrier, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)));
+    dispatch_group_leave(dispatchGroup);
 }
 
 + (void)initializeAnalyticsHelper{
