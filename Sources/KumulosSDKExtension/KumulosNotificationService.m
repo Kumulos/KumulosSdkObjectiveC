@@ -32,37 +32,20 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
+    [self maybeAddButtons:userInfo bestAttemptContent:bestAttemptContent];
+
+    dispatch_group_t dispatchGroup = dispatch_group_create();
+    [self maybeAddImageAttachment:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo bestAttemptContent:(UNMutableNotificationContent*)bestAttemptContent];
+    
     if ([KSAppGroupsHelper isKumulosAppGroupDefined]){
         [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
-        [self trackDeliveredEvent:userInfo notificationId: messageId];
-    }
-
-    if (data[@"k.buttons"]) {
-        NSArray *buttons = data[@"k.buttons"];
-
-        if (buttons != nil && [bestAttemptContent.categoryIdentifier isEqualToString:@""]) {
-            [self addButtons:messageId withContent:bestAttemptContent withButtons:buttons];
-        }
+        [self trackDeliveredEvent:dispatchGroup userInfo:userInfo notificationId: messageId];
     }
     
-    NSDictionary *attachments = userInfo[@"attachments"];
-    NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     
-    if (pictureUrl == nil) {
+    dispatch_group_notify(dispatchGroup, dispatch_get_main_queue(), ^{
         contentHandler(bestAttemptContent);
-        return;
-    }
-
-    NSString *extension = [self getPictureExtension: pictureUrl];
-    NSURL *url = [self getCompletePictureUrl: pictureUrl];
-    [self loadAttachment:url
-           withExtension:extension
-       completionHandler:^(UNNotificationAttachment *attachment) {
-           if (attachment) {
-               bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
-           }
-           contentHandler(bestAttemptContent);
-       }];
+    });
 }
 
 + (BOOL) validateUserInfo:(NSDictionary*)userInfo{
@@ -72,6 +55,67 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
             userInfo[@"custom"][@"a"][@"k.message"] &&
             userInfo[@"custom"][@"a"][@"k.message"][@"data"] &&
             userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
+}
+
++ (void) maybeAddButtons:(NSDictionary *)userInfo bestAttemptContent:(UNMutableNotificationContent *)bestAttemptContent {
+    if (![bestAttemptContent.categoryIdentifier isEqualToString:@""]){
+        return;
+    }
+    
+    NSDictionary* custom = userInfo[@"custom"];
+    NSDictionary* data = custom[@"a"];
+    NSDictionary* msg = data[@"k.message"];
+    NSDictionary* msgData = msg[@"data"];
+    NSNumber* messageId = msgData[@"id"];
+    
+    NSArray *buttons = data[@"k.buttons"];
+    if (buttons == nil || buttons.count == 0){
+        return;
+    }
+    
+    NSMutableArray *actionArray = [NSMutableArray new];
+    for (NSDictionary *button in buttons) {
+        UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]
+                                                                            title:button[@"text"]
+                                                                          options:UNNotificationActionOptionForeground];
+        [actionArray addObject: action];
+    }
+    
+          
+    NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
+
+    
+    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
+                                                                              actions:actionArray
+                                                                    intentIdentifiers:@[]
+                                                                              options:UNNotificationCategoryOptionCustomDismissAction];
+    
+    [KSCategoryHelper registerCategory: category];
+    bestAttemptContent.categoryIdentifier = categoryIdentifier;
+}
+
++ (void) maybeAddImageAttachment:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo bestAttemptContent:(UNMutableNotificationContent*)bestAttemptContent {
+
+    NSDictionary *attachments = userInfo[@"attachments"];
+    NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
+    if (pictureUrl == nil){
+        return;
+    }
+    
+    NSString *extension = [self getPictureExtension: pictureUrl];
+    NSURL *url = [self getCompletePictureUrl: pictureUrl];
+    
+    dispatch_group_enter(dispatchGroup);
+   
+    [self loadAttachment:url
+           withExtension:extension
+       completionHandler:^(UNNotificationAttachment *attachment) {
+           if (attachment) {
+               bestAttemptContent.attachments = [NSArray arrayWithObject:attachment];
+           }
+           
+           dispatch_group_leave(dispatchGroup);
+       }];
 }
 
 + (void) maybeSetBadge:(UNMutableNotificationContent*)bestAttemptContent userInfo:(NSDictionary*)userInfo {
@@ -89,7 +133,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     [KSKeyValPersistenceHelper setObject:newBadge forKey:KSPrefsKeyBadgeCount];
 }
 
-+ (void)trackDeliveredEvent:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
++ (void)trackDeliveredEvent:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo notificationId:(NSNumber*)notificationId{
     NSDictionary* aps = userInfo[@"aps"];
     if (aps[@"content-available"] && [aps[@"content-available"] intValue] == 1){
         return;
@@ -101,7 +145,15 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }
     
     NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notificationId};
-    [analyticsHelper trackEvent:KumulosEventMessageDelivered withProperties:params flushingImmediately:YES];
+    
+    dispatch_group_enter(dispatchGroup);
+    dispatch_semaphore_t syncBarrier = dispatch_semaphore_create(0);
+    
+    [analyticsHelper trackEvent:KumulosEventMessageDelivered atTime:[NSDate date] withProperties:params flushingImmediately:YES onSyncComplete:^(NSError* err){
+        dispatch_semaphore_signal(syncBarrier);
+    }];
+    
+    dispatch_semaphore_wait(syncBarrier, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)));
 }
 
 + (void)initializeAnalyticsHelper{
@@ -114,33 +166,6 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }
     
     analyticsHelper = [[KSAnalyticsHelper alloc] initWithApiKey:apiKey withSecretKey:secretKey];
-}
-
-+ (void)addButtons:(NSNumber*)messageId withContent:(UNMutableNotificationContent*)content withButtons:(NSArray*) buttons {
-    if (buttons.count == 0) {
-        return;
-    }
-        
-    NSMutableArray *actionArray = [NSMutableArray new];
-    
-    for (NSDictionary *button in buttons) {
-        UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]
-                                                                            title:button[@"text"]
-                                                                          options:UNNotificationActionOptionForeground];
-
-        [actionArray addObject: action];
-    }
-    
-    NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
-    
-    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
-                                                                              actions:actionArray
-                                                                    intentIdentifiers:@[]
-                                                                              options:UNNotificationCategoryOptionCustomDismissAction];
-    
-    [KSCategoryHelper registerCategory: category];
-    
-    content.categoryIdentifier = categoryIdentifier;
 }
 
 + (NSString * _Nullable) getPictureExtension:(NSString *) pictureUrl {
