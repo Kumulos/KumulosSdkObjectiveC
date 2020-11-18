@@ -40,7 +40,8 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Location.h',
       'Sources/Kumulos+Crash.h',
       'Sources/Kumulos+Analytics.h',
-      'Sources/KumulosInApp.h'
+      'Sources/KumulosInApp.h',
+      'Sources/Kumulos+DeepLinking.h'
   ]
 
   s.osx.public_header_files = [
