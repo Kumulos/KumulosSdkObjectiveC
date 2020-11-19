@@ -77,7 +77,7 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
     }
     
     NSURL* cname = self.config.deepLinkCname;
-    return [host hasSuffix:@"lnk.click"] || (cname != nil && host == cname.host);
+    return [host hasSuffix:@"lnk.click"] || (cname != nil && [host isEqualToString:cname.host]);
 }
 
 - (void) handleDeepLinkUrl:(NSURL*)url wasDeferred:(BOOL)wasDeferred {
@@ -153,7 +153,7 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
         return NO;
     }
     
-    if (userActivity.activityType != NSUserActivityTypeBrowsingWeb){
+    if (![userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]){
         return NO;
     }
     
