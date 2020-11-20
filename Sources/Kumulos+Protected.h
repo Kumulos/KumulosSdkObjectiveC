@@ -16,6 +16,8 @@
 #import "Shared/KumulosUserDefaultsKeys.h"
 #import "KSSessionHelper.h"
 #import "InApp/KSInAppHelper.h"
+#import "DeepLinkHelper.h"
+
 @import UserNotifications;
 #endif
 
@@ -34,6 +36,7 @@
 @property (nonatomic) KSAnalyticsHelper* _Nullable analyticsHelper;
 @property (nonatomic) KSSessionHelper* _Nullable sessionHelper;
 @property (nonatomic) KSInAppHelper* _Nullable inAppHelper;
+@property (nonatomic) KSDeepLinkHelper* _Nullable deepLinkHelper;
 @property (nonatomic) NSObject<UNUserNotificationCenterDelegate>* _Nullable notificationCenterDelegate API_AVAILABLE(ios(10.0));
 #else
 @property (nonatomic) KSHttpClient* _Nullable statsHttpClient;

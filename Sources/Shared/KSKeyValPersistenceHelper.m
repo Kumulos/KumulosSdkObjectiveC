@@ -25,6 +25,14 @@
     [[KSKeyValPersistenceHelper getUserDefaults] removeObjectForKey:forKey];
 }
 
++ (BOOL)boolForKey:(NSString*) forKey {
+    return [[KSKeyValPersistenceHelper getUserDefaults] boolForKey:forKey];
+}
+
++ (void)setBool:(BOOL)value forKey:(NSString*)forKey {
+    [[KSKeyValPersistenceHelper getUserDefaults] setBool:value forKey:forKey];
+}
+
 + (void)maybeMigrateUserDefaultsToAppGroups {
     NSUserDefaults* standardDefaults = NSUserDefaults.standardUserDefaults;
     NSString* haveMigratedKey = KSPrefsKeyMigratedToGroups;

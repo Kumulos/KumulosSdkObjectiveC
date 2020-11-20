@@ -50,6 +50,8 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
         self->_inAppDeepLinkHandler = nil;
         self->_pushOpenedHandler = nil;
         self->_pushReceivedInForegroundHandler = nil;
+        self->_deepLinkHandler = nil;
+        self->_deepLinkCname = nil;
         
         #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR || TARGET_OS_IOS
         if (@available(iOS 10, *)) {
@@ -62,6 +64,20 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
 
 - (instancetype _Nonnull) enableCrashReporting {
     self->_crashReportingEnabled = YES;
+    return self;
+}
+
+- (instancetype _Nonnull) enableDeepLinking:(NSString* _Nonnull)cname deepLinkHandler:(KSDeepLinkHandlerBlock)deepLinkHandler {
+    self->_deepLinkHandler = deepLinkHandler;
+    self->_deepLinkCname = [NSURL URLWithString:cname];
+    
+    return self;
+}
+
+- (instancetype _Nonnull) enableDeepLinking:(KSDeepLinkHandlerBlock)deepLinkHandler {
+    self->_deepLinkHandler = deepLinkHandler;
+    self->_deepLinkCname = nil;
+    
     return self;
 }
 
@@ -144,6 +160,13 @@ static Kumulos* _shared;
         [self initSessions];
         [self initInApp];
         [self pushInit];
+        
+        if (config.deepLinkHandler != nil){
+            self.deepLinkHelper = [[KSDeepLinkHelper alloc] init:config];
+            
+            [self.deepLinkHelper checkForDeferredLink];
+        }
+        
         [[UIApplication sharedApplication] addObserver:self forKeyPath:@"applicationIconBadgeNumber" options:NSKeyValueObservingOptionNew context:nil];
 #endif
         
