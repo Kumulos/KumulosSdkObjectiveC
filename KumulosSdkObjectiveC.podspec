@@ -27,7 +27,9 @@ Pod::Spec.new do |s|
       'Sources/KSUserNotificationCenterDelegate.*',
       'Sources/**/*InApp*',
       'Sources/Shared/*Analytics*',
-      'Sources/*SessionHelper*'
+      'Sources/*SessionHelper*',
+      'Sources/*Kumulos+DeepLinking*',
+      'Sources/*DeepLinkHelper*',
   ]
 
   s.ios.public_header_files = [
@@ -52,5 +54,5 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Crash.h'
   ]
 
-  s.dependency "KumulosKSCrash", "1.15.21-kumulos1"
+  s.dependency "KumulosKSCrash", "1.15.21-kumulos3"
 end
