@@ -219,6 +219,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
             [formatter setTimeStyle:NSDateFormatterFullStyle];
             [formatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
             [formatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+            [formatter setLocale:@"en_US_POSIX"]
             after = [NSString stringWithFormat:@"?after=%@", [[formatter stringFromDate:lastSyncTime] urlEncodedStringForUrl]];
         }
 
@@ -278,7 +279,9 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         NSDate* lastSyncTime = [NSDate dateWithTimeIntervalSince1970:0];
         NSDateFormatter* dateParser = [NSDateFormatter new];
         [dateParser setDateFormat:@"yyyy-MM-dd'T'HH:mm:ssZZZZZ"];
-
+        [dateParser setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
+        [dateParser setLocale:@"en_US_POSIX"]
+        
         for (NSDictionary* message in messages) {
             NSNumber* partId = message[@"id"];
 
