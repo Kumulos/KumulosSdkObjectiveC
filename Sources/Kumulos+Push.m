@@ -292,10 +292,10 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notificationId};
     
     if (dismissedAt == nil){
-        [self.analyticsHelper trackEvent:KumulosEventMessageDismissed withProperties:params flushingImmediately:YES];
+        [self.analyticsHelper trackEvent:KumulosEventMessageDismissed withProperties:params];
     }
     else{
-        [self.analyticsHelper trackEvent:KumulosEventMessageDismissed atTime:dismissedAt withProperties:params flushingImmediately:YES onSyncComplete:nil];
+        [self.analyticsHelper trackEvent:KumulosEventMessageDismissed atTime:dismissedAt withProperties:params flushingImmediately:NO onSyncComplete:nil];
     }
 }
 
