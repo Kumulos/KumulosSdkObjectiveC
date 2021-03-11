@@ -271,8 +271,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 
 #pragma mark - Dismissed Handling
 
-
-- (BOOL) pushHandleDismissed:(NSDictionary*)userInfo withNotificationResponse: (UNNotificationResponse*)response {
+- (BOOL) pushHandleDismissed:(NSDictionary*)userInfo withNotificationResponse: (UNNotificationResponse*)response API_AVAILABLE(ios(10.0)){
     KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo withNotificationResponse:response];
     if (!notification || !notification.id) {
         return NO;
@@ -283,12 +282,12 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     return YES;
 }
 
-- (void) pushHandleDismissed:(NSNumber*)notificationId dismissedAt:(NSDate*) dismissedAt{
+- (void) pushHandleDismissed:(NSNumber*)notificationId dismissedAt:(NSDate*) dismissedAt API_AVAILABLE(ios(10.0)){
     [KSPendingNotificationHelper remove:notificationId];
     [self pushTrackDismissed:notificationId dismissedAt: dismissedAt];
 }
 
-- (void) pushTrackDismissed:(NSNumber*)notificationId dismissedAt:(NSDate*) dismissedAt{
+- (void) pushTrackDismissed:(NSNumber*)notificationId dismissedAt:(NSDate*) dismissedAt API_AVAILABLE(ios(10.0)){
     NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notificationId};
     
     if (dismissedAt == nil){
@@ -299,7 +298,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     }
 }
 
-- (void) maybeTrackPushDismissedEvents{
+- (void) maybeTrackPushDismissedEvents API_AVAILABLE(ios(10.0)){
     if (![KSAppGroupsHelper isKumulosAppGroupDefined]){
         return;
     }

@@ -27,6 +27,7 @@ Pod::Spec.new do |s|
       'Sources/KSUserNotificationCenterDelegate.*',
       'Sources/**/*InApp*',
       'Sources/Shared/*Analytics*',
+      'Sources/Shared/*KSPendingNotification*',
       'Sources/*SessionHelper*',
       'Sources/*Kumulos+DeepLinking*',
       'Sources/*DeepLinkHelper*',
