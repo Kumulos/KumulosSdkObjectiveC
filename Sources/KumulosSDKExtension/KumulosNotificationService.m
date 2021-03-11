@@ -33,9 +33,11 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
-    NSMutableArray* actionButtons = [self getButtons:userInfo bestAttemptContent:bestAttemptContent];
-    [self addCategory:bestAttemptContent actionArray:actionButtons messageId:messageId];
-
+    if ([bestAttemptContent.categoryIdentifier isEqualToString:@""]){
+        NSMutableArray* actionButtons = [self getButtons:userInfo bestAttemptContent:bestAttemptContent];
+        [self addCategory:bestAttemptContent actionArray:actionButtons messageId:messageId];
+    }
+    
     dispatch_group_t dispatchGroup = dispatch_group_create();
     [self maybeAddImageAttachment:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo bestAttemptContent:(UNMutableNotificationContent*)bestAttemptContent];
     
@@ -65,10 +67,6 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
 + (NSMutableArray*) getButtons:(NSDictionary *)userInfo bestAttemptContent:(UNMutableNotificationContent *)bestAttemptContent {
     NSMutableArray* actionArray = [NSMutableArray new];
     
-    if (![bestAttemptContent.categoryIdentifier isEqualToString:@""]){
-        return actionArray;
-    }
-    
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* data = custom[@"a"];
    
@@ -88,7 +86,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
 }
     
 + (void) addCategory:(UNMutableNotificationContent *)bestAttemptContent actionArray:(NSMutableArray*) actionArray messageId:(NSNumber*) messageId{
-    
+  
     NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
 
     
