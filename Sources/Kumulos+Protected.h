@@ -14,6 +14,8 @@
 #import "Shared/KSAnalyticsHelper.h"
 #import "Shared/KSKeyValPersistenceHelper.h"
 #import "Shared/KumulosUserDefaultsKeys.h"
+#import "Shared/KSPendingNotification.h"
+#import "Shared/KSPendingNotificationHelper.h"
 #import "KSSessionHelper.h"
 #import "InApp/KSInAppHelper.h"
 #import "DeepLinkHelper.h"

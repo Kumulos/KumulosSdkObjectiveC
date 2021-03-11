@@ -168,6 +168,12 @@ static Kumulos* _shared;
         }
         
         [[UIApplication sharedApplication] addObserver:self forKeyPath:@"applicationIconBadgeNumber" options:NSKeyValueObservingOptionNew context:nil];
+        
+        if (@available(iOS 10.0, *)) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^() {
+                [self maybeTrackPushDismissedEvents];
+            });
+        }
 #endif
         
         self.sessionToken = [[KSessionTokenManager sharedManager] sessionTokenForKey:config.apiKey];

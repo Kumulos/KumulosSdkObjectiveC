@@ -15,6 +15,7 @@ NSString* const KSPrefsKeySecretKey = @"KumulosSecretKey";
 NSString* const KSPrefsKeyInstallUUID = @"KumulosUUID";
 NSString* const KSPrefsKeyUserID = @"KumulosCurrentUserID";
 NSString* const KSPrefsKeyBadgeCount = @"KumulosBadgeCount";
+NSString* const KSPrefsKeyPendingNotifications = @"KumulosPendingNotifications";
 
 //exist only in standard defaults for app
 NSString* const KSPrefsKeyMigratedToGroups = @"KumulosDidMigrateToAppGroups";
@@ -27,7 +28,7 @@ NSString* const KSPrefsKeyDynamicCategory = @"__kumulos__dynamic__categories__";
 @implementation KumulosUserDefaultsKeys
 
 + (NSArray*) getSharedKeys{
-    return @[KSPrefsKeyApiKey, KSPrefsKeySecretKey, KSPrefsKeyInstallUUID, KSPrefsKeyUserID, KSPrefsKeyBadgeCount];
+    return @[KSPrefsKeyApiKey, KSPrefsKeySecretKey, KSPrefsKeyInstallUUID, KSPrefsKeyUserID, KSPrefsKeyBadgeCount, KSPrefsKeyPendingNotifications];
 }
 
 @end

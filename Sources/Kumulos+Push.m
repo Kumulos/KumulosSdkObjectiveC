@@ -12,6 +12,7 @@
 #import "KumulosEvents.h"
 #import "Kumulos+PushProtected.h"
 #import "Shared/KumulosSharedEvents.h"
+#import "Shared/KSAppGroupsHelper.h"
 
 static NSInteger const KSPushTokenTypeProduction = 1;
 static NSInteger const KSPushDeviceType = 1;
@@ -205,6 +206,8 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
     [self.analyticsHelper trackEvent:KumulosEventDeviceUnsubscribed withProperties:nil flushingImmediately:YES];
 }
 
+#pragma mark - Open Handling
+
 - (void) pushTrackOpenFromNotification:(KSPushNotification* _Nullable)notification {
     if (nil == notification) {
         return;
@@ -216,11 +219,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 }
 
 
-- (BOOL) pushHandleOpen:(KSPushNotification*) notification {
-    if (!notification || !notification.id) {
-        return NO;
-    }
-
+- (BOOL) pushHandleOpen:(KSPushNotification*) notification {//private
     [self pushTrackOpenFromNotification:notification];
 
     // Handle URL pushes
@@ -250,15 +249,85 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
 - (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo  {
     KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo];
 
+    if (!notification || !notification.id) {
+        return NO;
+    }
+    
     return [self pushHandleOpen:notification];
 }
 
 
 - (BOOL) pushHandleOpenWithUserInfo:(NSDictionary*)userInfo withNotificationResponse: (UNNotificationResponse*)response {
     KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo withNotificationResponse:response];
-
+    
+    if (!notification || !notification.id) {
+        return NO;
+    }
+    
+    [KSPendingNotificationHelper remove: notification.id];
+    
     return [self pushHandleOpen:notification];
 }
+
+#pragma mark - Dismissed Handling
+
+
+- (BOOL) pushHandleDismissed:(NSDictionary*)userInfo withNotificationResponse: (UNNotificationResponse*)response {
+    KSPushNotification* notification = [KSPushNotification fromUserInfo:userInfo withNotificationResponse:response];
+    if (!notification || !notification.id) {
+        return NO;
+    }
+    
+    [self pushHandleDismissed:notification.id dismissedAt:nil];
+    
+    return YES;
+}
+
+- (void) pushHandleDismissed:(NSNumber*)notificationId dismissedAt:(NSDate*) dismissedAt{
+    [KSPendingNotificationHelper remove:notificationId];
+    [self pushTrackDismissed:notificationId dismissedAt: dismissedAt];
+}
+
+- (void) pushTrackDismissed:(NSNumber*)notificationId dismissedAt:(NSDate*) dismissedAt{
+    NSDictionary* params = @{@"type": @(KS_MESSAGE_TYPE_PUSH), @"id": notificationId};
+    
+    if (dismissedAt == nil){
+        [self.analyticsHelper trackEvent:KumulosEventMessageDismissed withProperties:params flushingImmediately:YES];
+    }
+    else{
+        [self.analyticsHelper trackEvent:KumulosEventMessageDismissed atTime:dismissedAt withProperties:params flushingImmediately:YES onSyncComplete:nil];
+    }
+}
+
+- (void) maybeTrackPushDismissedEvents{
+    if (![KSAppGroupsHelper isKumulosAppGroupDefined]){
+        return;
+    }
+    
+    [[UNUserNotificationCenter currentNotificationCenter] getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> * _Nonnull trayNotifications) {
+           
+        NSMutableArray<NSNumber*>* actualPendingNotificationIds = [NSMutableArray array];
+        for (UNNotification* trayNotification in trayNotifications) {
+            KSPushNotification* notification = [KSPushNotification fromUserInfo:trayNotification.request.content.userInfo];
+            if (!notification || !notification.id) {
+                continue;
+            }
+            
+            [actualPendingNotificationIds addObject:notification.id];
+        }
+    
+        NSMutableArray<KSPendingNotification*> *recordedPendingNotifications = [KSPendingNotificationHelper readAll];
+        
+        for (KSPendingNotification* recordedPendingNotification in recordedPendingNotifications){
+            if (![actualPendingNotificationIds containsObject:recordedPendingNotification.notificationId]){
+                [self pushHandleDismissed:recordedPendingNotification.notificationId dismissedAt:recordedPendingNotification.dismissedAt];
+            }
+        }
+    }];
+    
+}
+
+#pragma mark - Other
 
 
 - (NSNumber*) pushGetTokenType {

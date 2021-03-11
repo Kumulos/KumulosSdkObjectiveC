@@ -57,6 +57,12 @@ API_AVAILABLE(ios(10.0))
     }
 
     if ([response.actionIdentifier isEqualToString:UNNotificationDismissActionIdentifier]) {
+        BOOL handled = [self.kumulos pushHandleDismissed:userInfo withNotificationResponse: response];
+        if (!handled) {
+            [self chainCenter:center didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+            return;
+        }
+        
         completionHandler();
         return;
     }

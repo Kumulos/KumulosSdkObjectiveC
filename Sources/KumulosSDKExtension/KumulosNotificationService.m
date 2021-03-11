@@ -12,6 +12,7 @@
 #import "../Shared/KumulosHelper.h"
 #import "../Shared/KumulosSharedEvents.h"
 #import "../Shared/KSAppGroupsHelper.h"
+#import "../Shared/KSPendingNotificationHelper.h"
 
 @implementation KumulosNotificationService
 
@@ -32,7 +33,8 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
-    [self maybeAddButtons:userInfo bestAttemptContent:bestAttemptContent];
+    NSMutableArray* actionButtons = [self getButtons:userInfo bestAttemptContent:bestAttemptContent];
+    [self addCategory:bestAttemptContent actionArray:actionButtons messageId:messageId];
 
     dispatch_group_t dispatchGroup = dispatch_group_create();
     [self maybeAddImageAttachment:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo bestAttemptContent:(UNMutableNotificationContent*)bestAttemptContent];
@@ -40,6 +42,8 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     if ([KSAppGroupsHelper isKumulosAppGroupDefined]){
         [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
         [self trackDeliveredEvent:dispatchGroup userInfo:userInfo notificationId: messageId];
+        
+        [KSPendingNotificationHelper add:[[KSPendingNotification alloc] initWithId:messageId dismissedAt:[NSDate date] identifier:request.identifier]];
     }
     
     
@@ -57,23 +61,22 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
             userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
 }
 
-+ (void) maybeAddButtons:(NSDictionary *)userInfo bestAttemptContent:(UNMutableNotificationContent *)bestAttemptContent {
+
++ (NSMutableArray*) getButtons:(NSDictionary *)userInfo bestAttemptContent:(UNMutableNotificationContent *)bestAttemptContent {
+    NSMutableArray* actionArray = [NSMutableArray new];
+    
     if (![bestAttemptContent.categoryIdentifier isEqualToString:@""]){
-        return;
+        return actionArray;
     }
     
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* data = custom[@"a"];
-    NSDictionary* msg = data[@"k.message"];
-    NSDictionary* msgData = msg[@"data"];
-    NSNumber* messageId = msgData[@"id"];
-    
+   
     NSArray *buttons = data[@"k.buttons"];
     if (buttons == nil || buttons.count == 0){
-        return;
+        return actionArray;
     }
     
-    NSMutableArray *actionArray = [NSMutableArray new];
     for (NSDictionary *button in buttons) {
         UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]
                                                                             title:button[@"text"]
@@ -81,7 +84,11 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
         [actionArray addObject: action];
     }
     
-          
+    return actionArray;
+}
+    
++ (void) addCategory:(UNMutableNotificationContent *)bestAttemptContent actionArray:(NSMutableArray*) actionArray messageId:(NSNumber*) messageId{
+    
     NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
 
     
@@ -89,7 +96,6 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
                                                                               actions:actionArray
                                                                     intentIdentifiers:@[]
                                                                               options:UNNotificationCategoryOptionCustomDismissAction];
-    
     [KSCategoryHelper registerCategory: category];
     bestAttemptContent.categoryIdentifier = categoryIdentifier;
 }

@@ -12,6 +12,7 @@ extern NSString* _Nonnull const KSPrefsKeySecretKey;
 extern NSString* _Nonnull const KSPrefsKeyInstallUUID;
 extern NSString* _Nonnull const KSPrefsKeyUserID;
 extern NSString* _Nonnull const KSPrefsKeyBadgeCount;
+extern NSString* _Nonnull const KSPrefsKeyPendingNotifications;
 
 //exist only in standard defaults for app
 extern NSString* _Nonnull const KSPrefsKeyMigratedToGroups;
