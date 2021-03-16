@@ -17,7 +17,7 @@
     NSMutableArray<KSPendingNotification*>* pendingNotifications = [self readAll];
     
     for (NSUInteger i = 0; i < [pendingNotifications count]; i++) {
-        KSPendingNotification *n = [pendingNotifications objectAtIndex:i];
+        KSPendingNotification* n = [pendingNotifications objectAtIndex:i];
         
         if ([n.notificationId isEqualToNumber:notificationId]){
             [pendingNotifications removeObjectAtIndex:i];
@@ -32,7 +32,7 @@
     NSMutableArray<KSPendingNotification*>* pendingNotifications = [self readAll];
     
     for (NSUInteger i = 0; i < [pendingNotifications count]; i++) {
-        KSPendingNotification *n = [pendingNotifications objectAtIndex:i];
+        KSPendingNotification* n = [pendingNotifications objectAtIndex:i];
         
         if ([n.identifier isEqualToString:identifier]){
             [pendingNotifications removeObjectAtIndex:i];
@@ -59,13 +59,13 @@
     
     NSMutableArray<KSPendingNotification*>* pendingNotifications = [NSMutableArray array];
     
-    NSData *encoded = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyPendingNotifications];
+    NSData* encoded = [KSKeyValPersistenceHelper objectForKey:KSPrefsKeyPendingNotifications];
     if (encoded == nil){
         return pendingNotifications;
     }
     
     if (@available(iOS 11.0, *)) {
-        NSSet *set = [NSSet setWithArray:@[[NSMutableArray class],[KSPendingNotification class]]];
+        NSSet* set = [NSSet setWithArray:@[[NSMutableArray class],[KSPendingNotification class]]];
         NSError* err = nil;
         NSMutableArray<KSPendingNotification*>* result = [NSKeyedUnarchiver unarchivedObjectOfClasses:set fromData: encoded error: &err];
         if (err == nil){
@@ -80,7 +80,7 @@
 
 + (void)save:(NSMutableArray<KSPendingNotification*>*)pendingNotifications {
    
-    NSData *encoded = nil;
+    NSData* encoded = nil;
     if (@available(iOS 11.0, *)) {
         NSError* err = nil;
         encoded = [NSKeyedArchiver archivedDataWithRootObject:pendingNotifications requiringSecureCoding:YES error:&err];

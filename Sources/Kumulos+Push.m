@@ -324,7 +324,7 @@ void kumulos_applicationDidReceiveRemoteNotificationFetchCompletionHandler(id se
             [actualPendingNotificationIds addObject:notification.id];
         }
     
-        NSMutableArray<KSPendingNotification*> *recordedPendingNotifications = [KSPendingNotificationHelper readAll];
+        NSMutableArray<KSPendingNotification*>* recordedPendingNotifications = [KSPendingNotificationHelper readAll];
         
         for (KSPendingNotification* recordedPendingNotification in recordedPendingNotifications){
             if (![actualPendingNotificationIds containsObject:recordedPendingNotification.notificationId]){

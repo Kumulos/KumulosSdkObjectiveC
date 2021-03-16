@@ -17,8 +17,8 @@
 
 - (instancetype _Nonnull) initWithId:(NSNumber* _Nonnull) notificationId dismissedAt:(NSDate* _Nonnull) dismissedAt identifier:(NSString* _Nonnull) identifier;
 
-- (void)encodeWithCoder:(NSCoder * _Nonnull)encoder;
-- (instancetype _Nonnull )initWithCoder:(NSCoder *_Nonnull)decoder;
+- (void)encodeWithCoder:(NSCoder* _Nonnull)encoder;
+- (instancetype _Nonnull )initWithCoder:(NSCoder* _Nonnull)decoder;
 
 @end
 
