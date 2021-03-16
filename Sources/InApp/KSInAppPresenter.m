@@ -125,6 +125,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         if (self.currentMessage) {
             NSString* tickleNotificationId = [NSString stringWithFormat:@"k-in-app-message:%@", self.currentMessage.id];
             [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[tickleNotificationId]];
+            
+            [KSPendingNotificationHelper removeByIdentifier:tickleNotificationId];
         }
     }
 

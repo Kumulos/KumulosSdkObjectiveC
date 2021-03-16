@@ -11,5 +11,8 @@
 - (void) pushInit;
 - (BOOL) pushHandleOpenWithUserInfo:(NSDictionary* _Nullable)userInfo;
 - (BOOL) pushHandleOpenWithUserInfo:(NSDictionary* _Nonnull)userInfo withNotificationResponse: (UNNotificationResponse* _Nonnull)response API_AVAILABLE(ios(10.0));
+- (BOOL) pushHandleDismissed:(NSDictionary* _Nonnull)userInfo withNotificationResponse: (UNNotificationResponse* _Nonnull)response API_AVAILABLE(ios(10.0));
+- (void) maybeTrackPushDismissedEvents API_AVAILABLE(ios(10.0));
+
 
 @end

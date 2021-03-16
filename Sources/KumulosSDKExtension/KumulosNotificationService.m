@@ -12,6 +12,7 @@
 #import "../Shared/KumulosHelper.h"
 #import "../Shared/KumulosSharedEvents.h"
 #import "../Shared/KSAppGroupsHelper.h"
+#import "../Shared/KSPendingNotificationHelper.h"
 
 @implementation KumulosNotificationService
 
@@ -32,14 +33,19 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     NSDictionary* msgData = msg[@"data"];
     NSNumber* messageId = msgData[@"id"];
     
-    [self maybeAddButtons:userInfo bestAttemptContent:bestAttemptContent];
-
+    if ([bestAttemptContent.categoryIdentifier isEqualToString:@""]){
+        NSMutableArray* actionButtons = [self getButtons:userInfo bestAttemptContent:bestAttemptContent];
+        [self addCategory:bestAttemptContent actionArray:actionButtons messageId:messageId];
+    }
+    
     dispatch_group_t dispatchGroup = dispatch_group_create();
     [self maybeAddImageAttachment:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo bestAttemptContent:(UNMutableNotificationContent*)bestAttemptContent];
     
     if ([KSAppGroupsHelper isKumulosAppGroupDefined]){
         [self maybeSetBadge:bestAttemptContent userInfo:userInfo];
         [self trackDeliveredEvent:dispatchGroup userInfo:userInfo notificationId: messageId];
+        
+        [KSPendingNotificationHelper add:[[KSPendingNotification alloc] initWithId:messageId dismissedAt:[NSDate date] identifier:request.identifier]];
     }
     
     
@@ -57,53 +63,51 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
             userInfo[@"custom"][@"a"][@"k.message"][@"data"][@"id"];
 }
 
-+ (void) maybeAddButtons:(NSDictionary *)userInfo bestAttemptContent:(UNMutableNotificationContent *)bestAttemptContent {
-    if (![bestAttemptContent.categoryIdentifier isEqualToString:@""]){
-        return;
-    }
+
++ (NSMutableArray*) getButtons:(NSDictionary *)userInfo bestAttemptContent:(UNMutableNotificationContent *)bestAttemptContent {
+    NSMutableArray* actionArray = [NSMutableArray new];
     
     NSDictionary* custom = userInfo[@"custom"];
     NSDictionary* data = custom[@"a"];
-    NSDictionary* msg = data[@"k.message"];
-    NSDictionary* msgData = msg[@"data"];
-    NSNumber* messageId = msgData[@"id"];
-    
-    NSArray *buttons = data[@"k.buttons"];
+   
+    NSArray* buttons = data[@"k.buttons"];
     if (buttons == nil || buttons.count == 0){
-        return;
+        return actionArray;
     }
     
-    NSMutableArray *actionArray = [NSMutableArray new];
-    for (NSDictionary *button in buttons) {
-        UNNotificationAction *action = [UNNotificationAction actionWithIdentifier:button[@"id"]
+    for (NSDictionary* button in buttons) {
+        UNNotificationAction* action = [UNNotificationAction actionWithIdentifier:button[@"id"]
                                                                             title:button[@"text"]
                                                                           options:UNNotificationActionOptionForeground];
         [actionArray addObject: action];
     }
     
-          
-    NSString *categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
+    return actionArray;
+}
+    
++ (void) addCategory:(UNMutableNotificationContent *)bestAttemptContent actionArray:(NSMutableArray*) actionArray messageId:(NSNumber*) messageId{
+  
+    NSString* categoryIdentifier = [KSCategoryHelper getCategoryIdForMessageId:messageId];
 
     
-    UNNotificationCategory *category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
+    UNNotificationCategory* category = [UNNotificationCategory categoryWithIdentifier:categoryIdentifier
                                                                               actions:actionArray
                                                                     intentIdentifiers:@[]
                                                                               options:UNNotificationCategoryOptionCustomDismissAction];
-    
     [KSCategoryHelper registerCategory: category];
     bestAttemptContent.categoryIdentifier = categoryIdentifier;
 }
 
 + (void) maybeAddImageAttachment:(dispatch_group_t)dispatchGroup userInfo:(NSDictionary*)userInfo bestAttemptContent:(UNMutableNotificationContent*)bestAttemptContent {
 
-    NSDictionary *attachments = userInfo[@"attachments"];
-    NSString *pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
+    NSDictionary* attachments = userInfo[@"attachments"];
+    NSString* pictureUrl = attachments == nil ? nil : attachments[@"pictureUrl"];
     if (pictureUrl == nil){
         return;
     }
     
-    NSString *extension = [self getPictureExtension: pictureUrl];
-    NSURL *url = [self getCompletePictureUrl: pictureUrl];
+    NSString* extension = [self getPictureExtension: pictureUrl];
+    NSURL* url = [self getCompletePictureUrl: pictureUrl];
     
     dispatch_group_enter(dispatchGroup);
    
@@ -170,7 +174,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
 }
 
 + (NSString * _Nullable) getPictureExtension:(NSString *) pictureUrl {
-    NSString *pictureExtension = [pictureUrl pathExtension];
+    NSString* pictureExtension = [pictureUrl pathExtension];
     if ([pictureExtension isEqualToString:@""]){
        return nil;
     }
@@ -187,12 +191,12 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     CGFloat width = UIScreen.mainScreen.bounds.size.width;
     NSInteger num = (NSInteger) (floor(width));
 
-    NSString *completeString = [NSString stringWithFormat:@"%@%@%ld%@%@", KSMediaResizerBaseUrl, @"/", (long) num, @"x/", pictureUrl];
+    NSString* completeString = [NSString stringWithFormat:@"%@%@%ld%@%@", KSMediaResizerBaseUrl, @"/", (long) num, @"x/", pictureUrl];
     return [NSURL URLWithString:completeString];
 }
 
 + (void)loadAttachment:(NSURL *)url withExtension:(NSString * _Nullable)pictureExtension completionHandler:(void(^)(UNNotificationAttachment *))completionHandler API_AVAILABLE(ios(10.0)){
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    NSURLSession* session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
 
     [[session downloadTaskWithURL:url
                 completionHandler:^(NSURL *temporaryFileLocation, NSURLResponse *response, NSError *error) {
@@ -202,7 +206,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
                         return;
                     }
         
-                    NSString * finalExt = pictureExtension;
+                    NSString* finalExt = pictureExtension;
                     if (finalExt == nil){
                         finalExt = [self getPictureExtension: [response suggestedFilename]];
                         if (finalExt == nil){
@@ -211,12 +215,12 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
                         }
                     }
 
-                    NSFileManager *fileManager = [NSFileManager defaultManager];
-                    NSURL *localURL = [NSURL fileURLWithPath:[temporaryFileLocation.path stringByAppendingString:finalExt]];
+                    NSFileManager* fileManager = [NSFileManager defaultManager];
+                    NSURL* localURL = [NSURL fileURLWithPath:[temporaryFileLocation.path stringByAppendingString:finalExt]];
                     [fileManager moveItemAtURL:temporaryFileLocation toURL:localURL error:&error];
 
-                    NSError *attachmentError = nil;
-                    UNNotificationAttachment *attachment = [UNNotificationAttachment attachmentWithIdentifier:@"" URL:localURL options:nil error:&attachmentError];
+                    NSError* attachmentError = nil;
+                    UNNotificationAttachment* attachment = [UNNotificationAttachment attachmentWithIdentifier:@"" URL:localURL options:nil error:&attachmentError];
                     if (attachmentError) {
                         NSLog(@"NotificationServiceExtension: attachment error: %@", attachmentError.localizedDescription);
                     }
