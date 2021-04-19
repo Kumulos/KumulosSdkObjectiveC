@@ -225,7 +225,6 @@
 		B6FB5509261F16BD00A6EBB2 /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
 		B6FB5511261F16CC00A6EBB2 /* KSPendingNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */; };
 		B6FB5512261F16CD00A6EBB2 /* KSPendingNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */; };
-		B6FB551A261F176400A6EBB2 /* DeepLinkHelper.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B611061725636B5E0003BE3E /* DeepLinkHelper.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -235,7 +234,6 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				B6FB551A261F176400A6EBB2 /* DeepLinkHelper.h in CopyFiles */,
 				B6FB5500261F15EB00A6EBB2 /* Kumulos+DeepLinking.h in CopyFiles */,
 				126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */,
 				12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */,
