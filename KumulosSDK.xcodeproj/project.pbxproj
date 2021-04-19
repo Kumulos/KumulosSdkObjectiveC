@@ -220,6 +220,12 @@
 		B6EE7703255D9F5B00D5B5FB /* Kumulos+DeepLinking.m in Sources */ = {isa = PBXBuildFile; fileRef = B6EE7702255D9F5B00D5B5FB /* Kumulos+DeepLinking.m */; };
 		B6EE7704255D9F5B00D5B5FB /* Kumulos+DeepLinking.m in Sources */ = {isa = PBXBuildFile; fileRef = B6EE7702255D9F5B00D5B5FB /* Kumulos+DeepLinking.m */; };
 		B6EE7714255D9F8800D5B5FB /* Kumulos+DeepLinking.h in Headers */ = {isa = PBXBuildFile; fileRef = B6EE7713255D9F8800D5B5FB /* Kumulos+DeepLinking.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B6FB5500261F15EB00A6EBB2 /* Kumulos+DeepLinking.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6EE7713255D9F8800D5B5FB /* Kumulos+DeepLinking.h */; };
+		B6FB5508261F16BC00A6EBB2 /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
+		B6FB5509261F16BD00A6EBB2 /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
+		B6FB5511261F16CC00A6EBB2 /* KSPendingNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */; };
+		B6FB5512261F16CD00A6EBB2 /* KSPendingNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */; };
+		B6FB551A261F176400A6EBB2 /* DeepLinkHelper.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B611061725636B5E0003BE3E /* DeepLinkHelper.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -229,6 +235,8 @@
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
+				B6FB551A261F176400A6EBB2 /* DeepLinkHelper.h in CopyFiles */,
+				B6FB5500261F15EB00A6EBB2 /* Kumulos+DeepLinking.h in CopyFiles */,
 				126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */,
 				12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */,
 				12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */,
@@ -933,11 +941,13 @@
 				12BBE98E20E3CC9600DC9916 /* KSAPIResponse.m in Sources */,
 				12CA55C6243F7B2D00398168 /* KumulosSharedEvents.m in Sources */,
 				12BBE98F20E3CC9600DC9916 /* KSessionTokenManager.m in Sources */,
+				B6FB5508261F16BC00A6EBB2 /* KSPendingNotification.m in Sources */,
 				12CA55BE243F7B0B00398168 /* KumulosUserDefaultsKeys.m in Sources */,
 				12BD21CC230D8FB200BE0D18 /* KumulosInApp.m in Sources */,
 				12BBE99020E3CC9600DC9916 /* Kumulos.m in Sources */,
 				12CA55C2243F7B1500398168 /* KumulosHelper.m in Sources */,
 				12CA55BF243F7B0F00398168 /* KSKeyValPersistenceHelper.m in Sources */,
+				B6FB5511261F16CC00A6EBB2 /* KSPendingNotificationHelper.m in Sources */,
 				12BBE99120E3CC9600DC9916 /* Kumulos+Push.m in Sources */,
 				12BBE99220E3CC9600DC9916 /* Kumulos+Stats.m in Sources */,
 				12BBE99320E3CC9600DC9916 /* KumulosPushSubscriptionManager.m in Sources */,
@@ -963,6 +973,7 @@
 				12CA55C1243F7B1400398168 /* KumulosHelper.m in Sources */,
 				6F9C9E4F23D5C30600BBEFD5 /* KumulosNotificationService.m in Sources */,
 				12CA55B8243F7ACD00398168 /* KSHttpClient.m in Sources */,
+				B6FB5509261F16BD00A6EBB2 /* KSPendingNotification.m in Sources */,
 				12CA55BC243F7B0600398168 /* KSAppGroupsHelper.m in Sources */,
 				12CA55B9243F7AD400398168 /* NSString+URLEncoding.m in Sources */,
 				12CA55C0243F7B1000398168 /* KSKeyValPersistenceHelper.m in Sources */,
@@ -970,6 +981,7 @@
 				12CA55C3243F7B1800398168 /* KSAnalyticsHelper.m in Sources */,
 				12CA55C5243F7B2C00398168 /* KumulosSharedEvents.m in Sources */,
 				12CA55BD243F7B0A00398168 /* KumulosUserDefaultsKeys.m in Sources */,
+				B6FB5512261F16CD00A6EBB2 /* KSPendingNotificationHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
