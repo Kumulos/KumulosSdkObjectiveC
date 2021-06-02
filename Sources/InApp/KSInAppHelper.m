@@ -355,7 +355,7 @@ int const STORED_IN_APP_LIMIT = 50;
         //exceeders evicted after saving because fetchOffset is ignored when have unsaved changes
         //https://stackoverflow.com/questions/10725252/possible-issue-with-fetchlimit-and-fetchoffset-in-a-core-data-query
         NSMutableArray* exceederIdsEvicted = [self evictMessagesExceedingLimit:context];
-        if (exceederIdsEvicted.count > 0){//TODO: test
+        if (exceederIdsEvicted.count > 0){
             [idsEvicted addObjectsFromArray:exceederIdsEvicted];
             
             [context save:&err];
@@ -388,7 +388,7 @@ int const STORED_IN_APP_LIMIT = 50;
     }
 }
 
-- (NSMutableArray*) evictMessages:(NSManagedObjectContext* _Nonnull)context {//TODO: test
+- (NSMutableArray*) evictMessages:(NSManagedObjectContext* _Nonnull)context {
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     [fetchRequest setIncludesPendingChanges:YES];
     
@@ -418,11 +418,11 @@ int const STORED_IN_APP_LIMIT = 50;
     return idsEvicted;
 }
 
-- (NSMutableArray*) evictMessagesExceedingLimit:(NSManagedObjectContext* _Nonnull)context {//TODO: test
+- (NSMutableArray*) evictMessagesExceedingLimit:(NSManagedObjectContext* _Nonnull)context {
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
-    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
-    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
-    NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
+    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:NO];
+    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO];
+    NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:NO];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
     fetchRequest.fetchOffset = STORED_IN_APP_LIMIT;
     
@@ -492,7 +492,7 @@ int const STORED_IN_APP_LIMIT = 50;
 - (void)markMessageDismissed:(KSInAppMessage *)message {
     [self.kumulos trackEvent:KumulosEventMessageDismissed withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
 
-    if ([self.pendingTickleIds containsObject:message.id]) {//TODO: [self removeNotificationTickle: withId]; ?
+    if ([self.pendingTickleIds containsObject:message.id]) {
         [self.pendingTickleIds removeObject:message.id];
     }
 
@@ -654,10 +654,10 @@ int const STORED_IN_APP_LIMIT = 50;
     return result;
 }
 
-- (BOOL)markInboxItemRead:(NSNumber*)withId shouldWait:(BOOL)shouldWait{//TODO: test
+- (BOOL)markInboxItemRead:(NSNumber*)withId shouldWait:(BOOL)shouldWait{
     BOOL __block result = YES;
     
-    id block = ^{
+    void (^block)(void) = ^{
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
         
@@ -676,7 +676,7 @@ int const STORED_IN_APP_LIMIT = 50;
             return;
         }
         
-        if (messageEntities.count == 1){
+        if (messageEntities.count == 0){
             result = NO;
             return;
         }
@@ -691,20 +691,19 @@ int const STORED_IN_APP_LIMIT = 50;
             NSLog(@"Failed to mark as read message with id: %@ %@)", withId, err);
         }
     };
-    
+
     shouldWait ? [self.messagesContext performBlockAndWait:block] : [self.messagesContext performBlock:block];
     if (!result){
         return result;
     }
     
     [self.kumulos trackEvent:KumulosEventMessageRead withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": withId}];
-    
     [self removeNotificationTickle: withId];
     
     return result;
 }
 
-- (BOOL) markAllInboxItemsAsRead {//TODO: test
+- (BOOL) markAllInboxItemsAsRead {
     BOOL result = YES;
     NSArray<KSInAppInboxItem*>* items = [KumulosInApp getInboxItems];
     
