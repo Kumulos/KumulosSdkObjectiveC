@@ -17,6 +17,7 @@
     item->_availableFrom = entity.inboxFrom;
     item->_availableTo = entity.inboxTo;
     item->_dismissedAt = entity.dismissedAt;
+    item->_readAt = entity.readAt;
 
     return item;
 }
@@ -30,6 +31,12 @@
 
     return YES;
 }
+
+- (BOOL) isRead {
+    return self.readAt != nil;
+}
+
+
 
 @end
 
@@ -57,12 +64,15 @@
         NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
-        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt"]];
+        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt", @"readAt"]];
         NSPredicate* onlyInboxItems = [NSPredicate
                                        predicateWithFormat:@"(inboxConfig != %@)",
                                        nil];
-        NSSortDescriptor* sortBy = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt" ascending:NO];
-        [fetchRequest setSortDescriptors:@[sortBy]];
+
+        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
+        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
+        NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
+        [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
         [fetchRequest setPredicate:onlyInboxItems];
 
         NSError* err = nil;
@@ -99,6 +109,17 @@
 
 + (BOOL)deleteMessageFromInbox:(KSInAppInboxItem *)item {
     return [Kumulos.shared.inAppHelper deleteMessageFromInbox:item.id];
+}
+
++ (BOOL)markAsRead:(KSInAppInboxItem *)item {
+    if ([item isRead]){
+        return NO;
+    }
+    return [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
+}
+
++ (BOOL)markAllInboxItemsAsRead {
+    return [Kumulos.shared.inAppHelper markAllInboxItemsAsRead];
 }
 
 @end

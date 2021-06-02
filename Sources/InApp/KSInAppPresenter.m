@@ -270,7 +270,7 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         }
     } else if ([type isEqualToString:@"MESSAGE_OPENED"]) {
         [self.loadingSpinner stopAnimating];
-        [self.kumulos.inAppHelper trackMessageOpened:self.currentMessage];
+        [self.kumulos.inAppHelper handleMessageOpened:self.currentMessage];
     } else if ([type isEqualToString:@"MESSAGE_CLOSED"]) {
         [self handleMessageClosed];
     } else if ([type isEqualToString:@"EXECUTE_ACTIONS"]) {

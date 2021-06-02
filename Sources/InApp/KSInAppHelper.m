@@ -13,6 +13,7 @@
 #import "KSInAppPresenter.h"
 #import "../Shared/KumulosUserDefaultsKeys.h"
 #import "../Shared/KumulosHelper.h"
+#import "../KumulosInApp.h"
 
 NSString* _Nonnull const KSInAppPresentedImmediately = @"immediately";
 NSString* _Nonnull const KSInAppPresentedNextOpen = @"next-open";
@@ -34,6 +35,8 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 @end
 
 @implementation KSInAppHelper
+
+int const STORED_IN_APP_LIMIT = 50;
 
 #pragma mark - Initialization
 
@@ -301,6 +304,15 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
                 model.dismissedAt = [message[@"openedAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"openedAt"]];
             }
             model.presentedWhen = message[@"presentedWhen"];
+            
+            if (model.readAt == nil){
+                model.readAt = [message[@"readAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"readAt"]];
+            }
+            
+            if (model.sentAt == nil){
+                model.sentAt = [message[@"sentAt"] isEqual:NSNull.null] ? nil : [dateParser dateFromString:message[@"sentAt"]];
+            }
+            
             model.content = message[@"content"];
             model.data = [message[@"data"] isEqual:NSNull.null] ? nil : message[@"data"];
             model.badgeConfig = [message[@"badge"] isEqual:NSNull.null] ? nil : message[@"badge"];
@@ -320,8 +332,6 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
                 if (model.dismissedAt == nil){
                     model.dismissedAt = [dateParser dateFromString:inboxDeletedAt];
                 }
-                
-                [self removeNotificationTickle: model.id];
             }
             
             model.expiresAt =  ![message[@"expiresAt"] isEqual:NSNull.null] ? [dateParser dateFromString:message[@"expiresAt"]] : nil;
@@ -332,15 +342,31 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         }
 
         // Evict
-        [self evictMessages:context];
+        NSMutableArray* idsEvicted = [self evictMessages:context];
 
         NSError* err = nil;
         [context save:&err];
 
         if (err != nil) {
-            NSLog(@"Failed to persist messages");
-            NSLog(@"%@", err);
+            NSLog(@"Failed to persist messages: %@", err);
             return;
+        }
+        
+        //exceeders evicted after saving because fetchOffset is ignored when have unsaved changes
+        //https://stackoverflow.com/questions/10725252/possible-issue-with-fetchlimit-and-fetchoffset-in-a-core-data-query
+        NSMutableArray* exceederIdsEvicted = [self evictMessagesExceedingLimit:context];
+        if (exceederIdsEvicted.count > 0){//TODO: test
+            [idsEvicted addObjectsFromArray:exceederIdsEvicted];
+            
+            [context save:&err];
+            if (err != nil){
+                NSLog(@"Failed to evict exceeding messages: %@", err);
+                return;
+            }
+        }
+        
+        for (NSNumber* idEvicted in idsEvicted) {
+            [self removeNotificationTickle:idEvicted];
         }
 
         [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KSPrefsKeyMessagesLastSyncTime];
@@ -362,7 +388,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     }
 }
 
-- (void) evictMessages:(NSManagedObjectContext* _Nonnull)context {
+- (NSMutableArray*) evictMessages:(NSManagedObjectContext* _Nonnull)context {//TODO: test
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     [fetchRequest setIncludesPendingChanges:YES];
     
@@ -380,12 +406,40 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
     if (err != nil) {
         NSLog(@"Failed to evict messages %@", err);
-        return;
+        return [NSMutableArray array];
     }
 
+    NSMutableArray *idsEvicted = [NSMutableArray array];
     for (KSInAppMessageEntity* message in toEvict) {
+        [idsEvicted addObject: message.id];
         [context deleteObject:message];
     }
+    
+    return idsEvicted;
+}
+
+- (NSMutableArray*) evictMessagesExceedingLimit:(NSManagedObjectContext* _Nonnull)context {//TODO: test
+    NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
+    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
+    NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
+    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
+    fetchRequest.fetchOffset = STORED_IN_APP_LIMIT;
+    
+    NSError* err = nil;
+    NSArray<KSInAppMessageEntity*>* toEvict = [context executeFetchRequest:fetchRequest error:&err];
+    if (err != nil){
+        NSLog(@"Failed to evict exceeding messages: %@)", err);
+        return [NSMutableArray array];
+    }
+    
+    NSMutableArray *idsEvicted = [NSMutableArray array];
+    for (KSInAppMessageEntity* messageToEvict in toEvict) {
+        [idsEvicted addObject: messageToEvict.id];
+        [context deleteObject:messageToEvict];
+    }
+    
+    return idsEvicted;
 }
 
 -(NSArray<KSInAppMessage*>*) getMessagesToPresent:(NSArray<NSString*>*)presentedWhenOptions {
@@ -407,9 +461,10 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
                                   [NSDate date]];
 
         [fetchRequest setPredicate:predicate];
-        NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"updatedAt"
-                                                                       ascending:YES];
-        [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
+        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
+        NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
+        [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
 
         NSError *err = nil;
         NSArray *entities = [context executeFetchRequest:fetchRequest error:&err];
@@ -428,14 +483,16 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     return messages;
 }
 
-- (void)trackMessageOpened:(KSInAppMessage *)message {
+- (void)handleMessageOpened:(KSInAppMessage *)message {
+    [self markInboxItemRead:message.id shouldWait:false];
+    
     [self.kumulos trackEvent:KumulosEventMessageOpened withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
 }
 
 - (void)markMessageDismissed:(KSInAppMessage *)message {
     [self.kumulos trackEvent:KumulosEventMessageDismissed withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
 
-    if ([self.pendingTickleIds containsObject:message.id]) {
+    if ([self.pendingTickleIds containsObject:message.id]) {//TODO: [self removeNotificationTickle: withId]; ?
         [self.pendingTickleIds removeObject:message.id];
     }
 
@@ -454,6 +511,9 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 
         if (err == nil && messageEntities != nil && messageEntities.count == 1) {
             messageEntities[0].dismissedAt = [NSDate date];
+            if (messageEntities[0].readAt == nil){
+                messageEntities[0].readAt = [NSDate date];
+            }
 
             [context save:&err];
 
@@ -580,6 +640,9 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         messageEntities[0].inboxFrom = nil;
         messageEntities[0].inboxConfig = nil;
         messageEntities[0].dismissedAt = [NSDate date];
+        if (messageEntities[0].readAt == nil) {
+            messageEntities[0].readAt = [NSDate date];
+        }
                      
         [context save:&err];
         if (err != nil) {
@@ -588,6 +651,73 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
         }
     }];
 
+    return result;
+}
+
+- (BOOL)markInboxItemRead:(NSNumber*)withId shouldWait:(BOOL)shouldWait{//TODO: test
+    BOOL __block result = YES;
+    
+    id block = ^{
+        NSManagedObjectContext* context = self.messagesContext;
+        NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
+        
+        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setIncludesPendingChanges:NO];
+        [fetchRequest setIncludesPropertyValues:NO];
+        NSPredicate* predicate = [NSPredicate predicateWithFormat:@"id = %@ AND readAt = nil", withId];
+        [fetchRequest setPredicate:predicate];
+        
+        NSError* err = nil;
+        NSArray<KSInAppMessageEntity*>* messageEntities = [context executeFetchRequest:fetchRequest error:&err];
+        if (err != nil){
+            result = NO;
+            NSLog(@"Failed to mark as read message with id: %@ %@)", withId, err);
+            return;
+        }
+        
+        if (messageEntities.count == 1){
+            result = NO;
+            return;
+        }
+        
+        if (messageEntities.count == 1){
+            messageEntities[0].readAt = [NSDate date];
+        }
+        
+        [context save:&err];
+        if (err != nil){
+            result = NO;
+            NSLog(@"Failed to mark as read message with id: %@ %@)", withId, err);
+        }
+    };
+    
+    shouldWait ? [self.messagesContext performBlockAndWait:block] : [self.messagesContext performBlock:block];
+    if (!result){
+        return result;
+    }
+    
+    [self.kumulos trackEvent:KumulosEventMessageRead withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": withId}];
+    
+    [self removeNotificationTickle: withId];
+    
+    return result;
+}
+
+- (BOOL) markAllInboxItemsAsRead {//TODO: test
+    BOOL result = YES;
+    NSArray<KSInAppInboxItem*>* items = [KumulosInApp getInboxItems];
+    
+    for (KSInAppInboxItem *item in items) {
+        if ([item isRead]){
+            continue;
+        }
+        
+        if (![self markInboxItemRead:item.id shouldWait:true]){
+            result = NO;
+        }
+    }
+    
     return result;
 }
 
@@ -618,7 +748,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     messageEntity.name = @"Message";
     messageEntity.managedObjectClassName = NSStringFromClass(KSInAppMessageEntity.class);
 
-    NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:11];
+    NSMutableArray<NSAttributeDescription*>* messageProps = [NSMutableArray arrayWithCapacity:13];
 
     NSAttributeDescription* partId = [NSAttributeDescription new];
     partId.name = @"id";
@@ -689,7 +819,19 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
     expiresAt.attributeType = NSDateAttributeType;
     expiresAt.optional = YES;
     [messageProps addObject:expiresAt];
-
+    
+    NSAttributeDescription* readAt = [NSAttributeDescription new];
+    readAt.name = @"readAt";
+    readAt.attributeType = NSDateAttributeType;
+    readAt.optional = YES;
+    [messageProps addObject:readAt];
+    
+    NSAttributeDescription* sentAt = [NSAttributeDescription new];
+    sentAt.name = @"sentAt";
+    sentAt.attributeType = NSDateAttributeType;
+    sentAt.optional = YES;
+    [messageProps addObject:sentAt];
+    
     [messageEntity setProperties:messageProps];
     [model setEntities:@[messageEntity]];
 
