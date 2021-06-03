@@ -11,14 +11,14 @@
 + (instancetype) fromInboxItemEntity:(KSInAppMessageEntity*)entity {
     KSInAppInboxItem* item = [KSInAppInboxItem new];
 
-    item->_id = entity.id;
-    item->_title = entity.inboxConfig[@"title"];
-    item->_subtitle = entity.inboxConfig[@"subtitle"];
-    item->_availableFrom = entity.inboxFrom;
-    item->_availableTo = entity.inboxTo;
-    item->_dismissedAt = entity.dismissedAt;
-    item->_readAt = entity.readAt;
-
+    item->_id = [entity.id copy];
+    item->_title = [entity.inboxConfig[@"title"] copy];
+    item->_subtitle = [entity.inboxConfig[@"subtitle"] copy];
+    item->_availableFrom = [entity.inboxFrom copy];
+    item->_availableTo = [entity.inboxTo copy];
+    item->_dismissedAt = [entity.dismissedAt copy];
+    item->_readAt = [entity.readAt copy];
+    
     return item;
 }
 
