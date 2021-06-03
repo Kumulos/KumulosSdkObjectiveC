@@ -388,7 +388,7 @@ int const STORED_IN_APP_LIMIT = 50;
     }
 }
 
-- (NSMutableArray*) evictMessages:(NSManagedObjectContext* _Nonnull)context {
+- (NSMutableArray<NSNumber*>*) evictMessages:(NSManagedObjectContext* _Nonnull)context {
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     [fetchRequest setIncludesPendingChanges:YES];
     
@@ -467,7 +467,7 @@ int const STORED_IN_APP_LIMIT = 50;
         [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
 
         NSError* err = nil;
-        NSArray* entities = [context executeFetchRequest:fetchRequest error:&err];
+        NSArray<KSInAppMessageEntity*>* entities = [context executeFetchRequest:fetchRequest error:&err];
         if (err != nil) {
             NSLog(@"Failed to fetch: %@", err);
             return;
