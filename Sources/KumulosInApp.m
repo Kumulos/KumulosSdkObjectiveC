@@ -6,7 +6,16 @@
 #import "KumulosInApp.h"
 #import "Kumulos+Protected.h"
 
+@interface KSInAppInboxItem()
+
+@property (nonatomic,readonly) NSString* _Nonnull imagePath;
+@property (nonatomic,readonly) NSDate* _Nullable readAt;
+
+@end
+
 @implementation KSInAppInboxItem
+
+int const DEFAULT_IMAGE_WIDTH = 200;
 
 + (instancetype) fromInboxItemEntity:(KSInAppMessageEntity*)entity {
     KSInAppInboxItem* item = [KSInAppInboxItem new];
@@ -14,6 +23,7 @@
     item->_id = entity.id;
     item->_title = entity.inboxConfig[@"title"];
     item->_subtitle = entity.inboxConfig[@"subtitle"];
+    item->_imagePath = ![entity.inboxConfig[@"imagePath"] isEqual:NSNull.null] ? entity.inboxConfig[@"imagePath"] : nil;
     item->_availableFrom = entity.inboxFrom;
     item->_availableTo = entity.inboxTo;
     item->_dismissedAt = entity.dismissedAt;
@@ -41,6 +51,18 @@
 
 - (BOOL) isRead {
     return self.readAt != nil;
+}
+
+- (NSURL* _Nullable) getImageUrl {
+    return [self getImageUrl:DEFAULT_IMAGE_WIDTH];
+}
+
+- (NSURL* _Nullable) getImageUrl:(int)width {
+    if (width <= 0 || self.imagePath == nil){
+        return nil;
+    }
+    
+    return [KSMediaHelper getCompletePictureUrl:self.imagePath width:(NSUInteger) (floor(width))];
 }
 
 @end

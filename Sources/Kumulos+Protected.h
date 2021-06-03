@@ -16,6 +16,7 @@
 #import "Shared/KumulosUserDefaultsKeys.h"
 #import "Shared/KSPendingNotification.h"
 #import "Shared/KSPendingNotificationHelper.h"
+#import "Shared/KSMediaHelper.h"
 #import "KSSessionHelper.h"
 #import "InApp/KSInAppHelper.h"
 #import "DeepLinkHelper.h"

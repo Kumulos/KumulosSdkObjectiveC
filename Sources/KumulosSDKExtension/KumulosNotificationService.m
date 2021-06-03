@@ -13,10 +13,10 @@
 #import "../Shared/KumulosSharedEvents.h"
 #import "../Shared/KSAppGroupsHelper.h"
 #import "../Shared/KSPendingNotificationHelper.h"
+#import "../Shared/KSMediaHelper.h"
 
 @implementation KumulosNotificationService
 
-NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
 static KSAnalyticsHelper* _Nullable analyticsHelper;
 
 + (void) didReceiveNotificationRequest:(UNNotificationRequest *)request withContentHandler:(void (^)(UNNotificationContent * _Nonnull))contentHandler {
@@ -107,7 +107,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }
     
     NSString* extension = [self getPictureExtension: pictureUrl];
-    NSURL* url = [self getCompletePictureUrl: pictureUrl];
+    NSURL* url = [KSMediaHelper getCompletePictureUrl:pictureUrl width:(NSUInteger) (floor(UIScreen.mainScreen.bounds.size.width))];
     
     dispatch_group_enter(dispatchGroup);
    
@@ -180,19 +180,6 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }
  
     return [ @"." stringByAppendingString:pictureExtension];
-}
-
-+ (NSURL *) getCompletePictureUrl:(NSString *)pictureUrl {
-    if ([[pictureUrl substringWithRange:NSMakeRange(0, 8)] isEqualToString:@"https://"]
-        || [[pictureUrl substringWithRange:NSMakeRange(0, 7)] isEqualToString:@"http://"]){
-        return [NSURL URLWithString:pictureUrl];
-    }
-
-    CGFloat width = UIScreen.mainScreen.bounds.size.width;
-    NSInteger num = (NSInteger) (floor(width));
-
-    NSString* completeString = [NSString stringWithFormat:@"%@%@%ld%@%@", KSMediaResizerBaseUrl, @"/", (long) num, @"x/", pictureUrl];
-    return [NSURL URLWithString:completeString];
 }
 
 + (void)loadAttachment:(NSURL *)url withExtension:(NSString * _Nullable)pictureExtension completionHandler:(void(^)(UNNotificationAttachment *))completionHandler API_AVAILABLE(ios(10.0)){
