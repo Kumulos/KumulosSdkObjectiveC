@@ -782,7 +782,7 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
         NSManagedObjectContext* context = self.messagesContext;
 
         NSFetchRequest* request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
-        [request setIncludesPendingChanges:YES];
+        [request setIncludesPendingChanges:NO];
         [request setPredicate:[NSPredicate predicateWithFormat:@"(inboxConfig != nil)"]];
         [request setPropertiesToFetch:@[@"inboxFrom", @"inboxTo", @"readAt"]];
 
