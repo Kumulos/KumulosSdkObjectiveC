@@ -63,4 +63,5 @@ typedef void (^ _Nullable InboxSummaryBlock)(InAppInboxSummary* _Nullable inboxS
 + (void) setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock;
 
 + (void) getInboxSummaryAsync:(InboxSummaryBlock)inboxSummaryBlock;
+
 @end
