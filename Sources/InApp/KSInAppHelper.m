@@ -37,6 +37,7 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 @implementation KSInAppHelper
 
 int const STORED_IN_APP_LIMIT = 50;
+InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
 
 #pragma mark - Initialization
 
@@ -286,6 +287,7 @@ int const STORED_IN_APP_LIMIT = 50;
         [dateParser setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0]];
         [dateParser setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
         
+        BOOL fetchedWithInbox = NO;
         for (NSDictionary* message in messages) {
             NSNumber* partId = message[@"id"];
 
@@ -319,6 +321,10 @@ int const STORED_IN_APP_LIMIT = 50;
             model.inboxConfig = [message[@"inbox"] isEqual:NSNull.null] ? nil : message[@"inbox"];
 
             if (model.inboxConfig != nil) {
+                //crude way to refresh when new inbox, updated readAt, updated inbox title/subtite
+                //may cause redundant refreshes (if message with inbox updated, but not inbox itself).
+                fetchedWithInbox = YES;
+                
                 NSDictionary* inbox = model.inboxConfig;
                 model.inboxFrom = ![inbox[@"from"] isEqual:NSNull.null] ? [dateParser dateFromString:inbox[@"from"]] : nil;
                 model.inboxTo = ![inbox[@"to"] isEqual:NSNull.null] ? [dateParser dateFromString:inbox[@"to"]] : nil;
@@ -342,7 +348,8 @@ int const STORED_IN_APP_LIMIT = 50;
         }
 
         // Evict
-        NSMutableArray* idsEvicted = [self evictMessages:context];
+        NSMutableArray* idsEvicted = [NSMutableArray array];
+        BOOL evictedWithInbox = [self evictMessages:context idsEvicted:idsEvicted];
 
         NSError* err = nil;
         [context save:&err];
@@ -354,7 +361,8 @@ int const STORED_IN_APP_LIMIT = 50;
         
         //exceeders evicted after saving because fetchOffset is ignored when have unsaved changes
         //https://stackoverflow.com/questions/10725252/possible-issue-with-fetchlimit-and-fetchoffset-in-a-core-data-query
-        NSMutableArray* exceederIdsEvicted = [self evictMessagesExceedingLimit:context];
+        NSMutableArray* exceederIdsEvicted = [NSMutableArray array];
+        BOOL evictedExceedersWithInbox = [self evictMessagesExceedingLimit:context exceederIdsEvicted:exceederIdsEvicted];
         if (exceederIdsEvicted.count > 0){
             [idsEvicted addObjectsFromArray:exceederIdsEvicted];
             
@@ -372,6 +380,11 @@ int const STORED_IN_APP_LIMIT = 50;
         [NSUserDefaults.standardUserDefaults setObject:lastSyncTime forKey:KSPrefsKeyMessagesLastSyncTime];
 
         [self trackMessageDelivery:messages];
+        
+        BOOL inboxUpdated = fetchedWithInbox || evictedWithInbox || evictedExceedersWithInbox;
+        if (inboxUpdated){
+            [self maybeRunInboxUpdatedHandler:inboxUpdated];
+        }
     }];
 }
 
@@ -388,7 +401,7 @@ int const STORED_IN_APP_LIMIT = 50;
     }
 }
 
-- (NSMutableArray*) evictMessages:(NSManagedObjectContext* _Nonnull)context {
+- (BOOL) evictMessages:(NSManagedObjectContext* _Nonnull)context idsEvicted:(NSMutableArray*)idsEvicted{
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     [fetchRequest setIncludesPendingChanges:YES];
     
@@ -406,19 +419,22 @@ int const STORED_IN_APP_LIMIT = 50;
 
     if (err != nil) {
         NSLog(@"Failed to evict messages %@", err);
-        return [NSMutableArray array];
+        return NO;
     }
 
-    NSMutableArray *idsEvicted = [NSMutableArray array];
-    for (KSInAppMessageEntity* message in toEvict) {
-        [idsEvicted addObject: message.id];
-        [context deleteObject:message];
+    BOOL evictedInbox = NO;
+    for (KSInAppMessageEntity* messageToEvict in toEvict) {
+        [idsEvicted addObject:messageToEvict.id];
+        if (messageToEvict.inboxConfig != nil){
+            evictedInbox = YES;
+        }
+        [context deleteObject:messageToEvict];
     }
     
-    return idsEvicted;
+    return evictedInbox;
 }
 
-- (NSMutableArray*) evictMessagesExceedingLimit:(NSManagedObjectContext* _Nonnull)context {
+- (BOOL) evictMessagesExceedingLimit:(NSManagedObjectContext* _Nonnull)context exceederIdsEvicted:(NSMutableArray*)exceederIdsEvicted  {
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
     NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:NO];
     NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO];
@@ -430,16 +446,19 @@ int const STORED_IN_APP_LIMIT = 50;
     NSArray<KSInAppMessageEntity*>* toEvict = [context executeFetchRequest:fetchRequest error:&err];
     if (err != nil){
         NSLog(@"Failed to evict exceeding messages: %@)", err);
-        return [NSMutableArray array];
+        return NO;
     }
     
-    NSMutableArray *idsEvicted = [NSMutableArray array];
+    BOOL evictedInbox = NO;
     for (KSInAppMessageEntity* messageToEvict in toEvict) {
-        [idsEvicted addObject: messageToEvict.id];
+        [exceederIdsEvicted addObject: messageToEvict.id];
+        if (messageToEvict.inboxConfig != nil){
+            evictedInbox = YES;
+        }
         [context deleteObject:messageToEvict];
     }
     
-    return idsEvicted;
+    return evictedInbox;
 }
 
 -(NSArray<KSInAppMessage*>*) getMessagesToPresent:(NSArray<NSString*>*)presentedWhenOptions {
@@ -484,7 +503,14 @@ int const STORED_IN_APP_LIMIT = 50;
 }
 
 - (void)handleMessageOpened:(KSInAppMessage *)message {
-    [self markInboxItemRead:message.id shouldWait:false];
+    BOOL markedRead = NO;
+    if (message.readAt == nil){
+        markedRead =  [self markInboxItemRead:message.id shouldWait:false];
+    }
+
+    if (message.inboxConfig != nil){
+        [self maybeRunInboxUpdatedHandler:markedRead];
+    }
     
     [self.kumulos trackEvent:KumulosEventMessageOpened withProperties:@{@"type": @(KS_MESSAGE_TYPE_IN_APP), @"id": message.id}];
 }
@@ -650,6 +676,8 @@ int const STORED_IN_APP_LIMIT = 50;
             NSLog(@"Failed to delete message with id: %@ %@", withId, err);
         }
     }];
+    
+    [self maybeRunInboxUpdatedHandler:result];
 
     return result;
 }
@@ -707,17 +735,85 @@ int const STORED_IN_APP_LIMIT = 50;
     BOOL result = YES;
     NSArray<KSInAppInboxItem*>* items = [KumulosInApp getInboxItems];
     
+    BOOL inboxNeedsUpdate = NO;
     for (KSInAppInboxItem *item in items) {
         if ([item isRead]){
             continue;
         }
         
-        if (![self markInboxItemRead:item.id shouldWait:true]){
+        BOOL success = [self markInboxItemRead:item.id shouldWait:true];
+        if (success && !inboxNeedsUpdate){
+            inboxNeedsUpdate = YES;
+        }
+        
+        if (!success){
             result = NO;
         }
     }
+
+    [self maybeRunInboxUpdatedHandler:inboxNeedsUpdate];
     
     return result;
+}
+
+- (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
+    _inboxUpdatedHandlerBlock = inboxUpdatedHandlerBlock;
+}
+
+- (void)maybeRunInboxUpdatedHandler:(BOOL)inboxNeedsUpdate {
+    if (!inboxNeedsUpdate){
+        return;
+    }
+    
+    if (_inboxUpdatedHandlerBlock != nil){
+        dispatch_async(dispatch_get_main_queue(), _inboxUpdatedHandlerBlock);
+    }
+}
+
+- (void)readInboxSummary:(InboxSummaryBlock)inboxSummaryBlock {
+    if (self.messagesContext == nil){
+        [self fireInboxSummaryCallback:inboxSummaryBlock summary:nil];
+        return;
+    }
+    
+    [self.messagesContext performBlock:^{
+        NSManagedObjectContext* context = self.messagesContext;
+        
+        NSFetchRequest* request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
+        [request setIncludesPendingChanges:YES];
+        [request setPredicate:[NSPredicate predicateWithFormat:@"(inboxConfig != nil)"]];
+        [request setPropertiesToFetch:@[@"inboxFrom", @"inboxTo", @"readAt"]];
+        
+        NSError* err = nil;
+        NSArray<KSInAppMessageEntity*>* items = [context executeFetchRequest:request error:&err];
+        if (err != nil) {
+            NSLog(@"Failed to fetch items (readInboxSummary): %@", err);
+            [self fireInboxSummaryCallback:inboxSummaryBlock summary:nil];
+            return;
+        }
+
+        int totalCount = 0;
+        int unreadCount = 0;
+        for (KSInAppMessageEntity* item in items) {
+            if (![item isAvailable]){
+                continue;
+            }
+            
+            totalCount += 1;
+            if (item.readAt == nil){
+                unreadCount += 1;
+            }
+        }
+        
+        [self fireInboxSummaryCallback:inboxSummaryBlock summary:[InAppInboxSummary init:totalCount unreadCount:unreadCount]];
+    }];
+    
+}
+
+- (void)fireInboxSummaryCallback:(InboxSummaryBlock)callback summary:(InAppInboxSummary*)summary{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        callback(summary);
+    });
 }
 
 #pragma mark - Data model

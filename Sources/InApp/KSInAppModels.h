@@ -22,6 +22,8 @@
 @property (nonatomic,strong) NSDate* readAt;
 @property (nonatomic,strong) NSDate* sentAt;
 
+- (BOOL) isAvailable;
+
 @end
 
 @interface KSInAppMessage : NSObject

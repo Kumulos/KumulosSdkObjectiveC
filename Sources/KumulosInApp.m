@@ -18,6 +18,13 @@
     item->_availableTo = entity.inboxTo;
     item->_dismissedAt = entity.dismissedAt;
     item->_readAt = entity.readAt;
+    item->_data= entity.data;
+    if (entity.sentAt != nil){
+        item->_sentAt = entity.sentAt;
+    }
+    else{
+        item->_sentAt = entity.updatedAt;
+    }
 
     return item;
 }
@@ -36,7 +43,17 @@
     return self.readAt != nil;
 }
 
+@end
 
+@implementation InAppInboxSummary
+
++ (instancetype) init:(int)totalCount unreadCount:(int)unreadCount {
+    InAppInboxSummary* item = [InAppInboxSummary new];
+    item->_totalCount = totalCount;
+    item->_unreadCount = unreadCount;
+    
+    return item;
+}
 
 @end
 
@@ -52,19 +69,17 @@
 }
 
 + (NSArray<KSInAppInboxItem*>*)getInboxItems {
-    if (!Kumulos.shared.inAppHelper.messagesContext) {
+    NSManagedObjectContext* context = Kumulos.shared.inAppHelper.messagesContext;
+    if (!context) {
         return @[];
     }
 
     NSMutableArray<KSInAppInboxItem*>* __block results = [NSMutableArray new];
 
-    [Kumulos.shared.inAppHelper.messagesContext performBlockAndWait:^{
-        NSManagedObjectContext* context = Kumulos.shared.inAppHelper.messagesContext;
-
+    [context performBlockAndWait:^{
         NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
         [fetchRequest setIncludesPendingChanges:NO];
-        [fetchRequest setReturnsObjectsAsFaults:NO];
-        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt", @"readAt"]];
+        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt", @"readAt", @"sentAt", @"data", @"updatedAt"]];
         NSPredicate* onlyInboxItems = [NSPredicate
                                        predicateWithFormat:@"(inboxConfig != %@)",
                                        nil];
@@ -115,12 +130,22 @@
     if ([item isRead]){
         return NO;
     }
-    return [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
+    
+    BOOL res = [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
+    [Kumulos.shared.inAppHelper maybeRunInboxUpdatedHandler:res];
+    return res;
 }
 
 + (BOOL)markAllInboxItemsAsRead {
     return [Kumulos.shared.inAppHelper markAllInboxItemsAsRead];
 }
 
-@end
++ (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
+    [Kumulos.shared.inAppHelper setOnInboxUpdated:inboxUpdatedHandlerBlock];
+}
 
++ (void)getInboxSummaryAsync:(InboxSummaryBlock)inboxSummaryBlock {
+    [Kumulos.shared.inAppHelper readInboxSummary:inboxSummaryBlock];
+}
+
+@end
