@@ -11,19 +11,19 @@
 + (instancetype) fromInboxItemEntity:(KSInAppMessageEntity*)entity {
     KSInAppInboxItem* item = [KSInAppInboxItem new];
 
-    item->_id = entity.id;
-    item->_title = entity.inboxConfig[@"title"];
-    item->_subtitle = entity.inboxConfig[@"subtitle"];
-    item->_availableFrom = entity.inboxFrom;
-    item->_availableTo = entity.inboxTo;
-    item->_dismissedAt = entity.dismissedAt;
-    item->_readAt = entity.readAt;
-    item->_data= entity.data;
+    item->_id = [entity.id copy];
+    item->_title = [entity.inboxConfig[@"title"] copy];
+    item->_subtitle = [entity.inboxConfig[@"subtitle"] copy];
+    item->_availableFrom = [entity.inboxFrom copy];
+    item->_availableTo = [entity.inboxTo copy];
+    item->_dismissedAt = [entity.dismissedAt copy];
+    item->_readAt = [entity.readAt copy];
+    item->_data= [entity.data copy];
     if (entity.sentAt != nil){
-        item->_sentAt = entity.sentAt;
+        item->_sentAt = [entity.sentAt copy];
     }
     else{
-        item->_sentAt = entity.updatedAt;
+        item->_sentAt = [entity.updatedAt copy];
     }
 
     return item;
@@ -51,7 +51,7 @@
     InAppInboxSummary* item = [InAppInboxSummary new];
     item->_totalCount = totalCount;
     item->_unreadCount = unreadCount;
-    
+
     return item;
 }
 
@@ -84,10 +84,11 @@
                                        predicateWithFormat:@"(inboxConfig != %@)",
                                        nil];
 
-        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
-        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
-        NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
-        [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
+        [fetchRequest setSortDescriptors: @[
+            [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES],
+            [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES],
+            [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES]
+        ]];
         [fetchRequest setPredicate:onlyInboxItems];
 
         NSError* err = nil;
@@ -112,7 +113,7 @@
     return results;
 }
 
-+ (KSInAppMessagePresentationResult)presentInboxMessage:(KSInAppInboxItem *)item {
++ (KSInAppMessagePresentationResult)presentInboxMessage:(KSInAppInboxItem*)item {
     if (![item isAvailable]) {
         return KSInAppMessagePresentationExpired;
     }
@@ -122,15 +123,15 @@
     return result ? KSInAppMessagePresentationPresented : KSInAppMessagePresentationFailed;
 }
 
-+ (BOOL)deleteMessageFromInbox:(KSInAppInboxItem *)item {
++ (BOOL)deleteMessageFromInbox:(KSInAppInboxItem*)item {
     return [Kumulos.shared.inAppHelper deleteMessageFromInbox:item.id];
 }
 
-+ (BOOL)markAsRead:(KSInAppInboxItem *)item {
++ (BOOL)markAsRead:(KSInAppInboxItem*)item {
     if ([item isRead]){
         return NO;
     }
-    
+
     BOOL res = [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
     [Kumulos.shared.inAppHelper maybeRunInboxUpdatedHandler:res];
     return res;
