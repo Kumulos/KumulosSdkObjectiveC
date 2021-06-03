@@ -19,6 +19,9 @@ typedef NS_ENUM(NSInteger, KSInAppMessagePresentationResult) {
 @property (nonatomic,readonly) NSDate* _Nullable availableFrom;
 @property (nonatomic,readonly) NSDate* _Nullable availableTo;
 @property (nonatomic,readonly) NSDate* _Nullable dismissedAt;
+@property (nonatomic,readonly) NSDate* _Nullable readAt;
+
+- (BOOL) isRead;
 
 @end
 
@@ -38,4 +41,9 @@ typedef NS_ENUM(NSInteger, KSInAppMessagePresentationResult) {
 + (KSInAppMessagePresentationResult) presentInboxMessage:(KSInAppInboxItem* _Nonnull)item;
 
 + (BOOL) deleteMessageFromInbox:(KSInAppInboxItem* _Nonnull)item;
+
++ (BOOL) markAsRead:(KSInAppInboxItem* _Nonnull)item;
+
++ (BOOL) markAllInboxItemsAsRead;
+
 @end

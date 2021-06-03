@@ -11,13 +11,14 @@
 + (instancetype) fromInboxItemEntity:(KSInAppMessageEntity*)entity {
     KSInAppInboxItem* item = [KSInAppInboxItem new];
 
-    item->_id = entity.id;
-    item->_title = entity.inboxConfig[@"title"];
-    item->_subtitle = entity.inboxConfig[@"subtitle"];
-    item->_availableFrom = entity.inboxFrom;
-    item->_availableTo = entity.inboxTo;
-    item->_dismissedAt = entity.dismissedAt;
-
+    item->_id = [entity.id copy];
+    item->_title = [entity.inboxConfig[@"title"] copy];
+    item->_subtitle = [entity.inboxConfig[@"subtitle"] copy];
+    item->_availableFrom = [entity.inboxFrom copy];
+    item->_availableTo = [entity.inboxTo copy];
+    item->_dismissedAt = [entity.dismissedAt copy];
+    item->_readAt = [entity.readAt copy];
+    
     return item;
 }
 
@@ -30,6 +31,12 @@
 
     return YES;
 }
+
+- (BOOL) isRead {
+    return self.readAt != nil;
+}
+
+
 
 @end
 
@@ -57,12 +64,15 @@
         NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
-        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt"]];
+        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt", @"readAt"]];
         NSPredicate* onlyInboxItems = [NSPredicate
                                        predicateWithFormat:@"(inboxConfig != %@)",
                                        nil];
-        NSSortDescriptor* sortBy = [NSSortDescriptor sortDescriptorWithKey:@"updatedAt" ascending:NO];
-        [fetchRequest setSortDescriptors:@[sortBy]];
+        [fetchRequest setSortDescriptors: @[
+            [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES],
+            [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES],
+            [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES]
+        ]];
         [fetchRequest setPredicate:onlyInboxItems];
 
         NSError* err = nil;
@@ -99,6 +109,17 @@
 
 + (BOOL)deleteMessageFromInbox:(KSInAppInboxItem *)item {
     return [Kumulos.shared.inAppHelper deleteMessageFromInbox:item.id];
+}
+
++ (BOOL)markAsRead:(KSInAppInboxItem *)item {
+    if ([item isRead]){
+        return NO;
+    }
+    return [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
+}
+
++ (BOOL)markAllInboxItemsAsRead {
+    return [Kumulos.shared.inAppHelper markAllInboxItemsAsRead];
 }
 
 @end

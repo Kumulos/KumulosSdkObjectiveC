@@ -19,3 +19,4 @@ NSString* const KumulosEventMessageOpened = @"k.message.opened";
 NSString* const KumulosEventMessageDismissed = @"k.message.dismissed";
 NSString* const KumulosEventMessageDeletedFromInbox = @"k.message.inbox.deleted";
 NSString* const KumulosEventDeepLinkMatched = @"k.deepLink.matched";
+NSString* const KumulosEventMessageRead = @"k.message.read";

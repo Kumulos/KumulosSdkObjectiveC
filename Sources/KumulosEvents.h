@@ -19,3 +19,4 @@ extern NSString* const KumulosEventMessageOpened;
 extern NSString* const KumulosEventMessageDismissed;
 extern NSString* const KumulosEventMessageDeletedFromInbox;
 extern NSString* const KumulosEventDeepLinkMatched;
+extern NSString* const KumulosEventMessageRead;
