@@ -409,7 +409,7 @@ int const STORED_IN_APP_LIMIT = 50;
         return [NSMutableArray array];
     }
 
-    NSMutableArray *idsEvicted = [NSMutableArray array];
+    NSMutableArray* idsEvicted = [NSMutableArray array];
     for (KSInAppMessageEntity* message in toEvict) {
         [idsEvicted addObject: message.id];
         [context deleteObject:message];
@@ -420,9 +420,9 @@ int const STORED_IN_APP_LIMIT = 50;
 
 - (NSMutableArray*) evictMessagesExceedingLimit:(NSManagedObjectContext* _Nonnull)context {
     NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
-    NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:NO];
-    NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO];
-    NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:NO];
+    NSSortDescriptor* sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:NO];
+    NSSortDescriptor* sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO];
+    NSSortDescriptor* sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:NO];
     [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
     fetchRequest.fetchOffset = STORED_IN_APP_LIMIT;
     
@@ -433,7 +433,7 @@ int const STORED_IN_APP_LIMIT = 50;
         return [NSMutableArray array];
     }
     
-    NSMutableArray *idsEvicted = [NSMutableArray array];
+    NSMutableArray* idsEvicted = [NSMutableArray array];
     for (KSInAppMessageEntity* messageToEvict in toEvict) {
         [idsEvicted addObject: messageToEvict.id];
         [context deleteObject:messageToEvict];
@@ -449,7 +449,7 @@ int const STORED_IN_APP_LIMIT = 50;
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
 
-        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        NSFetchRequest* fetchRequest = [NSFetchRequest new];
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setReturnsObjectsAsFaults:NO];
@@ -461,13 +461,13 @@ int const STORED_IN_APP_LIMIT = 50;
                                   [NSDate date]];
 
         [fetchRequest setPredicate:predicate];
-        NSSortDescriptor *sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
-        NSSortDescriptor *sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
-        NSSortDescriptor *sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
+        NSSortDescriptor* sortDescriptor1 = [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES];
+        NSSortDescriptor* sortDescriptor2 = [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES];
+        NSSortDescriptor* sortDescriptor3 = [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES];
         [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor1, sortDescriptor2, sortDescriptor3, nil]];
 
-        NSError *err = nil;
-        NSArray *entities = [context executeFetchRequest:fetchRequest error:&err];
+        NSError* err = nil;
+        NSArray* entities = [context executeFetchRequest:fetchRequest error:&err];
         if (err != nil) {
             NSLog(@"Failed to fetch: %@", err);
             return;
@@ -500,7 +500,7 @@ int const STORED_IN_APP_LIMIT = 50;
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
 
-        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        NSFetchRequest* fetchRequest = [NSFetchRequest new];
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         NSPredicate* predicate = [NSPredicate predicateWithFormat:@"id = %@", message.id];
@@ -622,7 +622,7 @@ int const STORED_IN_APP_LIMIT = 50;
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
         
-        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        NSFetchRequest* fetchRequest = [NSFetchRequest new];
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"id = %@", withId]];
@@ -661,7 +661,7 @@ int const STORED_IN_APP_LIMIT = 50;
         NSManagedObjectContext* context = self.messagesContext;
         NSEntityDescription* entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:context];
         
-        NSFetchRequest *fetchRequest = [NSFetchRequest new];
+        NSFetchRequest* fetchRequest = [NSFetchRequest new];
         [fetchRequest setEntity:entity];
         [fetchRequest setIncludesPendingChanges:NO];
         [fetchRequest setIncludesPropertyValues:NO];
@@ -707,7 +707,7 @@ int const STORED_IN_APP_LIMIT = 50;
     BOOL result = YES;
     NSArray<KSInAppInboxItem*>* items = [KumulosInApp getInboxItems];
     
-    for (KSInAppInboxItem *item in items) {
+    for (KSInAppInboxItem* item in items) {
         if ([item isRead]){
             continue;
         }
