@@ -89,7 +89,11 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
     }
     
     NSString* path = [NSString stringWithFormat:@"/v1/deeplinks/%@?wasDeferred=%@", slug, wasDeferred ? @"1" : @"0"];
-    
+    NSString* queryString = [url query];
+    if (queryString != nil){
+        path = [NSString stringWithFormat: @"%@&%@", path, queryString];
+    }
+        
     [self.httpClient sendRequest:KSHttpMethodGet toPath:path withData:nil onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         
         switch(response.statusCode){
