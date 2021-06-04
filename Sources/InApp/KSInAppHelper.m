@@ -383,7 +383,6 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
 
         BOOL inboxUpdated = fetchedWithInbox || evictedWithInbox || evictedExceedersWithInbox;
         [self maybeRunInboxUpdatedHandler:inboxUpdated];
-        
     }];
 }
 
