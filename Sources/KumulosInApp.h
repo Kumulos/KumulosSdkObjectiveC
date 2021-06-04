@@ -21,9 +21,10 @@ typedef NS_ENUM(NSInteger, KSInAppMessagePresentationResult) {
 @property (nonatomic,readonly) NSDate* _Nullable dismissedAt;
 @property (nonatomic,readonly) NSDate* _Nonnull sentAt;
 @property (nonatomic,readonly) NSDictionary* _Nullable data;
-@property (nonatomic,readonly) NSDate* _Nullable readAt;
 
 - (BOOL) isRead;
+- (NSURL* _Nullable) getImageUrl;
+- (NSURL* _Nullable) getImageUrl:(int)width;
 
 @end
 
