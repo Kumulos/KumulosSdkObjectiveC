@@ -8,6 +8,7 @@
 #import "../Kumulos.h"
 #import "KSInAppModels.h"
 #import "../Kumulos+Push.h"
+#import "../KumulosInApp.h"
 
 extern NSString* _Nonnull const KSInAppPresentedImmediately;
 extern NSString* _Nonnull const KSInAppPresentedNextOpen;
@@ -31,4 +32,7 @@ extern NSString* _Nonnull const KSInAppPresentedFromInbox;
 - (BOOL) deleteMessageFromInbox:(NSNumber* _Nonnull)messageId;
 - (BOOL) markInboxItemRead:(NSNumber* _Nonnull)withId shouldWait:(BOOL)shouldWait;
 - (BOOL) markAllInboxItemsAsRead;
+- (void) setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock;
+- (void) maybeRunInboxUpdatedHandler:(BOOL)inboxNeedsUpdate;
+- (void) readInboxSummary:(InboxSummaryBlock)inboxSummaryBlock;
 @end

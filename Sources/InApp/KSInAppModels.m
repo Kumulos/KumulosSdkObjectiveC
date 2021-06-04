@@ -21,6 +21,16 @@
 @dynamic readAt;
 @dynamic sentAt;
 
+- (BOOL) isAvailable {
+    if (self.inboxFrom && [self.inboxFrom timeIntervalSinceNow] > 0) {
+        return NO;
+    } else if (self.inboxTo && [self.inboxTo timeIntervalSinceNow] < 0) {
+        return NO;
+    }
+
+    return YES;
+}
+
 @end
 
 @implementation KSInAppMessage

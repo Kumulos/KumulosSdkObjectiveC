@@ -18,7 +18,14 @@
     item->_availableTo = [entity.inboxTo copy];
     item->_dismissedAt = [entity.dismissedAt copy];
     item->_readAt = [entity.readAt copy];
-    
+    item->_data= [entity.data copy];
+    if (entity.sentAt != nil){
+        item->_sentAt = [entity.sentAt copy];
+    }
+    else{
+        item->_sentAt = [entity.updatedAt copy];
+    }
+
     return item;
 }
 
@@ -36,7 +43,17 @@
     return self.readAt != nil;
 }
 
+@end
 
+@implementation InAppInboxSummary
+
++ (instancetype) init:(int)totalCount unreadCount:(int)unreadCount {
+    InAppInboxSummary* item = [InAppInboxSummary new];
+    item->_totalCount = totalCount;
+    item->_unreadCount = unreadCount;
+
+    return item;
+}
 
 @end
 
@@ -52,22 +69,21 @@
 }
 
 + (NSArray<KSInAppInboxItem*>*)getInboxItems {
-    if (!Kumulos.shared.inAppHelper.messagesContext) {
+    NSManagedObjectContext* context = Kumulos.shared.inAppHelper.messagesContext;
+    if (!context) {
         return @[];
     }
 
     NSMutableArray<KSInAppInboxItem*>* __block results = [NSMutableArray new];
 
-    [Kumulos.shared.inAppHelper.messagesContext performBlockAndWait:^{
-        NSManagedObjectContext* context = Kumulos.shared.inAppHelper.messagesContext;
-
+    [context performBlockAndWait:^{
         NSFetchRequest* fetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
         [fetchRequest setIncludesPendingChanges:NO];
-        [fetchRequest setReturnsObjectsAsFaults:NO];
-        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt", @"readAt"]];
+        [fetchRequest setPropertiesToFetch:@[@"id", @"inboxConfig", @"inboxFrom", @"inboxTo", @"dismissedAt", @"readAt", @"sentAt", @"data", @"updatedAt"]];
         NSPredicate* onlyInboxItems = [NSPredicate
                                        predicateWithFormat:@"(inboxConfig != %@)",
                                        nil];
+
         [fetchRequest setSortDescriptors: @[
             [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES],
             [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES],
@@ -97,7 +113,7 @@
     return results;
 }
 
-+ (KSInAppMessagePresentationResult)presentInboxMessage:(KSInAppInboxItem *)item {
++ (KSInAppMessagePresentationResult)presentInboxMessage:(KSInAppInboxItem*)item {
     if (![item isAvailable]) {
         return KSInAppMessagePresentationExpired;
     }
@@ -107,20 +123,30 @@
     return result ? KSInAppMessagePresentationPresented : KSInAppMessagePresentationFailed;
 }
 
-+ (BOOL)deleteMessageFromInbox:(KSInAppInboxItem *)item {
++ (BOOL)deleteMessageFromInbox:(KSInAppInboxItem*)item {
     return [Kumulos.shared.inAppHelper deleteMessageFromInbox:item.id];
 }
 
-+ (BOOL)markAsRead:(KSInAppInboxItem *)item {
++ (BOOL)markAsRead:(KSInAppInboxItem*)item {
     if ([item isRead]){
         return NO;
     }
-    return [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
+
+    BOOL res = [Kumulos.shared.inAppHelper markInboxItemRead:item.id shouldWait:true];
+    [Kumulos.shared.inAppHelper maybeRunInboxUpdatedHandler:res];
+    return res;
 }
 
 + (BOOL)markAllInboxItemsAsRead {
     return [Kumulos.shared.inAppHelper markAllInboxItemsAsRead];
 }
 
-@end
++ (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
+    [Kumulos.shared.inAppHelper setOnInboxUpdated:inboxUpdatedHandlerBlock];
+}
 
++ (void)getInboxSummaryAsync:(InboxSummaryBlock)inboxSummaryBlock {
+    [Kumulos.shared.inAppHelper readInboxSummary:inboxSummaryBlock];
+}
+
+@end
