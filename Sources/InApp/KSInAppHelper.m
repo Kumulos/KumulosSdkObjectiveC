@@ -382,9 +382,8 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
         [self trackMessageDelivery:messages];
 
         BOOL inboxUpdated = fetchedWithInbox || evictedWithInbox || evictedExceedersWithInbox;
-        if (inboxUpdated){
-            [self maybeRunInboxUpdatedHandler:inboxUpdated];
-        }
+        [self maybeRunInboxUpdatedHandler:inboxUpdated];
+        
     }];
 }
 
