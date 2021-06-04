@@ -18,7 +18,6 @@ typedef NS_ENUM(NSInteger, KSInAppMessagePresentationResult) {
 @property (nonatomic,readonly) NSString* _Nonnull subtitle;
 @property (nonatomic,readonly) NSDate* _Nullable availableFrom;
 @property (nonatomic,readonly) NSDate* _Nullable availableTo;
-@property (nonatomic,readonly) NSString* _Nullable image;
 @property (nonatomic,readonly) NSDate* _Nullable dismissedAt;
 @property (nonatomic,readonly) NSDate* _Nonnull sentAt;
 @property (nonatomic,readonly) NSDictionary* _Nullable data;
