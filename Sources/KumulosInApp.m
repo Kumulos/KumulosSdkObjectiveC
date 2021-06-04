@@ -15,7 +15,7 @@
 
 @implementation KSInAppInboxItem
 
-int const DEFAULT_IMAGE_WIDTH = 200;
+int const DEFAULT_IMAGE_WIDTH = 300;
 
 + (instancetype) fromInboxItemEntity:(KSInAppMessageEntity*)entity {
     KSInAppInboxItem* item = [KSInAppInboxItem new];

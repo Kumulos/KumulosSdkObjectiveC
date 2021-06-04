@@ -18,7 +18,7 @@ NSString* const _Nonnull KSMediaResizerBaseUrl = @"https://i.app.delivery";
         return [NSURL URLWithString:pictureUrl];
     }
     
-    NSString* completeString = [NSString stringWithFormat:@"%@%@%ld%@%@", KSMediaResizerBaseUrl, @"/", (unsigned long) width, @"x/", pictureUrl];
+    NSString* completeString = [NSString stringWithFormat:@"%@%@%lu%@%@", KSMediaResizerBaseUrl, @"/", (unsigned long) width, @"x/", pictureUrl];
     return [NSURL URLWithString:completeString];
 }
 
