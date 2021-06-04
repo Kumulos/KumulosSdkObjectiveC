@@ -382,9 +382,7 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
         [self trackMessageDelivery:messages];
 
         BOOL inboxUpdated = fetchedWithInbox || evictedWithInbox || evictedExceedersWithInbox;
-        if (inboxUpdated){
-            [self maybeRunInboxUpdatedHandler:inboxUpdated];
-        }
+        [self maybeRunInboxUpdatedHandler:inboxUpdated];
     }];
 }
 
@@ -782,7 +780,7 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
         NSManagedObjectContext* context = self.messagesContext;
 
         NSFetchRequest* request = [NSFetchRequest fetchRequestWithEntityName:@"Message"];
-        [request setIncludesPendingChanges:YES];
+        [request setIncludesPendingChanges:NO];
         [request setPredicate:[NSPredicate predicateWithFormat:@"(inboxConfig != nil)"]];
         [request setPropertiesToFetch:@[@"inboxFrom", @"inboxTo", @"readAt"]];
 
