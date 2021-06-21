@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1210"
+   LastUpgradeVersion = "1240"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "12BBE9A520E3D2B800DC9916"
-               BuildableName = "KumulosSDKiOSCombined"
-               BlueprintName = "KumulosSDKiOSCombined"
+               BlueprintIdentifier = "6F9C9E5223D5C3A400BBEFD5"
+               BuildableName = "KumulosSDKExtensionCombined"
+               BlueprintName = "KumulosSDKExtensionCombined"
                ReferencedContainer = "container:KumulosSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "12BBE9A520E3D2B800DC9916"
-            BuildableName = "KumulosSDKiOSCombined"
-            BlueprintName = "KumulosSDKiOSCombined"
+            BlueprintIdentifier = "6F9C9E5223D5C3A400BBEFD5"
+            BuildableName = "KumulosSDKExtensionCombined"
+            BlueprintName = "KumulosSDKExtensionCombined"
             ReferencedContainer = "container:KumulosSDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

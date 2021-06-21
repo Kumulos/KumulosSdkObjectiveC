@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 12BBE9A620E3D2B800DC9916 /* Build configuration list for PBXAggregateTarget "KumulosSDKiOSCombined" */;
 			buildPhases = (
-				12BBE9A920E3D3D900DC9916 /* ShellScript */,
+				12BBE9A920E3D3D900DC9916 /* Run Script */,
 			);
 			dependencies = (
 			);
@@ -839,18 +839,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		12BBE9A920E3D3D900DC9916 /* ShellScript */ = {
+		12BBE9A920E3D3D900DC9916 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphonesimulator\" -derivedDataPath \"$BUILD_SIM\" BITCODE_GENERATION_MODE=bitcode clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKiOS.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKiOS.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKiOS.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKiOS/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\n# iOS DEVICES\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDK iOS\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_IPHONE}/ios.xcarchive\" \\\n    -derivedDataPath \"$BUILD_IPHONE\" \\\n    -sdk \"iphoneos\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n    \n# iOS SIMULATOR\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDK iOS\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_SIM}/ios_sim.xcarchive\" \\\n    -derivedDataPath \"$BUILD_SIM\" \\\n    -sdk \"iphonesimulator\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n\n# -------------------\n# PACKAGE XCFRAMEWORK\n# -------------------\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KumulosSDK.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KumulosSDK.framework\" \\\n    -output \"${COMBINED_DIR}/SDK_Combined.xcframework\"\n\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KSCrash.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KSCrash.framework\" \\\n    -output \"${COMBINED_DIR}/KSCrash_Combined.xcframework\"\n\nopen \"$COMBINED_DIR\"\n";
 		};
 		6F9C9E5623D5C3B400BBEFD5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -867,7 +868,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphonesimulator\" -derivedDataPath \"$BUILD_SIM\" BITCODE_GENERATION_MODE=bitcode clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKExtensionStatic.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKExtensionStatic.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKExtensionStatic.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKExtensionStatic/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\n# iOS DEVICES\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDKExtension\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_IPHONE}/ios.xcarchive\" \\\n    -derivedDataPath \"$BUILD_IPHONE\" \\\n    -sdk \"iphoneos\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n    \n# iOS SIMULATOR\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDKExtension\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_SIM}/ios_sim.xcarchive\" \\\n    -derivedDataPath \"$BUILD_SIM\" \\\n    -sdk \"iphonesimulator\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n\n# -------------------\n# PACKAGE XCFRAMEWORK\n# -------------------\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KumulosSDKExtension.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KumulosSDKExtension.framework\" \\\n    -output \"${COMBINED_DIR}/SDKExtension_Combined.xcframework\"\n\nopen \"$COMBINED_DIR\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1089,6 +1090,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1151,6 +1153,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1207,6 +1210,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1269,6 +1273,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
@@ -1509,6 +1514,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1560,6 +1566,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
