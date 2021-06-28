@@ -29,6 +29,28 @@
 			name = KumulosSDKExtensionCombined;
 			productName = KumulosSDKExtensionCombined;
 		};
+		B62817E9268A04C200D7B876 /* SDKxcframework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B62817EA268A04C200D7B876 /* Build configuration list for PBXAggregateTarget "SDKxcframework" */;
+			buildPhases = (
+				B62817F5268A04C700D7B876 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = SDKxcframework;
+			productName = SDKxcframework;
+		};
+		B62817F6268A055E00D7B876 /* SDKExtensionXcframework */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B62817F7268A055E00D7B876 /* Build configuration list for PBXAggregateTarget "SDKExtensionXcframework" */;
+			buildPhases = (
+				B6281803268A056700D7B876 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = SDKExtensionXcframework;
+			productName = SDKExtensionXcframework;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -789,6 +811,16 @@
 						CreatedOnToolsVersion = 11.3;
 						ProvisioningStyle = Automatic;
 					};
+					B62817E9268A04C200D7B876 = {
+						CreatedOnToolsVersion = 12.4;
+						DevelopmentTeam = AY85FBK9Q6;
+						ProvisioningStyle = Automatic;
+					};
+					B62817F6268A055E00D7B876 = {
+						CreatedOnToolsVersion = 12.4;
+						DevelopmentTeam = AY85FBK9Q6;
+						ProvisioningStyle = Automatic;
+					};
 					B6A4591D23992E6E00FDECFC = {
 						CreatedOnToolsVersion = 11.2.1;
 						DevelopmentTeam = AY85FBK9Q6;
@@ -816,6 +848,8 @@
 				B6A4591D23992E6E00FDECFC /* KumulosSDKExtension */,
 				6F9C9E4523D5C2DB00BBEFD5 /* KumulosSDKExtensionStatic */,
 				6F9C9E5223D5C3A400BBEFD5 /* KumulosSDKExtensionCombined */,
+				B62817E9268A04C200D7B876 /* SDKxcframework */,
+				B62817F6268A055E00D7B876 /* SDKExtensionXcframework */,
 			);
 		};
 /* End PBXProject section */
@@ -874,6 +908,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphonesimulator\" -derivedDataPath \"$BUILD_SIM\" BITCODE_GENERATION_MODE=bitcode EXCLUDED_ARCHS=\"arm64\" clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKExtensionStatic.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKExtensionStatic.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKExtensionStatic.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKExtensionStatic/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+		};
+		B62817F5268A04C700D7B876 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "BUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\n# iOS DEVICES\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDK iOS\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_IPHONE}/ios.xcarchive\" \\\n    -derivedDataPath \"$BUILD_IPHONE\" \\\n    -sdk \"iphoneos\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n# iOS SIMULATOR\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDK iOS\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_SIM}/ios_sim.xcarchive\" \\\n    -derivedDataPath \"$BUILD_SIM\" \\\n    -sdk \"iphonesimulator\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n\n# -------------------\n# PACKAGE XCFRAMEWORK\n# -------------------\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KumulosSDK.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KumulosSDK.framework\" \\\n    -output \"${COMBINED_DIR}/SDK.xcframework\"\n\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KSCrash.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KSCrash.framework\" \\\n    -output \"${COMBINED_DIR}/KSCrash.xcframework\"\n\nopen \"$COMBINED_DIR\"\n";
+		};
+		B6281803268A056700D7B876 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "BUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\n# iOS DEVICES\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDKExtension\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_IPHONE}/ios.xcarchive\" \\\n    -derivedDataPath \"$BUILD_IPHONE\" \\\n    -sdk \"iphoneos\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n# iOS SIMULATOR\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDKExtension\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_SIM}/ios_sim.xcarchive\" \\\n    -derivedDataPath \"$BUILD_SIM\" \\\n    -sdk \"iphonesimulator\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n\n# -------------------\n# PACKAGE XCFRAMEWORK\n# -------------------\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KumulosSDKExtension.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KumulosSDKExtension.framework\" \\\n    -output \"${COMBINED_DIR}/SDKExtension.xcframework\"\n\nopen \"$COMBINED_DIR\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1514,6 +1582,42 @@
 			};
 			name = Release;
 		};
+		B62817EB268A04C200D7B876 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B62817EC268A04C200D7B876 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		B62817F8268A055E00D7B876 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B62817F9268A055E00D7B876 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		B6A4592423992E6E00FDECFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1674,6 +1778,24 @@
 			buildConfigurations = (
 				6F9C9E5423D5C3A400BBEFD5 /* Debug */,
 				6F9C9E5523D5C3A400BBEFD5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B62817EA268A04C200D7B876 /* Build configuration list for PBXAggregateTarget "SDKxcframework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B62817EB268A04C200D7B876 /* Debug */,
+				B62817EC268A04C200D7B876 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B62817F7268A055E00D7B876 /* Build configuration list for PBXAggregateTarget "SDKExtensionXcframework" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B62817F8268A055E00D7B876 /* Debug */,
+				B62817F9268A055E00D7B876 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
