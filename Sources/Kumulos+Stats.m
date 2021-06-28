@@ -15,7 +15,7 @@
 #import "KumulosEvents.h"
 #endif
 
-static const NSString* KSSdkVersion = @"4.5.0";
+static const NSString* KSSdkVersion = @"4.5.1";
 
 @implementation Kumulos (Stats)
 
@@ -27,7 +27,7 @@ static const NSString* KSSdkVersion = @"4.5.0";
 
 - (void) bundleAndSendInfo {
     KSTargetType target;
-    
+
     if (TargetTypeNotOverridden == self.config.targetType) {
         target = TargetTypeRelease;
 #ifdef DEBUG
@@ -43,79 +43,79 @@ static const NSString* KSSdkVersion = @"4.5.0";
                           @"version" : [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"],
                           @"target"  : @(target)
                           };
-    
+
     NSDictionary *sdk = self.config.sdkInfo;
-    
+
     if (nil == sdk) {
         sdk = @{@"id" : @(SDKTypeObjC),
                 @"version" : KSSdkVersion};
     }
-    
+
     NSDictionary *runtime = self.config.runtimeInfo;
     NSDictionary *os;
     NSMutableDictionary *device = [[NSMutableDictionary alloc] initWithCapacity:4];
-    
+
     NSTimeZone *timeZone = [NSTimeZone localTimeZone];
     NSString *tzName = [timeZone name];
-    
+
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR && !TARGET_OS_IOS
     runtime = @{@"id" : @(RuntimeTypeNative),
                 @"version" : [[NSProcessInfo processInfo] operatingSystemVersionString] };
-    
+
     os = @{@"id" : @(OSTypeIDOSX),
            @"version" : [[NSProcessInfo processInfo] operatingSystemVersionString] };
-    
+
     size_t size;
     sysctlbyname("hw.model", NULL, &size, NULL, 0);
     char *model = malloc(size);
     sysctlbyname("hw.model", model, &size, NULL, 0);
-    
+
     NSString* modelStr = [NSString stringWithUTF8String:model];
-    
+
     [device setValuesForKeysWithDictionary:@{@"name" : modelStr,
                                             @"tz"   : tzName,
                                             @"isSimulator" : @(NO)}];
-    
-    
+
+
 #else
     if (nil == runtime) {
         runtime = @{@"id" : @(RuntimeTypeNative),
                     @"version" : [[UIDevice currentDevice] systemVersion]};
     }
-    
+
     os = @{@"id" : @(OSTypeIDiOS),
            @"version" : [[UIDevice currentDevice] systemVersion]};
-    
-    
+
+
     struct utsname systemInfo;
     uname(&systemInfo);
     NSString *deviceName = [NSString stringWithCString:systemInfo.machine encoding:NSUTF8StringEncoding];
-    
+
     BOOL isSimulator = NO;
 #if TARGET_IPHONE_SIMULATOR
     isSimulator = YES;
 #endif
-    
+
     [device setValuesForKeysWithDictionary:@{@"name" : deviceName,
                                              @"tz"   : tzName,
                                              @"isSimulator":  @(isSimulator)}];
-    
+
 #endif
-    
+
     if (NSLocale.preferredLanguages.count >= 1) {
         device[@"locale"] = NSLocale.preferredLanguages[0];
     }
-    
+
     //final
     NSDictionary *jsonDict = @{@"app" : app,
                                @"sdk" : sdk,
                                @"runtime" : runtime,
                                @"os" : os,
                                @"device" : device};
-    
+
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR && !TARGET_OS_IOS
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@", [Kumulos installId]];
-    
+
     [self.statsHttpClient put:path data:jsonDict onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         // Noop
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
@@ -124,7 +124,7 @@ static const NSString* KSSdkVersion = @"4.5.0";
 #else
     [self.analyticsHelper trackEvent:KumulosEventCallHome withProperties:jsonDict];
 #endif
-    
+
 }
 
 @end
