@@ -29,6 +29,28 @@
 			name = KumulosSDKExtensionCombined;
 			productName = KumulosSDKExtensionCombined;
 		};
+		B628170D2689CD6B00D7B876 /* KumulosSDKStaticFat */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B62817102689CD6B00D7B876 /* Build configuration list for PBXAggregateTarget "KumulosSDKStaticFat" */;
+			buildPhases = (
+				B628171A2689CD7500D7B876 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = KumulosSDKStaticFat;
+			productName = KumulosSDKStaticFat;
+		};
+		B628171B2689CFBE00D7B876 /* KumulosSDKExtensionStaticFat */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = B628171C2689CFBE00D7B876 /* Build configuration list for PBXAggregateTarget "KumulosSDKExtensionStaticFat" */;
+			buildPhases = (
+				B62817282689CFC900D7B876 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = KumulosSDKExtensionStaticFat;
+			productName = KumulosSDKExtensionStaticFat;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -783,6 +805,16 @@
 						CreatedOnToolsVersion = 11.3;
 						ProvisioningStyle = Automatic;
 					};
+					B628170D2689CD6B00D7B876 = {
+						CreatedOnToolsVersion = 12.4;
+						DevelopmentTeam = AY85FBK9Q6;
+						ProvisioningStyle = Automatic;
+					};
+					B628171B2689CFBE00D7B876 = {
+						CreatedOnToolsVersion = 12.4;
+						DevelopmentTeam = AY85FBK9Q6;
+						ProvisioningStyle = Automatic;
+					};
 					B6A4591D23992E6E00FDECFC = {
 						CreatedOnToolsVersion = 11.2.1;
 						DevelopmentTeam = AY85FBK9Q6;
@@ -810,6 +842,8 @@
 				B6A4591D23992E6E00FDECFC /* KumulosSDKExtension */,
 				6F9C9E4523D5C2DB00BBEFD5 /* KumulosSDKExtensionStatic */,
 				6F9C9E5223D5C3A400BBEFD5 /* KumulosSDKExtensionCombined */,
+				B628170D2689CD6B00D7B876 /* KumulosSDKStaticFat */,
+				B628171B2689CFBE00D7B876 /* KumulosSDKExtensionStaticFat */,
 			);
 		};
 /* End PBXProject section */
@@ -869,6 +903,40 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\n# iOS DEVICES\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDKExtension\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_IPHONE}/ios.xcarchive\" \\\n    -derivedDataPath \"$BUILD_IPHONE\" \\\n    -sdk \"iphoneos\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n    \n# iOS SIMULATOR\nxcodebuild archive \\\n    -workspace KumulosSDK.xcworkspace \\\n    -scheme \"KumulosSDKExtension\" \\\n    -configuration \"Release\" \\\n    -archivePath \"${BUILD_SIM}/ios_sim.xcarchive\" \\\n    -derivedDataPath \"$BUILD_SIM\" \\\n    -sdk \"iphonesimulator\" \\\n    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \\\n    BITCODE_GENERATION_MODE=bitcode \\\n    SKIP_INSTALL=NO\n\n\n# -------------------\n# PACKAGE XCFRAMEWORK\n# -------------------\nxcodebuild -create-xcframework \\\n    -framework \"${BUILD_IPHONE}/ios.xcarchive/Products/Library/Frameworks/KumulosSDKExtension.framework\" \\\n    -framework \"${BUILD_SIM}/ios_sim.xcarchive/Products/Library/Frameworks/KumulosSDKExtension.framework\" \\\n    -output \"${COMBINED_DIR}/SDKExtension.xcframework\"\n\nopen \"$COMBINED_DIR\"\n";
+		};
+		B628171A2689CD7500D7B876 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild \n    -workspace KumulosSDK.xcworkspace \n    -scheme \"KumulosSDKiOS\" \n    -configuration \"Release\" \n    -sdk \"iphoneos\" \n    -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode \n    clean build\n\n\nxcodebuild \n    -workspace KumulosSDK.xcworkspace \n    -scheme \"KumulosSDKiOS\" \n    -configuration \"Release\" \n    -sdk \"iphonesimulator\" \n    -derivedDataPath \"$BUILD_SIM\" \n    BITCODE_GENERATION_MODE=bitcode \n    clean build\n    \nmkdir -p \"$COMBINED_DIR\"\n    \nlipo -create -output \"$COMBINED_DIR/libKumulosSDKiOS.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKiOS.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKiOS.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKiOS/\" \"$COMBINED_DIR/\"\nopen \"$COMBINED_DIR\"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n";
+		};
+		B62817282689CFC900D7B876 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n     \nxcodebuild \n    -workspace KumulosSDK.xcworkspace \n    -scheme \"KumulosSDKExtensionStatic\" \n    -configuration \"Release\" \n    -sdk \"iphoneos\" \n    -derivedDataPath \"$BUILD_IPHONE\" \n    BITCODE_GENERATION_MODE=bitcode \n    clean build\n    \nxcodebuild \n    -workspace KumulosSDK.xcworkspace \n    -scheme \"KumulosSDKExtensionStatic\" \n    -configuration \"Release\" \n    -sdk \"iphonesimulator\" \n    -derivedDataPath \"$BUILD_SIM\" \n    BITCODE_GENERATION_MODE=bitcode \n    clean build\n    \nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKExtensionStatic.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKExtensionStatic.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKExtensionStatic.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKExtensionStatic/\" \"$COMBINED_DIR/\"\nopen \"$COMBINED_DIR\"\n\n\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1513,6 +1581,42 @@
 			};
 			name = Release;
 		};
+		B628170E2689CD6B00D7B876 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B628170F2689CD6B00D7B876 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		B628171D2689CFBE00D7B876 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B628171E2689CFBE00D7B876 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = AY85FBK9Q6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		B6A4592423992E6E00FDECFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1677,6 +1781,24 @@
 			buildConfigurations = (
 				6F9C9E5423D5C3A400BBEFD5 /* Debug */,
 				6F9C9E5523D5C3A400BBEFD5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B62817102689CD6B00D7B876 /* Build configuration list for PBXAggregateTarget "KumulosSDKStaticFat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B628170E2689CD6B00D7B876 /* Debug */,
+				B628170F2689CD6B00D7B876 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B628171C2689CFBE00D7B876 /* Build configuration list for PBXAggregateTarget "KumulosSDKExtensionStaticFat" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B628171D2689CFBE00D7B876 /* Debug */,
+				B628171E2689CFBE00D7B876 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
