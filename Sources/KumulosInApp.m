@@ -107,9 +107,9 @@ int const DEFAULT_IMAGE_WIDTH = 300;
                                        nil];
 
         [fetchRequest setSortDescriptors: @[
-            [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:YES],
-            [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:YES],
-            [[NSSortDescriptor alloc] initWithKey:@"id" ascending:YES]
+            [[NSSortDescriptor alloc] initWithKey:@"sentAt" ascending:NO],
+            [[NSSortDescriptor alloc] initWithKey:@"updatedAt" ascending:NO],
+            [[NSSortDescriptor alloc] initWithKey:@"id" ascending:NO]
         ]];
         [fetchRequest setPredicate:onlyInboxItems];
 
