@@ -37,7 +37,6 @@ void kumulos_applicationPerformFetchWithCompletionHandler(id self, SEL _cmd, UIA
 @implementation KSInAppHelper
 
 int const STORED_IN_APP_LIMIT = 50;
-InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
 
 #pragma mark - Initialization
 
@@ -756,17 +755,13 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
     return result;
 }
 
-- (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
-    _inboxUpdatedHandlerBlock = inboxUpdatedHandlerBlock;
-}
-
 - (void)maybeRunInboxUpdatedHandler:(BOOL)inboxNeedsUpdate {
     if (!inboxNeedsUpdate){
         return;
     }
 
-    if (_inboxUpdatedHandlerBlock != nil){
-        dispatch_async(dispatch_get_main_queue(), _inboxUpdatedHandlerBlock);
+    if (self.kumulos.config.inboxUpdatedHandler != nil) {
+        dispatch_async(dispatch_get_main_queue(), self.kumulos.config.inboxUpdatedHandler);
     }
 }
 

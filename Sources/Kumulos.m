@@ -49,6 +49,7 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
         self->_inAppConsentStrategy = KSInAppConsentStrategyNotEnabled;
         self->_inAppDeepLinkHandler = nil;
         self->_pushOpenedHandler = nil;
+        self->_inboxUpdatedHandler = nil;
         self->_pushReceivedInForegroundHandler = nil;
         self->_deepLinkHandler = nil;
         self->_deepLinkCname = nil;
@@ -93,6 +94,11 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
 
 - (instancetype)setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler {
     self->_pushOpenedHandler = notificationHandler;
+    return self;
+}
+
+- (instancetype)setInboxUpdatedHandler:(InboxUpdatedHandlerBlock)inboxUpdatedHandler {
+    self->_inboxUpdatedHandler = inboxUpdatedHandler;
     return self;
 }
 

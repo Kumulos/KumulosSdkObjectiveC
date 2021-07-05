@@ -163,10 +163,6 @@ int const DEFAULT_IMAGE_WIDTH = 300;
     return [Kumulos.shared.inAppHelper markAllInboxItemsAsRead];
 }
 
-+ (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
-    [Kumulos.shared.inAppHelper setOnInboxUpdated:inboxUpdatedHandlerBlock];
-}
-
 + (void)getInboxSummaryAsync:(InboxSummaryBlock)inboxSummaryBlock {
     [Kumulos.shared.inAppHelper readInboxSummary:inboxSummaryBlock];
 }
