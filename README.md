@@ -12,7 +12,7 @@ Select an installation method below to get started.
 Add the following line to your app's target in your `Podfile`:
 
 ```
-pod 'KumulosSdkObjectiveC', '~> 4.5'
+pod 'KumulosSdkObjectiveC', '~> 5.0'
 ```
 
 Run `pod install` to install your dependencies.
@@ -33,7 +33,7 @@ For more information on integrating the Objective-C SDK with your project, pleas
 Add the following line to your `Cartfile`:
 
 ```
-github "Kumulos/KumulosSdkObjectiveC" ~> 4.5
+github "Kumulos/KumulosSdkObjectiveC" ~> 5.0
 ```
 
 Run `carthage update` to install your dependencies then follow the [Carthage integration steps](https://github.com/Carthage/Carthage#getting-started) to link the framework with your project.
