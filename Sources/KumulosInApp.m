@@ -164,6 +164,12 @@ int const DEFAULT_IMAGE_WIDTH = 300;
 }
 
 + (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
+    if (Kumulos.shared.inAppHelper == nil){
+        [NSException raise:@"Could not set InboxUpdatedHandler" format:@"Kumulos should be initialized before setting handler"];
+        
+        return;
+    }
+  
     [Kumulos.shared.inAppHelper setOnInboxUpdated:inboxUpdatedHandlerBlock];
 }
 
