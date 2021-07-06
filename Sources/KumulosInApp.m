@@ -8,7 +8,7 @@
 
 @interface KSInAppInboxItem()
 
-@property (nonatomic,readonly) NSString* _Nonnull imagePath;
+@property (nonatomic,readonly) NSString* _Nullable imagePath;
 @property (nonatomic,readonly) NSDate* _Nullable readAt;
 
 @end

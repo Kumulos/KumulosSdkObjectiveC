@@ -17,7 +17,6 @@
 @property (nonatomic,strong) NSDictionary* inboxConfig;
 @property (nonatomic,strong) NSDate* inboxFrom;
 @property (nonatomic,strong) NSDate* inboxTo;
-@property (nonatomic,strong) NSString* inboxImagePath;
 @property (nonatomic,strong) NSDate* dismissedAt;
 @property (nonatomic,strong) NSDate* expiresAt;
 @property (nonatomic,strong) NSDate* readAt;
