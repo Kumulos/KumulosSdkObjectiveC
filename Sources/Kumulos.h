@@ -32,7 +32,7 @@ typedef NS_ENUM(NSInteger, KSDeepLinkResolution) {
     KSDeepLinkResolutionLinkMatched,
 };
 typedef void (^ _Nullable KSDeepLinkHandlerBlock)(KSDeepLinkResolution resolution, NSURL* _Nonnull url, KSDeepLink* _Nullable link);
-typedef void (^ _Nullable InboxUpdatedHandlerBlock)(void);
+
 
 API_AVAILABLE(ios(10.0), macos(10.14))
 typedef void (^ _Nonnull KSPushReceivedInForegroundCompletionHandler)(UNNotificationPresentationOptions);
@@ -70,7 +70,6 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 @property (nonatomic,readonly) KSInAppConsentStrategy inAppConsentStrategy;
 @property (nonatomic,readonly) KSInAppDeepLinkHandlerBlock inAppDeepLinkHandler;
 @property (nonatomic,readonly) KSPushOpenedHandlerBlock pushOpenedHandler;
-@property (nonatomic,readonly) InboxUpdatedHandlerBlock inboxUpdatedHandler;
 @property (nonatomic,readonly) KSPushReceivedInForegroundHandlerBlock pushReceivedInForegroundHandler API_AVAILABLE(ios(10.0), macos(10.14));
 
 @property (nonatomic,readonly) KSDeepLinkHandlerBlock _Nullable deepLinkHandler;
@@ -86,7 +85,6 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 - (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy;
 - (instancetype _Nonnull) setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler;
 - (instancetype _Nonnull) setPushOpenedHandler:(KSPushOpenedHandlerBlock)notificationHandler;
-- (instancetype _Nonnull) setInboxUpdatedHandler:(InboxUpdatedHandlerBlock)inboxUpdatedHandler;
 - (instancetype _Nonnull) setPushReceivedInForegroundHandler:(KSPushReceivedInForegroundHandlerBlock)receivedHandler API_AVAILABLE(ios(10.0),macos(10.14));
 - (instancetype _Nonnull) setForegroundPushPresentationOptions:(UNNotificationPresentationOptions)notificationPresentationOptions API_AVAILABLE(ios(10.0),macos(10.14));
 - (instancetype _Nonnull) enableDeepLinking:(NSString* _Nonnull)cname deepLinkHandler:(KSDeepLinkHandlerBlock)deepLinkHandler;

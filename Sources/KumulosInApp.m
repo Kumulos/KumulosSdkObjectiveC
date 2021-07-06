@@ -8,7 +8,7 @@
 
 @interface KSInAppInboxItem()
 
-@property (nonatomic,readonly) NSString* _Nonnull imagePath;
+@property (nonatomic,readonly) NSString* _Nullable imagePath;
 @property (nonatomic,readonly) NSDate* _Nullable readAt;
 
 @end
@@ -161,6 +161,16 @@ int const DEFAULT_IMAGE_WIDTH = 300;
 
 + (BOOL)markAllInboxItemsAsRead {
     return [Kumulos.shared.inAppHelper markAllInboxItemsAsRead];
+}
+
++ (void)setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock {
+    if (Kumulos.shared.inAppHelper == nil){
+        [NSException raise:@"Could not set InboxUpdatedHandler" format:@"Kumulos should be initialized before setting handler"];
+        
+        return;
+    }
+  
+    [Kumulos.shared.inAppHelper setOnInboxUpdated:inboxUpdatedHandlerBlock];
 }
 
 + (void)getInboxSummaryAsync:(InboxSummaryBlock)inboxSummaryBlock {

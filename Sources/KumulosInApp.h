@@ -34,6 +34,7 @@ typedef NS_ENUM(NSInteger, KSInAppMessagePresentationResult) {
 + (instancetype _Nonnull) init:(int)totalCount unreadCount:(int)unreadCount;
 @end
 
+typedef void (^ _Nullable InboxUpdatedHandlerBlock)(void);
 typedef void (^ _Nullable InboxSummaryBlock)(InAppInboxSummary* _Nullable inboxSummary);
 
 
@@ -57,6 +58,8 @@ typedef void (^ _Nullable InboxSummaryBlock)(InAppInboxSummary* _Nullable inboxS
 + (BOOL) markAsRead:(KSInAppInboxItem* _Nonnull)item;
 
 + (BOOL) markAllInboxItemsAsRead;
+
++ (void) setOnInboxUpdated:(InboxUpdatedHandlerBlock)inboxUpdatedHandlerBlock;
 
 + (void) getInboxSummaryAsync:(InboxSummaryBlock)inboxSummaryBlock;
 

@@ -16,7 +16,6 @@
 @dynamic inboxConfig;
 @dynamic inboxFrom;
 @dynamic inboxTo;
-@dynamic inboxImagePath;
 @dynamic dismissedAt;
 @dynamic expiresAt;
 @dynamic readAt;
