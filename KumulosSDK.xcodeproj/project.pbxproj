@@ -890,7 +890,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphonesimulator\" -derivedDataPath \"$BUILD_SIM\" BITCODE_GENERATION_MODE=bitcode EXCLUDED_ARCHS=\"arm64\" clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKiOS.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKiOS.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKiOS.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKiOS/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKiOS\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nopen \"$BUILD_IPHONE\"\n";
 		};
 		6F9C9E5623D5C3B400BBEFD5 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -907,7 +907,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nBUILD_BASE=\"$PROJECT_DIR/build\"\nCOMBINED_DIR=\"$BUILD_BASE/combined\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\nBUILD_SIM=\"$BUILD_BASE/simulator\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphonesimulator\" -derivedDataPath \"$BUILD_SIM\" BITCODE_GENERATION_MODE=bitcode EXCLUDED_ARCHS=\"arm64\" clean build\n\nmkdir -p \"$COMBINED_DIR\"\n\nlipo -create -output \"$COMBINED_DIR/libKumulosSDKExtensionStatic.a\" \"$BUILD_IPHONE/Build/Products/Release-iphoneos/libKumulosSDKExtensionStatic.a\" \"$BUILD_SIM/Build/Products/Release-iphonesimulator/libKumulosSDKExtensionStatic.a\"\n\ncp -R \"$BUILD_IPHONE/Build/Products/Release-iphoneos/include/KumulosSDKExtensionStatic/\" \"$COMBINED_DIR/\"\n\nopen \"$COMBINED_DIR\"\n";
+			shellScript = "BUILD_BASE=\"$PROJECT_DIR/build\"\nBUILD_IPHONE=\"$BUILD_BASE/iphone\"\n\nrm -rf \"$BUILD_BASE\"\n\nxcodebuild -workspace KumulosSDK.xcworkspace -scheme \"KumulosSDKExtensionStatic\" -configuration \"Release\" -sdk \"iphoneos\" -derivedDataPath \"$BUILD_IPHONE\" BITCODE_GENERATION_MODE=bitcode clean build\n\nopen \"$BUILD_IPHONE\"\n";
 		};
 		B62817F5268A04C700D7B876 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
