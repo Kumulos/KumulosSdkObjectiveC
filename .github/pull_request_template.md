@@ -29,3 +29,14 @@ Release:
 -   [ ] Delete branch once merged
 -   [ ] Create tag from master matching chosen version
 -   [ ] Run `pod trunk push` to publish to CocoaPods
+
+Post Release:
+
+Update docs site with correct version number references
+
+- [ ] https://docs.kumulos.com/developer-guide/sdk-reference/ios/
+- [ ] https://docs.kumulos.com/getting-started/integrate-app/
+
+Update changelog:
+
+- [ ] https://docs.kumulos.com/developer-guide/sdk-reference/ios/#changelog
