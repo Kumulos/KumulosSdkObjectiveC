@@ -125,7 +125,7 @@
         
         KSPushChannel* channel = [KSPushChannel createFromObject:decodedBody];
         complete(nil, channel);
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nonnull data) {
         complete(error, nil);
     }];
 }
@@ -151,7 +151,7 @@
         }];
         
         complete(nil, channels);
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nonnull data) {
         complete(error, nil);
     }];
 }
@@ -161,7 +161,7 @@
         if (complete) {
             complete(nil);
         }
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nonnull data) {
         if (complete) {
             complete(error);
         }

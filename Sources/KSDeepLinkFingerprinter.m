@@ -62,6 +62,7 @@ DeferredState state;
     dispatch_async(dispatch_get_main_queue(), ^{
         switch(state){
             case Pending:
+                //TODO: test different paths?
                 [pendingWatchers addObject:onResult];
                 break;
             case Resolved:

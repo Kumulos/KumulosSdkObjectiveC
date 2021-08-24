@@ -160,7 +160,7 @@ BOOL anyContinuationHandled;
                 return;
         }
         
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nullable data) {
         switch(response.statusCode){
             case 404:
                 [self invokeDeepLinkHandler:KSDeepLinkResolutionLinkNotFound url:url link:nil];
@@ -225,12 +225,12 @@ BOOL anyContinuationHandled;
                 // Noop
                 break;
         }
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nullable decodedBody) {
-        if (decodedBody == nil){
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nullable data) {
+        if (data == nil){
             return;
         }
         
-        NSString* urlString = decodedBody[@"linkUrl"];
+        NSString* urlString = data[@"linkUrl"];
         if (urlString == nil){
             return;
         }

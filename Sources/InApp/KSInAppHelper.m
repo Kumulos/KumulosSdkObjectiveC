@@ -259,7 +259,7 @@ InboxUpdatedHandlerBlock _inboxUpdatedHandlerBlock = nil;
             });
 
             dispatch_semaphore_signal(self.syncBarrier);
-        } onFailure:^(NSHTTPURLResponse* _Nullable response, NSError* _Nullable error) {
+        } onFailure:^(NSHTTPURLResponse* _Nullable response, NSError* _Nullable error, id _Nullable data) {
             if (onComplete) {
                 onComplete(-1);
             }
