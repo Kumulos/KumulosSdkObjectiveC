@@ -20,6 +20,7 @@
 #import "KSSessionHelper.h"
 #import "InApp/KSInAppHelper.h"
 #import "DeepLinkHelper.h"
+#import "KSDeepLinkFingerprinter.h"
 
 @import UserNotifications;
 #endif
