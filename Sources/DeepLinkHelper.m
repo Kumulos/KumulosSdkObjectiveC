@@ -100,7 +100,7 @@ BOOL anyContinuationHandled;
 }
 
 - (void) checkForWebToAppBannerTap {
-    KSDeepLinkFingerprinter* fp = [[KSDeepLinkFingerprinter alloc] init];
+    KSDeepLinkFingerprinter* fp = [KSDeepLinkFingerprinter new];
     
     [fp getFingerprintComponents:^(id _Nonnull components) {
         dispatch_async(dispatch_get_main_queue(), ^{
@@ -179,11 +179,6 @@ BOOL anyContinuationHandled;
 }
 
 - (void) handleFingerprintComponents:(NSDictionary* _Nonnull)components {
-    //TODO: remove
-    for(NSString *key in [components allKeys]) {
-        NSLog(@"key: %@, value: %@",key, [components objectForKey:key]);
-    }
-    
     NSError* err = nil;
     NSData* componentJson = [NSJSONSerialization dataWithJSONObject:components options:0 error:&err];
     if (nil != err) {

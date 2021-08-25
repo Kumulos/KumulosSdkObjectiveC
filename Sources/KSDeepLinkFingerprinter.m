@@ -9,29 +9,29 @@
 @import WebKit;
 #import "KSDeepLinkFingerprinter.h"
 
-typedef NS_ENUM(NSInteger, DeferredState) {
-    Pending,
-    Resolved
+typedef NS_ENUM(NSInteger, KSDeferredState) {
+    KSDeferredStatePending,
+    KSDeferredStateResolved
 };
 
-@interface Deferred<R> : NSObject
+@interface KSDeferred<R> : NSObject
 
 - (instancetype _Nonnull)init;
 - (void) resolve:(R _Nonnull)res;
-- (void) then:(PendingWatcher)onResult;
+- (void) then:(KSPendingWatcher)onResult;
 
 @end
 
 
-@implementation Deferred
+@implementation KSDeferred
 
-NSMutableArray<PendingWatcher>* pendingWatchers;
+NSMutableArray<KSPendingWatcher>* pendingWatchers;
 id result;
-DeferredState state;
+KSDeferredState state;
 
 - (instancetype _Nonnull)init {
     if (self = [super init]) {
-        state = Pending;
+        state = KSDeferredStatePending;
         pendingWatchers = [NSMutableArray arrayWithCapacity:1];
     }
     
@@ -41,16 +41,16 @@ DeferredState state;
 - (void) resolve:(id _Nonnull)res{
     dispatch_async(dispatch_get_main_queue(), ^{
         switch(state){
-            case Resolved:
+            case KSDeferredStateResolved:
                 return;
             default:
                 break;
         }
         
-        state = Resolved;
+        state = KSDeferredStateResolved;
         result = res;
         
-        for (PendingWatcher cb in pendingWatchers) {
+        for (KSPendingWatcher cb in pendingWatchers) {
             cb(result);
         }
         
@@ -58,14 +58,13 @@ DeferredState state;
     });
 }
 
-- (void) then:(PendingWatcher)onResult{
+- (void) then:(KSPendingWatcher)onResult{
     dispatch_async(dispatch_get_main_queue(), ^{
         switch(state){
-            case Pending:
-                //TODO: test different paths?
+            case KSDeferredStatePending:
                 [pendingWatchers addObject:onResult];
                 break;
-            case Resolved:
+            case KSDeferredStateResolved:
                 onResult(result);
                 break;
         }
@@ -80,7 +79,7 @@ DeferredState state;
 NSString* const _Nonnull KSPrintDustRuntimeUrl = @"https://pd.app.delivery";
 NSString* const _Nonnull KSPrintDustHandlerName = @"printHandler";
 WKWebView* _Nullable webView;
-Deferred<NSDictionary*>* _Nullable fingerprint;
+KSDeferred<NSDictionary*>* _Nullable fingerprint;
 
 - (instancetype _Nonnull)init {
     if (self = [super init]) {
@@ -90,18 +89,19 @@ Deferred<NSDictionary*>* _Nullable fingerprint;
         
         webView = [[WKWebView alloc] initWithFrame:UIScreen.mainScreen.bounds configuration:config];
         
-        fingerprint = [[Deferred alloc] init];
+        fingerprint = [KSDeferred new];
         
         [contentController addScriptMessageHandler:self name:KSPrintDustHandlerName];
         
-        NSURLRequest* req = [NSURLRequest requestWithURL:[NSURL URLWithString:KSPrintDustRuntimeUrl] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:10];
+        NSURLRequest* req = [NSURLRequest requestWithURL:[NSURL URLWithString:KSPrintDustRuntimeUrl] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+ timeoutInterval:10];
         [webView loadRequest:req];
     }
     
     return self;
 }
 
-- (void) getFingerprintComponents:(PendingWatcher _Nonnull)onGenerated {
+- (void) getFingerprintComponents:(KSPendingWatcher _Nonnull)onGenerated {
     [fingerprint then:onGenerated];
 }
 
