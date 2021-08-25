@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name = "KumulosSdkObjectiveC"
-  s.version = "4.5.2"
+  s.version = "4.6.0"
   s.license = "MIT"
   s.summary = "Official Objective-C SDK for integrating Kumulos services with your mobile apps"
   s.homepage = "https://github.com/Kumulos/KumulosSdkObjectiveC"
@@ -32,6 +32,7 @@ Pod::Spec.new do |s|
       'Sources/*SessionHelper*',
       'Sources/*Kumulos+DeepLinking*',
       'Sources/*DeepLinkHelper*',
+      'Sources/*KSDeepLinkFingerprinter*',
   ]
 
   s.ios.public_header_files = [

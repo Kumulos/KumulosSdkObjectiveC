@@ -164,7 +164,7 @@ static Kumulos* _shared;
         if (config.deepLinkHandler != nil){
             self.deepLinkHelper = [[KSDeepLinkHelper alloc] init:config];
             
-            [self.deepLinkHelper checkForDeferredLink];
+            [self.deepLinkHelper checkForNonContinuationLinkMatch];
         }
         
         [[UIApplication sharedApplication] addObserver:self forKeyPath:@"applicationIconBadgeNumber" options:NSKeyValueObservingOptionNew context:nil];

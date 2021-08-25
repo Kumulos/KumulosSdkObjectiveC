@@ -295,7 +295,7 @@ flushingImmediately:(BOOL)flushImmediately
         }
         
         [self syncEvents:context onSyncComplete:onSyncComplete];
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nullable data) {
         NSLog(@"Failed to send events");
         if (onSyncComplete){
             onSyncComplete(error);

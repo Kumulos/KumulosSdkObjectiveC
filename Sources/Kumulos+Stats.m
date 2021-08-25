@@ -15,7 +15,7 @@
 #import "KumulosEvents.h"
 #endif
 
-static const NSString* KSSdkVersion = @"4.5.2";
+static const NSString* KSSdkVersion = @"4.6.0";
 
 @implementation Kumulos (Stats)
 
@@ -118,7 +118,7 @@ static const NSString* KSSdkVersion = @"4.5.2";
 
     [self.statsHttpClient put:path data:jsonDict onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         // Noop
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id  _Nullable decodedBody) {
         // Noop
     }];
 #else

@@ -198,6 +198,9 @@
 		B62817BB268A034E00D7B876 /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
 		B62817C3268A035300D7B876 /* KSPendingNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */; };
 		B62817DA268A03CF00D7B876 /* Kumulos+DeepLinking.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6EE7713255D9F8800D5B5FB /* Kumulos+DeepLinking.h */; };
+		B638A49F26D3C77700450EE5 /* KSDeepLinkFingerprinter.m in Sources */ = {isa = PBXBuildFile; fileRef = B638A49E26D3C77700450EE5 /* KSDeepLinkFingerprinter.m */; };
+		B638A4A026D3C79100450EE5 /* KSDeepLinkFingerprinter.m in Sources */ = {isa = PBXBuildFile; fileRef = B638A49E26D3C77700450EE5 /* KSDeepLinkFingerprinter.m */; };
+		B638A4A226D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h in Headers */ = {isa = PBXBuildFile; fileRef = B638A4A126D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h */; };
 		B659809125F93493008C074D /* KSPendingNotification.h in Headers */ = {isa = PBXBuildFile; fileRef = B659809025F93493008C074D /* KSPendingNotification.h */; };
 		B659809C25F934F3008C074D /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
 		B659809E25F934F3008C074D /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
@@ -360,6 +363,8 @@
 		6FDDA3A423D70624003D74EF /* KSCategoryHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSCategoryHelper.h; sourceTree = "<group>"; };
 		B611061725636B5E0003BE3E /* DeepLinkHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DeepLinkHelper.h; sourceTree = "<group>"; };
 		B611062025636B830003BE3E /* DeepLinkHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DeepLinkHelper.m; sourceTree = "<group>"; };
+		B638A49E26D3C77700450EE5 /* KSDeepLinkFingerprinter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSDeepLinkFingerprinter.m; sourceTree = "<group>"; };
+		B638A4A126D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSDeepLinkFingerprinter.h; sourceTree = "<group>"; };
 		B659809025F93493008C074D /* KSPendingNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSPendingNotification.h; sourceTree = "<group>"; };
 		B659809B25F934F3008C074D /* KSPendingNotification.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSPendingNotification.m; sourceTree = "<group>"; };
 		B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSPendingNotificationHelper.m; sourceTree = "<group>"; };
@@ -529,6 +534,8 @@
 				B6EE7713255D9F8800D5B5FB /* Kumulos+DeepLinking.h */,
 				B611061725636B5E0003BE3E /* DeepLinkHelper.h */,
 				B611062025636B830003BE3E /* DeepLinkHelper.m */,
+				B638A49E26D3C77700450EE5 /* KSDeepLinkFingerprinter.m */,
+				B638A4A126D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -609,6 +616,7 @@
 				B6BD4110266905E600F4A6A2 /* KSMediaHelper.h in Headers */,
 				12735BBD1E4CE35900ED4488 /* MobileProvision.h in Headers */,
 				12577D7B1FDFF51C00218A06 /* Kumulos+Analytics.h in Headers */,
+				B638A4A226D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h in Headers */,
 				B659809125F93493008C074D /* KSPendingNotification.h in Headers */,
 				12735BB91E4CE35900ED4488 /* Kumulos+Stats.h in Headers */,
 				B6EE7714255D9F8800D5B5FB /* Kumulos+DeepLinking.h in Headers */,
@@ -955,6 +963,7 @@
 				12735BB51E4CE35900ED4488 /* Kumulos.m in Sources */,
 				125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
 				B659809C25F934F3008C074D /* KSPendingNotification.m in Sources */,
+				B638A49F26D3C77700450EE5 /* KSDeepLinkFingerprinter.m in Sources */,
 				12735BB31E4CE35900ED4488 /* KSessionTokenManager.m in Sources */,
 				B6EE7703255D9F5B00D5B5FB /* Kumulos+DeepLinking.m in Sources */,
 				12735BAF1E4CE35900ED4488 /* KSAPIOperation.m in Sources */,
@@ -1015,6 +1024,7 @@
 				12BBE98C20E3CC9600DC9916 /* KSUrlEncoding.m in Sources */,
 				12CA55BB243F7B0600398168 /* KSAppGroupsHelper.m in Sources */,
 				12BBE98D20E3CC9600DC9916 /* KSAPIOperation.m in Sources */,
+				B638A4A026D3C79100450EE5 /* KSDeepLinkFingerprinter.m in Sources */,
 				B6EE7704255D9F5B00D5B5FB /* Kumulos+DeepLinking.m in Sources */,
 				6F571748244491D100F2A8CB /* KSSessionHelper.m in Sources */,
 				12BBE98E20E3CC9600DC9916 /* KSAPIResponse.m in Sources */,
@@ -1212,7 +1222,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.5.2;
+				MARKETING_VERSION = 4.6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-iOS";
@@ -1268,7 +1278,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.5.2;
+				MARKETING_VERSION = 4.6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-iOS";
 				PRODUCT_NAME = KumulosSDK;
@@ -1331,7 +1341,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 4.5.2;
+				MARKETING_VERSION = 4.6.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-macOS";
@@ -1387,7 +1397,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.12;
-				MARKETING_VERSION = 4.5.2;
+				MARKETING_VERSION = 4.6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kumulos.KumulosSDK-macOS";
 				PRODUCT_NAME = KumulosSDK;
@@ -1656,7 +1666,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.5.2;
+				MARKETING_VERSION = 4.6.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kumulos.dev.KumulosSDKExtension;
@@ -1702,7 +1712,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MARKETING_VERSION = 4.5.2;
+				MARKETING_VERSION = 4.6.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kumulos.dev.KumulosSDKExtension;

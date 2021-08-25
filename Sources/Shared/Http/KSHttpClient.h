@@ -17,7 +17,7 @@ extern NSString* _Nonnull const KSHttpMethodPut;
 extern NSString* _Nonnull const KSHttpMethodDelete;
 
 typedef void (^ _Nullable KSHttpSuccessBlock)(NSHTTPURLResponse* _Nullable response, id _Nullable decodedBody);
-typedef void (^ _Nullable KSHttpFailureBlock)(NSHTTPURLResponse* _Nullable response, NSError* _Nullable error);
+typedef void (^ _Nullable KSHttpFailureBlock)(NSHTTPURLResponse* _Nullable response, NSError* _Nullable error, id _Nullable decodedBody);
 
 @interface KSHttpClient : NSObject
 

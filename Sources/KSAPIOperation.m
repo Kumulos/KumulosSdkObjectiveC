@@ -52,7 +52,7 @@
         }
         
         [self handleResponse:decodedBody];
-    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error) {
+    } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id _Nonnull data) {
         if (self.isCancelled) {
             return;
         }

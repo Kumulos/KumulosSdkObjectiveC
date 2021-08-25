@@ -9,7 +9,7 @@
 
 
 - (instancetype _Nonnull ) init:(KSConfig* _Nonnull) config;
-- (void) checkForDeferredLink;
+- (void) checkForNonContinuationLinkMatch;
 - (BOOL) handleContinuation:(NSUserActivity* _Nonnull) userActivity;
     
 @end

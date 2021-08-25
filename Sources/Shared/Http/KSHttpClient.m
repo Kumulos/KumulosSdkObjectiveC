@@ -197,14 +197,14 @@ NSString* const KSHttpMethodDelete = @"DELETE";
                                   code:KSErrorCodeUnknownError
                                   userInfo:@{NSLocalizedDescriptionKey: @"Unable to case HTTP response from NSURLResponse"}];
 
-            failure(nil, castError);
+            failure(nil, castError, nil);
             return;
         }
 
         httpResponse = (NSHTTPURLResponse*) response;
         
         if (error) {
-            failure(httpResponse, error);
+            failure(httpResponse, error, nil);
             return;
         }
         
@@ -220,7 +220,7 @@ NSString* const KSHttpMethodDelete = @"DELETE";
                                     code:KSErrorCodeHttpBadStatus
                                     userInfo:decodedBody];
             
-            failure(httpResponse, statusError);
+            failure(httpResponse, statusError, decodedBody);
             return;
         }
         
