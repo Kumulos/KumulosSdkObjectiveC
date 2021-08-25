@@ -30,6 +30,7 @@ static NSString* _Nonnull const KSDeferredLinkCheckedKey = @"KUMULOS_DDL_CHECKED
 @implementation KSDeepLinkHelper
 
 BOOL anyContinuationHandled;
+KSDeepLinkFingerprinter* fp;
 
 - (instancetype _Nonnull)init:(KSConfig* _Nonnull)config {
     self.config = config;
@@ -100,10 +101,11 @@ BOOL anyContinuationHandled;
 }
 
 - (void) checkForWebToAppBannerTap {
-    KSDeepLinkFingerprinter* fp = [KSDeepLinkFingerprinter new];
+    fp = [KSDeepLinkFingerprinter new];
     
     [fp getFingerprintComponents:^(id _Nonnull components) {
         dispatch_async(dispatch_get_main_queue(), ^{
+            fp = nil;
             [self handleFingerprintComponents: (NSDictionary*) components];
         });
     }];
