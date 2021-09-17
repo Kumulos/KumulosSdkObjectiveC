@@ -12,7 +12,7 @@ Select an installation method below to get started.
 Add the following line to your app's target in your `Podfile`:
 
 ```
-pod 'KumulosSdkObjectiveC', '~> 4.6'
+pod 'KumulosSdkObjectiveC', '~> 4.7'
 ```
 
 Run `pod install` to install your dependencies.
