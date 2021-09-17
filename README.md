@@ -33,7 +33,7 @@ For more information on integrating the Objective-C SDK with your project, pleas
 Add the following line to your `Cartfile`:
 
 ```
-github "Kumulos/KumulosSdkObjectiveC" ~> 4.6
+github "Kumulos/KumulosSdkObjectiveC" ~> 4.7
 ```
 
 Run `carthage update` to install your dependencies then follow the [Carthage integration steps](https://github.com/Carthage/Carthage#getting-started) to link the framework with your project.
