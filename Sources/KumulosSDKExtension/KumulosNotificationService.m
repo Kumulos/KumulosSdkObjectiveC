@@ -76,13 +76,42 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }
     
     for (NSDictionary* button in buttons) {
-        UNNotificationAction* action = [UNNotificationAction actionWithIdentifier:button[@"id"]
-                                                                            title:button[@"text"]
-                                                                          options:UNNotificationActionOptionForeground];
-        [actionArray addObject: action];
+        if (@available(macCatalyst 15.0, *)) {
+            UNNotificationActionIcon* icon = [self getButtonIcon:button];
+            UNNotificationAction* action = [UNNotificationAction actionWithIdentifier:button[@"id"]
+                                                                                title:button[@"text"]
+                                                                              options:UNNotificationActionOptionForeground
+                                                                                 icon: icon];
+            [actionArray addObject: action];
+        } else {
+            UNNotificationAction* action = [UNNotificationAction actionWithIdentifier:button[@"id"]
+                                                                                title:button[@"text"]
+                                                                              options:UNNotificationActionOptionForeground];
+            [actionArray addObject: action];
+        }
     }
     
     return actionArray;
+}
+
++ (UNNotificationActionIcon*) getButtonIcon:(NSDictionary*) buttonInfo{
+    NSDictionary* iconDict = buttonInfo == nil ? nil : buttonInfo[@"icon"];
+    if (iconDict == nil) {
+        return nil;
+    }
+    
+    NSString* type = iconDict[@"type"];
+    NSString* icon = iconDict[@"icon"];
+    
+    if (type == nil || icon == nil) {
+        return nil;
+    }
+    
+    if ([type  isEqual: @"system"]) {
+        return [UNNotificationActionIcon iconWithSystemImageName: type];
+    }
+    
+    return [UNNotificationActionIcon iconWithTemplateImageName: type];
 }
     
 + (void) addCategory:(UNMutableNotificationContent *)bestAttemptContent actionArray:(NSMutableArray*) actionArray messageId:(NSNumber*) messageId{
