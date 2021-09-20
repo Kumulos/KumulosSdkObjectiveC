@@ -94,25 +94,27 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     return actionArray;
 }
 
-+ (UNNotificationActionIcon*) getButtonIcon:(NSDictionary*) buttonInfo{
+
++ (UNNotificationActionIcon*) getButtonIcon:(NSDictionary*)buttonInfo API_AVAILABLE(ios(15)) {
     NSDictionary* iconDict = buttonInfo == nil ? nil : buttonInfo[@"icon"];
     if (iconDict == nil) {
         return nil;
     }
     
     NSString* type = iconDict[@"type"];
-    NSString* icon = iconDict[@"icon"];
+    NSString* iconId = iconDict[@"id"];
     
-    if (type == nil || icon == nil) {
+    if (type == nil || iconId == nil) {
         return nil;
     }
     
     if ([type  isEqual: @"system"]) {
-        return [UNNotificationActionIcon iconWithSystemImageName: type];
+        return [UNNotificationActionIcon iconWithSystemImageName: iconId];
     }
     
-    return [UNNotificationActionIcon iconWithTemplateImageName: type];
+    return [UNNotificationActionIcon iconWithTemplateImageName: iconId];
 }
+
     
 + (void) addCategory:(UNMutableNotificationContent *)bestAttemptContent actionArray:(NSMutableArray*) actionArray messageId:(NSNumber*) messageId{
   
