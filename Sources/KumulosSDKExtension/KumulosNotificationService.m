@@ -76,7 +76,7 @@ static KSAnalyticsHelper* _Nullable analyticsHelper;
     }
     
     for (NSDictionary* button in buttons) {
-        if (@available(macCatalyst 15.0, *)) {
+        if (@available(iOS 15.0, *)) {
             UNNotificationActionIcon* icon = [self getButtonIcon:button];
             UNNotificationAction* action = [UNNotificationAction actionWithIdentifier:button[@"id"]
                                                                                 title:button[@"text"]
