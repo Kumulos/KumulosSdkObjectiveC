@@ -791,7 +791,7 @@
 		12735B3F1E4CDCA700ED4488 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					12735B491E4CDD3100ED4488 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1595,6 +1595,7 @@
 		B62817EB268A04C200D7B876 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AY85FBK9Q6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1604,6 +1605,7 @@
 		B62817EC268A04C200D7B876 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AY85FBK9Q6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1613,6 +1615,7 @@
 		B62817F8268A055E00D7B876 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AY85FBK9Q6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1622,6 +1625,7 @@
 		B62817F9268A055E00D7B876 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = AY85FBK9Q6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
