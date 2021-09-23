@@ -14,6 +14,7 @@
 #if TARGET_OS_IOS
 #import "Kumulos+Push.h"
 #import "Kumulos+PushProtected.h"
+#import "InApp/KSInAppModels.h"
 #endif
 
 #ifdef COCOAPODS

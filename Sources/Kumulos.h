@@ -11,6 +11,7 @@
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 #else
 #import <UIKit/UIKit.h>
+#import "KumulosInApp.h"
 #endif
 
 @class KSAPIOperation;
@@ -21,7 +22,7 @@
 
 typedef void (^ _Nullable KSAPIOperationSuccessBlock)(KSAPIResponse* _Nonnull, KSAPIOperation* _Nonnull);
 typedef void (^ _Nullable KSAPIOperationFailureBlock)(NSError* _Nonnull, KSAPIOperation* _Nonnull);
-typedef void (^ _Nullable KSInAppDeepLinkHandlerBlock)(NSDictionary* _Nonnull data);
+typedef void (^ _Nullable KSInAppDeepLinkHandlerBlock)(KSInAppButtonPress* _Nonnull buttonPress);
 typedef void (^ _Nullable KSPushOpenedHandlerBlock)(KSPushNotification* _Nonnull notification);
 
 typedef NS_ENUM(NSInteger, KSDeepLinkResolution) {

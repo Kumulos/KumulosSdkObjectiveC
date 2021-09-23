@@ -15,3 +15,9 @@
 - (void) queueMessagesForPresentation:(NSArray<KSInAppMessage*>* _Nonnull) messages presentingTickles:(NSOrderedSet<NSNumber*>* _Nullable)tickleIds;
 
 @end
+
+@interface KSInAppButtonPress ()
+
++ (instancetype _Nonnull) forInAppMessage:(KSInAppMessage* _Nonnull)message withDeepLink:(NSDictionary* _Nonnull)deepLinkData;
+
+@end

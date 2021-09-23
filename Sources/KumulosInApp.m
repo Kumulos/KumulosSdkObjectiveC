@@ -79,6 +79,25 @@ int const DEFAULT_IMAGE_WIDTH = 300;
 
 @end
 
+@implementation KSInAppButtonPress
+
+@synthesize deepLinkData;
+@synthesize messageId;
+@synthesize messageData;
+
+// Note this initialiser is effectively private and declared in a category in KSInAppPresenter for use
+// where it is needed
++ (instancetype) forInAppMessage:(KSInAppMessage*)message withDeepLink:(NSDictionary*)deepLinkData {
+    KSInAppButtonPress* press = [KSInAppButtonPress new];
+    press->deepLinkData = deepLinkData;
+    press->messageId = message.id;
+    press->messageData = message.data;
+
+    return press;
+}
+
+@end
+
 @implementation KumulosInApp
 
 + (void)updateConsentForUser:(BOOL)consentGiven {

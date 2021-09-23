@@ -38,6 +38,14 @@ typedef void (^ _Nullable InboxUpdatedHandlerBlock)(void);
 typedef void (^ _Nullable InboxSummaryBlock)(InAppInboxSummary* _Nullable inboxSummary);
 
 
+@interface KSInAppButtonPress : NSObject
+
+@property (nonatomic,strong,readonly) NSDictionary* _Nonnull deepLinkData;
+@property (nonatomic,strong,readonly) NSNumber* _Nonnull messageId;
+@property (nonatomic,strong,readonly) NSDictionary* _Nullable messageData;
+
+@end
+
 @interface KumulosInApp : NSObject
 
 /**
