@@ -6,7 +6,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 
-#import "Kumulos.h"
+#import <KumulosSDK/Kumulos.h>
 
 @interface Kumulos (Location)
 

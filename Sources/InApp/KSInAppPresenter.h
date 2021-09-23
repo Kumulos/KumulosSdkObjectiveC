@@ -7,6 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "../Kumulos.h"
+#import "../KumulosInApp.h"
 #import "KSInAppModels.h"
 
 @interface KSInAppPresenter : NSObject <WKScriptMessageHandler,WKNavigationDelegate>

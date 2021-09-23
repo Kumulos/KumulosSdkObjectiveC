@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Kumulos.h"
+#import <KumulosSDK/Kumulos.h>
 
 /**
  * Model representing a push channel & its subscription status

@@ -11,13 +11,13 @@
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR
 #else
 #import <UIKit/UIKit.h>
-#import "KumulosInApp.h"
 #endif
 
 @class KSAPIOperation;
 @class KSAPIResponse;
 @class KSPushNotification;
 @class KSDeepLink;
+@class KSInAppButtonPress;
 @protocol KSAPIOperationDelegate;
 
 typedef void (^ _Nullable KSAPIOperationSuccessBlock)(KSAPIResponse* _Nonnull, KSAPIOperation* _Nonnull);

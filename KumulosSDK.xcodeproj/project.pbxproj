@@ -89,7 +89,7 @@
 		12659F6A1FE13C3E003C31BF /* KSAnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */; };
 		126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */; };
 		126AD08C2314160D00A211B8 /* KSUserNotificationCenterDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */; };
-		126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */; };
+		126AD08D23141CA600A211B8 /* KumulosInApp.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */; };
 		12735B931E4CDFEE00ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12735BAE1E4CE35900ED4488 /* KSAPIOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -143,15 +143,15 @@
 		12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
 		12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
 		12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
-		12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; };
-		12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B9B1E4CE35900ED4488 /* KSAPIResponse.h */; };
-		12BBE99C20E3CCB200DC9916 /* Kumulos.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B9F1E4CE35900ED4488 /* Kumulos.h */; };
-		12BBE99D20E3CCB200DC9916 /* Kumulos+Push.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735BA21E4CE35900ED4488 /* Kumulos+Push.h */; };
-		12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735BA61E4CE35900ED4488 /* KumulosPushSubscriptionManager.h */; };
-		12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; };
-		12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; };
-		12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; };
-		12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; };
+		12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; };
+		12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735B9B1E4CE35900ED4488 /* KSAPIResponse.h */; };
+		12BBE99C20E3CCB200DC9916 /* Kumulos.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735B9F1E4CE35900ED4488 /* Kumulos.h */; };
+		12BBE99D20E3CCB200DC9916 /* Kumulos+Push.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735BA21E4CE35900ED4488 /* Kumulos+Push.h */; };
+		12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735BA61E4CE35900ED4488 /* KumulosPushSubscriptionManager.h */; };
+		12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; };
+		12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; };
+		12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; };
+		12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; };
 		12BBE9A420E3CD9E00DC9916 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */; };
 		12BD21BC2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */; };
 		12BD21BD2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */; };
@@ -197,7 +197,7 @@
 		B62817B3268A034800D7B876 /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
 		B62817BB268A034E00D7B876 /* KSPendingNotification.m in Sources */ = {isa = PBXBuildFile; fileRef = B659809B25F934F3008C074D /* KSPendingNotification.m */; };
 		B62817C3268A035300D7B876 /* KSPendingNotificationHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B65980EE25F96CB0008C074D /* KSPendingNotificationHelper.m */; };
-		B62817DA268A03CF00D7B876 /* Kumulos+DeepLinking.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B6EE7713255D9F8800D5B5FB /* Kumulos+DeepLinking.h */; };
+		B62817DA268A03CF00D7B876 /* Kumulos+DeepLinking.h in Copy Files */ = {isa = PBXBuildFile; fileRef = B6EE7713255D9F8800D5B5FB /* Kumulos+DeepLinking.h */; };
 		B638A49F26D3C77700450EE5 /* KSDeepLinkFingerprinter.m in Sources */ = {isa = PBXBuildFile; fileRef = B638A49E26D3C77700450EE5 /* KSDeepLinkFingerprinter.m */; };
 		B638A4A026D3C79100450EE5 /* KSDeepLinkFingerprinter.m in Sources */ = {isa = PBXBuildFile; fileRef = B638A49E26D3C77700450EE5 /* KSDeepLinkFingerprinter.m */; };
 		B638A4A226D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h in Headers */ = {isa = PBXBuildFile; fileRef = B638A4A126D3C7DD00450EE5 /* KSDeepLinkFingerprinter.h */; };
@@ -259,24 +259,25 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		12BBE97F20E3CC4200DC9916 /* CopyFiles */ = {
+		12BBE97F20E3CC4200DC9916 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "include/$(PRODUCT_NAME)";
 			dstSubfolderSpec = 16;
 			files = (
-				B62817DA268A03CF00D7B876 /* Kumulos+DeepLinking.h in CopyFiles */,
-				126AD08D23141CA600A211B8 /* KumulosInApp.h in CopyFiles */,
-				12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in CopyFiles */,
-				12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in CopyFiles */,
-				12BBE99C20E3CCB200DC9916 /* Kumulos.h in CopyFiles */,
-				12BBE99D20E3CCB200DC9916 /* Kumulos+Push.h in CopyFiles */,
-				12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in CopyFiles */,
-				12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in CopyFiles */,
-				12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in CopyFiles */,
-				12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in CopyFiles */,
-				12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in CopyFiles */,
+				B62817DA268A03CF00D7B876 /* Kumulos+DeepLinking.h in Copy Files */,
+				126AD08D23141CA600A211B8 /* KumulosInApp.h in Copy Files */,
+				12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in Copy Files */,
+				12BBE99B20E3CCB200DC9916 /* KSAPIResponse.h in Copy Files */,
+				12BBE99C20E3CCB200DC9916 /* Kumulos.h in Copy Files */,
+				12BBE99D20E3CCB200DC9916 /* Kumulos+Push.h in Copy Files */,
+				12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in Copy Files */,
+				12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in Copy Files */,
+				12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in Copy Files */,
+				12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in Copy Files */,
+				12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6F9C9E4423D5C2DB00BBEFD5 /* CopyFiles */ = {
@@ -739,7 +740,7 @@
 			buildPhases = (
 				12BBE97D20E3CC4200DC9916 /* Sources */,
 				12BBE97E20E3CC4200DC9916 /* Frameworks */,
-				12BBE97F20E3CC4200DC9916 /* CopyFiles */,
+				12BBE97F20E3CC4200DC9916 /* Copy Files */,
 			);
 			buildRules = (
 			);

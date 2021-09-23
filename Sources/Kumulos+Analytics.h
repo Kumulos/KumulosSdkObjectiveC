@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Kumulos.h"
+#import <KumulosSDK/Kumulos.h>
 
 @interface Kumulos (Analytics)
 
