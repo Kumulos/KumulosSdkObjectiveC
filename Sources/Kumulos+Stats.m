@@ -12,7 +12,9 @@
 #import <sys/sysctl.h>
 #else
 #import <sys/utsname.h>
+@import UserNotifications;
 #import "KumulosEvents.h"
+#import "Shared/KSAppGroupsHelper.h"
 #endif
 
 static const NSString* KSSdkVersion = @"5.0.0";
@@ -106,25 +108,55 @@ static const NSString* KSSdkVersion = @"5.0.0";
         device[@"locale"] = NSLocale.preferredLanguages[0];
     }
 
-    //final
-    NSDictionary *jsonDict = @{@"app" : app,
-                               @"sdk" : sdk,
-                               @"runtime" : runtime,
-                               @"os" : os,
-                               @"device" : device};
+    NSMutableDictionary* payload = [NSMutableDictionary dictionaryWithDictionary:@{@"app" : app,
+                                                                             @"sdk" : sdk,
+                                                                             @"runtime" : runtime,
+                                                                             @"os" : os,
+                                                                             @"device" : device
+                                                                           }];
+
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+    payload[@"ios"] = [self getiOSAttrs];
+#endif
 
 #if !TARGET_OS_IPHONE && !TARGET_IPHONE_SIMULATOR && !TARGET_OS_IOS
     NSString* path = [NSString stringWithFormat:@"/v1/app-installs/%@", [Kumulos installId]];
 
-    [self.statsHttpClient put:path data:jsonDict onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
+    [self.statsHttpClient put:path data:payload onSuccess:^(NSHTTPURLResponse * _Nullable response, id  _Nullable decodedBody) {
         // Noop
     } onFailure:^(NSHTTPURLResponse * _Nullable response, NSError * _Nullable error, id  _Nullable decodedBody) {
         // Noop
     }];
 #else
-    [self.analyticsHelper trackEvent:KumulosEventCallHome withProperties:jsonDict];
+    [self.analyticsHelper trackEvent:KumulosEventCallHome withProperties:payload];
 #endif
 
 }
+
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+-(NSDictionary*) getiOSAttrs {
+    NSDictionary* attrs = [NSMutableDictionary dictionaryWithDictionary:@{@"hasGroup": @(KSAppGroupsHelper.isKumulosAppGroupDefined),
+                            @"push": [NSMutableDictionary dictionaryWithDictionary:@{
+                                @"scheduled": @(NO),
+                                @"timeSensitive": @(NO)
+                            }]
+    }];
+
+    if (@available(iOS 15.0, *)) {
+        dispatch_semaphore_t __block permsBarrier = dispatch_semaphore_create(0);
+
+        [UNUserNotificationCenter.currentNotificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
+            attrs[@"push"][@"scheduled"] = (settings.scheduledDeliverySetting == UNNotificationSettingEnabled) ? @(YES) : @(NO);
+            attrs[@"push"][@"timeSensitive"] = (settings.timeSensitiveSetting == UNNotificationSettingEnabled) ? @(YES) : @(NO);
+
+            dispatch_semaphore_signal(permsBarrier);
+        }];
+
+        dispatch_semaphore_wait(permsBarrier, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+    }
+
+    return attrs;
+}
+#endif
 
 @end
