@@ -5,7 +5,7 @@
 //  Created by Vladislav Voicehovics on 12/11/2020.
 //
 
-#import "Kumulos.h"
+#import <KumulosSDK/Kumulos.h>
 
 @interface Kumulos (DeepLinking)
 + (void) scene:(UIScene* _Nonnull)scene continueUserActivity:(NSUserActivity* _Nonnull)userActivity  API_AVAILABLE(ios(13.0));

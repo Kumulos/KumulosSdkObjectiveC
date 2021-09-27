@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Kumulos.h"
+#import <KumulosSDK/Kumulos.h>
 
 API_AVAILABLE(ios(10.0))
 typedef void (^ _Nullable KSUNAuthorizationCheckedHandler)(UNAuthorizationStatus status, NSError* _Nullable error);

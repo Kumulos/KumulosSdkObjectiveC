@@ -298,6 +298,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     NSString* subscribeToChannelUuid = nil;
     NSDictionary* userAction = nil;
 
+    KSInAppMessage* message = self.currentMessage;
+
     for (NSDictionary* action in actions) {
         NSString* type = action[@"type"];
 
@@ -327,12 +329,12 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
     }
 
     if (userAction != nil) {
-        [self handleUserAction:userAction];
+        [self handleUserAction:userAction forMessage:message];
         [self cancelCurrentPresentationQueue:YES];
     }
 }
 
-- (void) handleUserAction:(NSDictionary* _Nonnull)userAction {
+- (void) handleUserAction:(NSDictionary* _Nonnull)userAction forMessage:(KSInAppMessage*)message {
     NSString* type = userAction[@"type"];
     if ([type isEqualToString:KSInAppActionPromptPushPermission]) {
         [self.kumulos pushRequestDeviceToken];
@@ -342,8 +344,13 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         }
 
         dispatch_async(dispatch_get_main_queue(), ^{
+            if (self.kumulos.config.inAppDeepLinkHandler == nil) {
+                return;
+            }
+
             NSDictionary* data = userAction[@"data"][@"deepLink"] ?: @{};
-            self.kumulos.config.inAppDeepLinkHandler(data);
+            KSInAppButtonPress* buttonPress = [KSInAppButtonPress forInAppMessage:message withDeepLink:data];
+            self.kumulos.config.inAppDeepLinkHandler(buttonPress);
         });
     } else if ([type isEqualToString:KSInAppActionOpenUrl]) {
         NSURL* url = [NSURL URLWithString:userAction[@"data"][@"url"]];
