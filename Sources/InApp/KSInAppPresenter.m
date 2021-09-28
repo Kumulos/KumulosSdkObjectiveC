@@ -215,7 +215,13 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
     [self.frame addSubview:self.webView];
 
-    NSURLRequest* req = [NSURLRequest requestWithURL:[NSURL URLWithString:KSInAppRendererUrl] cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:30];
+
+#ifdef DEBUG
+    NSURLRequestCachePolicy cachePolicy = NSURLRequestReloadIgnoringCacheData;
+#else
+    NSURLRequestCachePolicy cachePolicy = NSURLRequestUseProtocolCachePolicy;
+#endif
+    NSURLRequest* req = [NSURLRequest requestWithURL:[NSURL URLWithString:KSInAppRendererUrl] cachePolicy:cachePolicy timeoutInterval:8];
     [self.webView loadRequest:req];
 
     // Spinner
@@ -285,10 +291,32 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    // Handles transfer errors after starting load
     [self cancelCurrentPresentationQueue:NO];
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    // Handles connection/timeout errors for the main frame load
+    [self cancelCurrentPresentationQueue:NO];
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationResponse:(WKNavigationResponse *)navigationResponse decisionHandler:(void (^)(WKNavigationResponsePolicy))decisionHandler {
+    // Handles HTTP responses for all status codes
+    if ([navigationResponse.response isKindOfClass:NSHTTPURLResponse.class]) {
+        NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*) navigationResponse.response;
+        NSURL* url = httpResponse.URL;
+
+        if (url && [url.absoluteString hasPrefix:KSInAppRendererUrl] && httpResponse.statusCode >= 400) {
+            decisionHandler(WKNavigationResponsePolicyCancel);
+            [self cancelCurrentPresentationQueue:NO];
+            return;
+        }
+    }
+
+    decisionHandler(WKNavigationResponsePolicyAllow);
+}
+
+- (void)webViewWebContentProcessDidTerminate:(WKWebView *)webView {
     [self cancelCurrentPresentationQueue:NO];
 }
 
