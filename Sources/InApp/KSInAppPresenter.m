@@ -322,7 +322,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
 
 - (void) handleActions:(NSArray<NSDictionary*>*)actions {
     BOOL hasClose = NO;
-    NSString* trackEvent = nil;
+    NSString* conversionEvent = nil;
+    NSDictionary* conversionEventData = nil;
     NSString* subscribeToChannelUuid = nil;
     NSDictionary* userAction = nil;
 
@@ -334,7 +335,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         if ([type isEqualToString:KSInAppActionCloseMessage]) {
             hasClose = YES;
         } else if ([type isEqualToString:KSInAppActionTrackEvent]) {
-            trackEvent = action[@"data"][@"eventType"];
+            conversionEvent = action[@"data"][@"eventType"];
+            conversionEventData = action[@"data"][@"data"];
         } else if ([type isEqualToString:KSInAppActionSubscribeChannel]) {
             subscribeToChannelUuid = action[@"data"][@"channelUuid"];
         } else {
@@ -347,8 +349,8 @@ NSString* const _Nonnull KSInAppActionRequestRating = @"requestAppStoreRating";
         [self postClientMessage:@"CLOSE_MESSAGE" withData:nil];
     }
 
-    if (trackEvent != nil) {
-        [self.kumulos trackEvent:trackEvent withProperties:nil];
+    if (conversionEvent != nil) {
+        [self.kumulos trackEventImmediately:conversionEvent withProperties:conversionEventData];
     }
 
     if (subscribeToChannelUuid != nil) {
