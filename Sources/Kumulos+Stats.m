@@ -17,7 +17,7 @@
 #import "Shared/KSAppGroupsHelper.h"
 #endif
 
-static const NSString* KSSdkVersion = @"5.0.0";
+static const NSString* KSSdkVersion = @"6.0.0";
 
 @implementation Kumulos (Stats)
 

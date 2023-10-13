@@ -4,10 +4,4 @@
    <FileRef
       location = "container:KumulosSDK.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/KSCrash/iOS/KSCrash-iOS.xcodeproj">
-   </FileRef>
-   <FileRef
-      location = "group:Carthage/Checkouts/KSCrash/Mac/KSCrash-Mac.xcodeproj">
-   </FileRef>
 </Workspace>
