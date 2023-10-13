@@ -16,18 +16,9 @@
 #import "Kumulos+PushProtected.h"
 #endif
 
-#ifdef COCOAPODS
-#import "KSCrash.h"
-#import "KSCrashInstallationStandard.h"
-#else
-#import <KSCrash/KSCrash.h>
-#import <KSCrash/KSCrashInstallationStandard.h>
-#endif
-
 static NSString * const KSBackendBaseUrl = @"https://api.kumulos.com";
 static NSString * const KSStatsBaseUrl = @"https://stats.kumulos.com";
 static NSString * const KSPushBaseUrl = @"https://push.kumulos.com";
-static NSString * const KSCrashBaseUrl = @"https://crash.kumulos.com";
 static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
 
 @implementation KSConfig
@@ -41,7 +32,6 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
     if (self = [super init]) {
         self->_apiKey = APIKey;
         self->_secretKey = secretKey;
-        self->_crashReportingEnabled = NO;
         self->_sessionIdleTimeoutSeconds = 23;
         self->_runtimeInfo = nil;
         self->_sdkInfo = nil;
@@ -59,11 +49,6 @@ static NSString * const KSCrmCoreBaseUrl = @"https://crm.kumulos.com";
         }
         #endif
     }
-    return self;
-}
-
-- (instancetype _Nonnull) enableCrashReporting {
-    self->_crashReportingEnabled = YES;
     return self;
 }
 
@@ -175,10 +160,6 @@ static Kumulos* _shared;
         [self initNetworkingHelpers];
         
         [self statsSendInstallInfo];
-        
-        if (config.crashReportingEnabled) {
-            [self initCrashReporting];
-        }
     }
     return self;
 }
@@ -232,18 +213,6 @@ static Kumulos* _shared;
     self.inAppHelper = [[KSInAppHelper alloc] initWithKumulos:self];
 }
 #endif
-
-- (void) initCrashReporting {
-    NSString* url = [NSString stringWithFormat:@"%@/v1/track/%@/kscrash/%@", KSCrashBaseUrl, self.apiKey, Kumulos.installId];
-    KSCrashInstallationStandard* installation = [KSCrashInstallationStandard sharedInstance];
-    installation.url = [NSURL URLWithString:url];
-    
-    [installation install];
-    
-    [installation sendAllReportsWithCompletion:^(NSArray *filteredReports, BOOL completed, NSError *error) {
-        // noop
-    }];
-}
 
 - (KSAPIOperation*) callMethod:(NSString*)method withSuccess:(KSAPIOperationSuccessBlock)success andFailure:(KSAPIOperationFailureBlock)failure {
     return [self callMethod:method withParams:nil success:success andFailure:failure];

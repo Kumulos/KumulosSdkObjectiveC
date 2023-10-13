@@ -77,14 +77,6 @@
 		12577D7B1FDFF51C00218A06 /* Kumulos+Analytics.h in Headers */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		12577D7C1FDFF51C00218A06 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
 		12577DB21FE018FD00218A06 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12577DB11FE018FD00218A06 /* CoreData.framework */; };
-		125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
-		125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
-		125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA7771F8BD7CA0008CAA4 /* libz.tbd */; };
-		125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA7791F8BD7D00008CAA4 /* libc++.tbd */; };
-		125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */; };
-		125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 125CA77D1F8BD8640008CAA4 /* KSCrash.framework */; };
 		12659F681FE13C29003C31BF /* KSAnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */; };
 		12659F6A1FE13C3E003C31BF /* KSAnalyticsHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */; };
 		126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */; };
@@ -124,10 +116,6 @@
 		12735C041E4CE5D900ED4488 /* MobileProvision.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA91E4CE35900ED4488 /* MobileProvision.m */; };
 		129BC4E32062AD3E005AE632 /* KumulosEvents.h in Headers */ = {isa = PBXBuildFile; fileRef = 129BC4E22062AD3E005AE632 /* KumulosEvents.h */; };
 		129BC4E62062AE61005AE632 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
-		12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B531F8BB4FF0063288E /* libz.tbd */; };
-		12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B551F8BB5080063288E /* libc++.tbd */; };
-		12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */; };
-		12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12AA0B591F8BB5200063288E /* MessageUI.framework */; };
 		12BBE98A20E3CC9600DC9916 /* KSHttpClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB020E13A01005CFCED /* KSHttpClient.m */; };
 		12BBE98B20E3CC9600DC9916 /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CB820E23665005CFCED /* NSString+URLEncoding.m */; };
 		12BBE98C20E3CC9600DC9916 /* KSUrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 12562CF320E275BA005CFCED /* KSUrlEncoding.m */; };
@@ -140,7 +128,6 @@
 		12BBE99320E3CC9600DC9916 /* KumulosPushSubscriptionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA71E4CE35900ED4488 /* KumulosPushSubscriptionManager.m */; };
 		12BBE99420E3CC9600DC9916 /* MobileProvision.m in Sources */ = {isa = PBXBuildFile; fileRef = 12735BA91E4CE35900ED4488 /* MobileProvision.m */; };
 		12BBE99520E3CC9600DC9916 /* Kumulos+Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 125321C31F7511F0007077AC /* Kumulos+Location.m */; };
-		12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */ = {isa = PBXBuildFile; fileRef = 125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */; };
 		12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */; };
 		12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = 129BC4E52062AE61005AE632 /* KumulosEvents.m */; };
 		12BBE99A20E3CCB200DC9916 /* KSAPIOperation.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735B991E4CE35900ED4488 /* KSAPIOperation.h */; };
@@ -150,9 +137,7 @@
 		12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735BA61E4CE35900ED4488 /* KumulosPushSubscriptionManager.h */; };
 		12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12735B921E4CDFEE00ED4488 /* KumulosSDK.h */; };
 		12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 125321C21F7511F0007077AC /* Kumulos+Location.h */; };
-		12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */; };
 		12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in Copy Files */ = {isa = PBXBuildFile; fileRef = 12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */; };
-		12BBE9A420E3CD9E00DC9916 /* libKSCrashLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */; };
 		12BD21BC2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */; };
 		12BD21BD2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */; };
 		12BD21CB230D8FB200BE0D18 /* KumulosInApp.m in Sources */ = {isa = PBXBuildFile; fileRef = 12BD21C9230D8FB200BE0D18 /* KumulosInApp.m */; };
@@ -180,7 +165,6 @@
 		12CA55C4243F7B1A00398168 /* KSAnalyticsHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */; };
 		12CA55C5243F7B2C00398168 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
 		12CA55C6243F7B2D00398168 /* KumulosSharedEvents.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F8C24311D8000E8B3B9 /* KumulosSharedEvents.m */; };
-		12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12D7C6872019DC5700A390CD /* KSCrash.framework */; };
 		12E861DA2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
 		12E861DB2302C4EF009EF70B /* KSInAppPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E861D92302C4EF009EF70B /* KSInAppPresenter.m */; };
 		6F571748244491D100F2A8CB /* KSSessionHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B6E48F88242E5CD700E8B3B9 /* KSSessionHelper.m */; };
@@ -274,7 +258,6 @@
 				12BBE99E20E3CCB200DC9916 /* KumulosPushSubscriptionManager.h in Copy Files */,
 				12BBE99F20E3CCB200DC9916 /* KumulosSDK.h in Copy Files */,
 				12BBE9A020E3CCB200DC9916 /* Kumulos+Location.h in Copy Files */,
-				12BBE9A120E3CCB200DC9916 /* Kumulos+Crash.h in Copy Files */,
 				12BBE9A220E3CCB200DC9916 /* Kumulos+Analytics.h in Copy Files */,
 			);
 			name = "Copy Files";
@@ -309,12 +292,6 @@
 		12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Analytics.h"; sourceTree = "<group>"; };
 		12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Analytics.m"; sourceTree = "<group>"; };
 		12577DB11FE018FD00218A06 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS11.0.sdk/System/Library/Frameworks/CoreData.framework; sourceTree = DEVELOPER_DIR; };
-		125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kumulos+Crash.h"; sourceTree = "<group>"; };
-		125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Kumulos+Crash.m"; sourceTree = "<group>"; };
-		125CA7771F8BD7CA0008CAA4 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		125CA7791F8BD7D00008CAA4 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-		125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
-		125CA77D1F8BD8640008CAA4 /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "../../Library/Developer/Xcode/DerivedData/KumulosSDK-brqrezsayxilfmgstvywbeekkicf/Build/Products/Debug/KSCrash.framework"; sourceTree = "<group>"; };
 		12659F671FE13C29003C31BF /* KSAnalyticsHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSAnalyticsHelper.m; sourceTree = "<group>"; };
 		12659F691FE13C3E003C31BF /* KSAnalyticsHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSAnalyticsHelper.h; sourceTree = "<group>"; };
 		12735B4A1E4CDD3100ED4488 /* KumulosSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = KumulosSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -341,22 +318,13 @@
 		12735BA91E4CE35900ED4488 /* MobileProvision.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MobileProvision.m; sourceTree = "<group>"; };
 		129BC4E22062AD3E005AE632 /* KumulosEvents.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosEvents.h; sourceTree = "<group>"; };
 		129BC4E52062AE61005AE632 /* KumulosEvents.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KumulosEvents.m; sourceTree = "<group>"; };
-		12AA0B511F8BB4C00063288E /* KSCrash.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KSCrash.framework; path = "Carthage/Checkouts/KSCrash/iOS/build/Debug-iphoneos/KSCrash.framework"; sourceTree = "<group>"; };
-		12AA0B531F8BB4FF0063288E /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
-		12AA0B551F8BB5080063288E /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
-		12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/SystemConfiguration.framework; sourceTree = DEVELOPER_DIR; };
-		12AA0B591F8BB5200063288E /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/MessageUI.framework; sourceTree = DEVELOPER_DIR; };
-		12BBE96320E3950D00DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		12BBE97120E3CA7500DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		12BBE98120E3CC4200DC9916 /* libKumulosSDKiOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libKumulosSDKiOS.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libKSCrashLib.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		12BD21BB2306D72C00BE0D18 /* KSUserNotificationCenterDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSUserNotificationCenterDelegate.m; sourceTree = "<group>"; };
 		12BD21BE2306D74F00BE0D18 /* KSUserNotificationCenterDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSUserNotificationCenterDelegate.h; sourceTree = "<group>"; };
 		12BD21C02306EE8300BE0D18 /* Kumulos+PushProtected.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Kumulos+PushProtected.h"; sourceTree = "<group>"; };
 		12BD21C9230D8FB200BE0D18 /* KumulosInApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KumulosInApp.m; sourceTree = "<group>"; };
 		12BD21CA230D8FB200BE0D18 /* KumulosInApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KumulosInApp.h; sourceTree = "<group>"; };
 		12CA553A243F4F3300398168 /* KumulosErrors.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KumulosErrors.h; sourceTree = "<group>"; };
-		12D7C6872019DC5700A390CD /* KSCrash.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = KSCrash.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		12E861D92302C4EF009EF70B /* KSInAppPresenter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KSInAppPresenter.m; sourceTree = "<group>"; };
 		12E861DC2302C4FD009EF70B /* KSInAppPresenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KSInAppPresenter.h; sourceTree = "<group>"; };
 		6F9C9E4623D5C2DB00BBEFD5 /* libKumulosSDKExtensionStatic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libKumulosSDKExtensionStatic.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -398,12 +366,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12D7C6862019DC5700A390CD /* KSCrash.framework in Frameworks */,
 				12577DB21FE018FD00218A06 /* CoreData.framework in Frameworks */,
-				12AA0B5A1F8BB5200063288E /* MessageUI.framework in Frameworks */,
-				12AA0B581F8BB51A0063288E /* SystemConfiguration.framework in Frameworks */,
-				12AA0B561F8BB5080063288E /* libc++.tbd in Frameworks */,
-				12AA0B541F8BB4FF0063288E /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,10 +374,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				125CA77E1F8BD8640008CAA4 /* KSCrash.framework in Frameworks */,
-				125CA77C1F8BD7DF0008CAA4 /* SystemConfiguration.framework in Frameworks */,
-				125CA77A1F8BD7D00008CAA4 /* libc++.tbd in Frameworks */,
-				125CA7781F8BD7CA0008CAA4 /* libz.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,7 +381,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				12BBE9A420E3CD9E00DC9916 /* libKSCrashLib.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -521,8 +479,6 @@
 				12735B8F1E4CDEAF00ED4488 /* Info-macOS.plist */,
 				125321C21F7511F0007077AC /* Kumulos+Location.h */,
 				125321C31F7511F0007077AC /* Kumulos+Location.m */,
-				125CA7711F8BD5160008CAA4 /* Kumulos+Crash.h */,
-				125CA7721F8BD5160008CAA4 /* Kumulos+Crash.m */,
 				12577D791FDFF51C00218A06 /* Kumulos+Analytics.h */,
 				12577D7A1FDFF51C00218A06 /* Kumulos+Analytics.m */,
 				129BC4E22062AD3E005AE632 /* KumulosEvents.h */,
@@ -544,20 +500,7 @@
 		12735BC11E4CE4E800ED4488 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				12BBE9A320E3CD9E00DC9916 /* libKSCrashLib.a */,
-				12BBE97120E3CA7500DC9916 /* libKSCrashLib.a */,
-				12BBE96320E3950D00DC9916 /* libKSCrashLib.a */,
-				12D7C6872019DC5700A390CD /* KSCrash.framework */,
 				12577DB11FE018FD00218A06 /* CoreData.framework */,
-				125CA77D1F8BD8640008CAA4 /* KSCrash.framework */,
-				125CA77B1F8BD7DF0008CAA4 /* SystemConfiguration.framework */,
-				125CA7791F8BD7D00008CAA4 /* libc++.tbd */,
-				125CA7771F8BD7CA0008CAA4 /* libz.tbd */,
-				12AA0B591F8BB5200063288E /* MessageUI.framework */,
-				12AA0B571F8BB51A0063288E /* SystemConfiguration.framework */,
-				12AA0B551F8BB5080063288E /* libc++.tbd */,
-				12AA0B531F8BB4FF0063288E /* libz.tbd */,
-				12AA0B511F8BB4C00063288E /* KSCrash.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -631,7 +574,6 @@
 				B6E48F6F242E0C2000E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
 				12562CFA20E27807005CFCED /* KSUrlEncoding.h in Headers */,
 				B611061825636B5E0003BE3E /* DeepLinkHelper.h in Headers */,
-				125CA7731F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12CA553B243F4F3300398168 /* KumulosErrors.h in Headers */,
 				126AD08B231410B100A211B8 /* KSInAppPresenter.h in Headers */,
 				B65980FA25F96CE6008C074D /* KSPendingNotificationHelper.h in Headers */,
@@ -665,7 +607,6 @@
 				12562CFB20E27807005CFCED /* KSUrlEncoding.h in Headers */,
 				12735BDC1E4CE5A200ED4488 /* KSessionTokenManager.h in Headers */,
 				12CA55B6243F7A3A00398168 /* KSAppGroupsHelper.h in Headers */,
-				125CA7741F8BD5160008CAA4 /* Kumulos+Crash.h in Headers */,
 				12735B961E4CE00100ED4488 /* KumulosSDK.h in Headers */,
 				B6E48F9D243575FB00E8B3B9 /* KumulosUserDefaultsKeys.h in Headers */,
 				12562CB520E161AB005CFCED /* KSHttpClient.h in Headers */,
@@ -962,7 +903,6 @@
 				B6E48F8D24311D8000E8B3B9 /* KumulosSharedEvents.m in Sources */,
 				12735BFD1E4CE5CF00ED4488 /* KumulosPushSubscriptionManager.m in Sources */,
 				12735BB51E4CE35900ED4488 /* Kumulos.m in Sources */,
-				125CA7751F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
 				B659809C25F934F3008C074D /* KSPendingNotification.m in Sources */,
 				B638A49F26D3C77700450EE5 /* KSDeepLinkFingerprinter.m in Sources */,
 				12735BB31E4CE35900ED4488 /* KSessionTokenManager.m in Sources */,
@@ -1006,7 +946,6 @@
 				B6E48F9C243575F800E8B3B9 /* KumulosUserDefaultsKeys.m in Sources */,
 				B6E48F9A243575A700E8B3B9 /* KumulosHelper.m in Sources */,
 				12562CB220E13A01005CFCED /* KSHttpClient.m in Sources */,
-				125CA7761F8BD5160008CAA4 /* Kumulos+Crash.m in Sources */,
 				12CA55B5243F79F000398168 /* KSKeyValPersistenceHelper.m in Sources */,
 				12735BD41E4CE59300ED4488 /* KSAPIOperation.m in Sources */,
 				12735C011E4CE5D700ED4488 /* MobileProvision.m in Sources */,
@@ -1045,7 +984,6 @@
 				B6BD4120266906F100F4A6A2 /* KSMediaHelper.m in Sources */,
 				12BBE99520E3CC9600DC9916 /* Kumulos+Location.m in Sources */,
 				12CA55C4243F7B1A00398168 /* KSAnalyticsHelper.m in Sources */,
-				12BBE99620E3CC9600DC9916 /* Kumulos+Crash.m in Sources */,
 				120CD56E22DCA92000067A45 /* KSInAppHelper.m in Sources */,
 				12BBE99720E3CC9600DC9916 /* Kumulos+Analytics.m in Sources */,
 				12BBE99920E3CC9600DC9916 /* KumulosEvents.m in Sources */,

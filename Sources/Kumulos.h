@@ -60,7 +60,6 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 
 @property (nonatomic,readonly) NSString* _Nonnull apiKey;
 @property (nonatomic,readonly) NSString* _Nonnull secretKey;
-@property (nonatomic,readonly) BOOL crashReportingEnabled;
 @property (nonatomic,readonly) NSUInteger sessionIdleTimeoutSeconds;
 
 @property (nonatomic,readonly) NSDictionary* _Nullable runtimeInfo;
@@ -81,7 +80,6 @@ typedef NS_ENUM(NSInteger, KSInAppConsentStrategy) {
 
 - (instancetype _Nullable) init NS_UNAVAILABLE;
 
-- (instancetype _Nonnull) enableCrashReporting;
 #if TARGET_OS_IOS
 - (instancetype _Nonnull) enableInAppMessaging:(KSInAppConsentStrategy)consentStrategy;
 - (instancetype _Nonnull) setInAppDeepLinkHandler:(KSInAppDeepLinkHandlerBlock)deepLinkHandler;

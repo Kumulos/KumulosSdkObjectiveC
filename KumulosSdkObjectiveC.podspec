@@ -12,12 +12,9 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.12"
 
   s.source_files = "Sources/**/*.{h,m}", "Sources/Shared/**/*.{h,m}"
-  s.exclude_files = "Carthage", "Sources/KumulosSDKExtension"
+  s.exclude_files = "Sources/KumulosSDKExtension"
   s.module_name = "KumulosSDK"
   s.header_dir = "KumulosSDK"
-  s.preserve_path = 'upload_dsyms.sh'
-
-  s.prepare_command = 'chmod +x upload_dsyms.sh'
 
   s.osx.exclude_files = [
       'Sources/*Push*',
@@ -43,7 +40,6 @@ Pod::Spec.new do |s|
       'Sources/Kumulos+Push.h',
       'Sources/KumulosPushSubscriptionManager.h',
       'Sources/Kumulos+Location.h',
-      'Sources/Kumulos+Crash.h',
       'Sources/Kumulos+Analytics.h',
       'Sources/KumulosInApp.h',
       'Sources/Kumulos+DeepLinking.h'
@@ -54,8 +50,6 @@ Pod::Spec.new do |s|
       'Sources/Kumulos.h',
       'Sources/KSAPIOperation.h',
       'Sources/KSAPIResponse.h',
-      'Sources/Kumulos+Crash.h'
   ]
 
-  s.dependency "KumulosKSCrash", "1.15.21-kumulos3"
 end

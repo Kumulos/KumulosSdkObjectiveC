@@ -33,5 +33,3 @@ FOUNDATION_EXPORT const unsigned char KumulosSDKVersionString[];
 
 #import <KumulosSDK/KSAPIOperation.h>
 #import <KumulosSDK/KSAPIResponse.h>
-#import <KumulosSDK/Kumulos+Crash.h>
-
